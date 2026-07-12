@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import router
+from backend.app.api.router import router
 from app.api.cover_letter import router as cover_letter_router
 from app.api.interview import router as interview_router
 from app.api.evaluate_answer import router as evaluate_router
