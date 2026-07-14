@@ -10,6 +10,11 @@ async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
 
+    print("=" * 50)
+    print("Middleware Called")
+    print("Credentials:", credentials)
+    print("=" * 50)
+
     token = credentials.credentials
 
     payload = verify_access_token(token)

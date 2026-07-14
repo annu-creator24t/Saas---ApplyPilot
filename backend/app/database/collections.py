@@ -2,8 +2,8 @@ from app.database.mongodb import database
 
 users_collection = database["users"]
 
-resume_analysis_collection = database["resume_analysis"]
+resume_collection = database["resume_analysis"]
 
-cover_letters_collection = database["cover_letters"]
+cover_letter_collection = database["cover_letters"]
 
-interviews_collection = database["interviews"]
+interview_collection = database["interviews"]
