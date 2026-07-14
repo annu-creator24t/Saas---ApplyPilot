@@ -50,12 +50,17 @@ async def login_user(email: str, password: str):
             "message": "Invalid email or password."
         }
 
+    print("Received Password:", repr(password))
     print("Stored Hash:", user["password"])
 
-    print("Password Match:",
-          verify_password(password, user["password"]))
+    password_match = verify_password(
+        password,
+        user["password"]
+    )
 
-    if not verify_password(password, user["password"]):
+    print("Password Match:", password_match)
+
+    if not password_match:
         return {
             "success": False,
             "message": "Invalid email or password."
