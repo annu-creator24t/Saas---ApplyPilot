@@ -1,44 +1,17 @@
-from fastapi import APIRouter, UploadFile, File, Form
-import os
+from fastapi import APIRouter
 
-from app.services.pdf_service import extract_text_from_pdf
-from app.services.gemini_service import analyze_resume
-from app.prompts.resume_prompt import build_resume_prompt
+from app.api.auth import router as auth_router
+from app.api.resume import router as resume_router
+from app.api.cover_letter import router as cover_letter_router
+from app.api.interview import router as interview_router
+from app.api.evaluate_answer import router as evaluate_answer_router
+from app.api.profile import router as profile_router
 
 router = APIRouter()
 
-UPLOAD_FOLDER = "uploads"
-
-
-@router.post("/analyze")
-async def analyze(
-    file: UploadFile = File(...),
-    job_description: str = Form(...)
-):
-    # Save uploaded resume
-    file_path = os.path.join(
-        UPLOAD_FOLDER,
-        file.filename
-    )
-
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
-
-    # Extract text from PDF
-    resume = extract_text_from_pdf(file_path)
-
-    # Build Gemini prompt
-    prompt = build_resume_prompt(
-        resume,
-        job_description
-    )
-
-    # Analyze using Gemini
-    analysis = analyze_resume(prompt)
-
-    # Return complete response
-    return {
-        "resume_text": resume,
-        "job_description": job_description,
-        "analysis": analysis
-    }
+router.include_router(auth_router)
+router.include_router(resume_router)
+router.include_router(cover_letter_router)
+router.include_router(interview_router)
+router.include_router(evaluate_answer_router)
+router.include_router(profile_router)
