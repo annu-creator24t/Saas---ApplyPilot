@@ -33,3 +33,33 @@ async def get_cover_letter_history(user_id: str):
         )
 
     return history
+
+from bson import ObjectId
+
+
+async def get_cover_letter_by_id(cover_letter_id: str):
+
+    cover_letter = await cover_letter_collection.find_one(
+        {
+            "_id": ObjectId(cover_letter_id)
+        }
+    )
+
+    if not cover_letter:
+        return None
+
+    cover_letter["id"] = str(cover_letter["_id"])
+    del cover_letter["_id"]
+
+    return cover_letter
+
+
+async def delete_cover_letter(cover_letter_id: str):
+
+    result = await cover_letter_collection.delete_one(
+        {
+            "_id": ObjectId(cover_letter_id)
+        }
+    )
+
+    return result.deleted_count > 0

@@ -33,3 +33,33 @@ async def get_interview_history(user_id: str):
         )
 
     return history
+
+from bson import ObjectId
+
+
+async def get_interview_by_id(interview_id: str):
+
+    interview = await interview_collection.find_one(
+        {
+            "_id": ObjectId(interview_id)
+        }
+    )
+
+    if not interview:
+        return None
+
+    interview["id"] = str(interview["_id"])
+    del interview["_id"]
+
+    return interview
+
+
+async def delete_interview(interview_id: str):
+
+    result = await interview_collection.delete_one(
+        {
+            "_id": ObjectId(interview_id)
+        }
+    )
+
+    return result.deleted_count > 0

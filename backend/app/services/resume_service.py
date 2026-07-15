@@ -32,3 +32,33 @@ async def get_resume_history(user_id: str):
         )
 
     return history
+
+from bson import ObjectId
+
+
+async def get_resume_by_id(resume_id: str):
+
+    resume = await resume_collection.find_one(
+        {
+            "_id": ObjectId(resume_id)
+        }
+    )
+
+    if not resume:
+        return None
+
+    resume["id"] = str(resume["_id"])
+    del resume["_id"]
+
+    return resume
+
+
+async def delete_resume(resume_id: str):
+
+    result = await resume_collection.delete_one(
+        {
+            "_id": ObjectId(resume_id)
+        }
+    )
+
+    return result.deleted_count > 0

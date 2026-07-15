@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from app.middleware.auth import get_current_user
 from app.models.interview import Interview
 from app.prompts.interview_prompt import build_interview_prompt
 from app.services.gemini_service import generate_interview_questions
-from app.services.interview_service import save_interview
+from app.services.interview_service import (
+    save_interview,
+    get_interview_by_id,
+    delete_interview,
+)
 
 router = APIRouter()
 
@@ -41,4 +45,57 @@ async def generate(
         "success": True,
         "interview_id": document_id,
         "questions": questions,
+    }
+
+
+@router.get("/interview/{interview_id}")
+async def get_interview(
+    interview_id: str,
+    current_user=Depends(get_current_user),
+):
+
+    interview = await get_interview_by_id(interview_id)
+
+    if interview is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Interview not found.",
+        )
+
+    if interview["user_id"] != current_user["sub"]:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied.",
+        )
+
+    return {
+        "success": True,
+        "interview": interview,
+    }
+
+
+@router.delete("/interview/{interview_id}")
+async def remove_interview(
+    interview_id: str,
+    current_user=Depends(get_current_user),
+):
+
+    interview = await get_interview_by_id(interview_id)
+
+    if interview is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Interview not found.",
+        )
+
+    if interview["user_id"] != current_user["sub"]:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied.",
+        )
+
+    deleted = await delete_interview(interview_id)
+
+    return {
+        "success": deleted,
     }
