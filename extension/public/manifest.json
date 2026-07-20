@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "ApplyPilot",
+  "version": "1.0.0",
+  "description": "AI Job Copilot",
+
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "ApplyPilot"
+  },
+
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+
+  "host_permissions": [
+    "https://*.linkedin.com/*"
+  ]
+}
