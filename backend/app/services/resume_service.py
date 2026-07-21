@@ -1,64 +1,52 @@
-from app.database.collections import resume_collection
-from app.models.resume_analysis import ResumeAnalysis
+from datetime import datetime
+
+from fastapi import UploadFile
+
+from app.integrations.cloudinary import upload_resume
+from app.parsers.parser import extract_resume_text
+from app.repositories.resume_repository import ResumeRepository
+from app.utils.file_handler import delete_file, save_resume
 
 
-async def save_resume_analysis(data: ResumeAnalysis):
+class ResumeService:
 
-    result = await resume_collection.insert_one(
-        data.model_dump()
-    )
+    def __init__(self):
+        self.repository = ResumeRepository()
 
-    return str(result.inserted_id)
+    async def upload_resume(
+        self,
+        user_id: str,
+        file: UploadFile,
+    ):
 
-async def get_resume_history(user_id: str):
+        saved = await save_resume(file)
 
-    cursor = resume_collection.find(
-        {
-            "user_id": user_id
+        text = extract_resume_text(saved["path"])
+
+        cloudinary = await upload_resume(saved["path"])
+
+        delete_file(saved["path"])
+
+        payload = {
+            "user_id": user_id,
+            "original_filename": file.filename,
+            "stored_filename": saved["filename"],
+            "file_url": cloudinary["url"],
+            "public_id": cloudinary["public_id"],
+            "file_size": saved["size"],
+            "content_type": file.content_type,
+            "extracted_text": text,
+            "ats_score": None,
+            "analysis": {},
+            "created_at": datetime.utcnow(),
         }
-    ).sort("created_at", -1)
 
-    history = []
+        resume_id = await self.repository.create_resume(payload)
 
-    async for resume in cursor:
-
-        history.append(
-            {
-                "id": str(resume["_id"]),
-                "job_description": resume["job_description"],
-                "analysis": resume["analysis"],
-                "created_at": resume["created_at"],
-            }
-        )
-
-    return history
-
-from bson import ObjectId
-
-
-async def get_resume_by_id(resume_id: str):
-
-    resume = await resume_collection.find_one(
-        {
-            "_id": ObjectId(resume_id)
+        return {
+            "resume_id": resume_id,
+            "filename": file.filename,
+            "resume_url": cloudinary["url"],
+            "text_length": len(text),
+            "status": "uploaded",
         }
-    )
-
-    if not resume:
-        return None
-
-    resume["id"] = str(resume["_id"])
-    del resume["_id"]
-
-    return resume
-
-
-async def delete_resume(resume_id: str):
-
-    result = await resume_collection.delete_one(
-        {
-            "_id": ObjectId(resume_id)
-        }
-    )
-
-    return result.deleted_count > 0

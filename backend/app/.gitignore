@@ -1,17 +1,25 @@
 # Python
-venv/
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
 
-# Environment
+# Virtual Environment
+venv/
 .env
 
-# Uploads
-backend/uploads/
-
-# VS Code
+# IDE
 .vscode/
+.idea/
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
+
+# Uploads
+uploads/
+
+# Logs
+*.log
+
+# Test files
+test_cloudinary.py
