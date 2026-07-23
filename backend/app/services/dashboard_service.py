@@ -1,0 +1,42 @@
+from app.repositories.dashboard_repository import DashboardRepository
+
+
+class DashboardService:
+
+    def __init__(self):
+        self.repo = DashboardRepository()
+
+    async def get_dashboard(self, user_id: str):
+
+        total_resumes = await self.repo.get_total_resumes(user_id)
+        total_analyses = await self.repo.get_total_analyses(user_id)
+
+        latest_resume = await self.repo.get_latest_resume(user_id)
+        latest_analysis = await self.repo.get_latest_analysis(user_id)
+
+        scores = await self.repo.get_all_scores(user_id)
+
+        if scores:
+            values = [
+                s.get("overall_score", 0)
+                for s in scores
+            ]
+
+            average = round(sum(values) / len(values), 2)
+            highest = max(values)
+        else:
+            average = 0
+            highest = 0
+
+        return {
+            "total_resumes": total_resumes,
+            "total_analyses": total_analyses,
+            "average_score": average,
+            "highest_score": highest,
+            "latest_resume":
+                latest_resume.get("file_name")
+                if latest_resume else None,
+            "latest_analysis_score":
+                latest_analysis.get("overall_score")
+                if latest_analysis else None,
+        }

@@ -32,7 +32,8 @@ class Settings(BaseSettings):
     # ==========================
     # Gemini AI
     # ==========================
-    GEMINI_API_KEY: str = ""
+    GEMINI_API_KEY: str
+    GEMINI_MODEL: str = "gemini-2.5-flash"
 
     # ==========================
     # Google OAuth
