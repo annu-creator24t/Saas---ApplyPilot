@@ -23,3 +23,13 @@ async def upload_resume(file_path: str):
         "url": response["secure_url"],
         "public_id": response["public_id"],
     }
+
+
+async def delete_resume(public_id: str):
+
+    cloudinary.uploader.destroy(
+        public_id,
+        resource_type="raw",
+    )
+
+    return True

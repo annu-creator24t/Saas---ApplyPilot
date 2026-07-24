@@ -4,27 +4,30 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
-class InterviewRequest(BaseModel):
+class ResumeImprovementRequest(BaseModel):
     resume_id: str = Field(..., description="Resume ID")
     job_description: str = Field(..., description="Target job description")
 
 
-class InterviewResponse(BaseModel):
-    technical: List[str]
-    behavioral: List[str]
-    hr: List[str]
+class ResumeImprovementResponse(BaseModel):
+    professional_summary: str
+    skills: List[str]
+    experience: str
+    projects: str
+    recommendations: List[str]
 
 
-class Interview(BaseModel):
+class ResumeImprovement(BaseModel):
     id: Optional[str] = None
 
     user_id: str
     resume_id: str
-
     job_description: str
 
-    technical: List[str]
-    behavioral: List[str]
-    hr: List[str]
+    professional_summary: str
+    skills: List[str]
+    experience: str
+    projects: str
+    recommendations: List[str]
 
     created_at: datetime = Field(default_factory=datetime.utcnow)
