@@ -2,7 +2,11 @@ from app.core.config import settings
 from app.core.logger import logger
 
 
-def validate_startup():
+def validate_startup() -> None:
+    """
+    Validate required environment variables before starting the application.
+    """
+    logger.info("Validating application configuration...")
 
     required = {
         "MONGODB_URI": settings.MONGODB_URI,
@@ -12,16 +16,17 @@ def validate_startup():
         "GEMINI_API_KEY": settings.GEMINI_API_KEY,
     }
 
-    missing = []
-
-    for key, value in required.items():
-        if not value:
-            missing.append(key)
+    missing = [
+        key
+        for key, value in required.items()
+        if not value
+    ]
 
     if missing:
-        logger.error("Missing environment variables: %s", ", ".join(missing))
-        raise RuntimeError(
+        message = (
             f"Missing environment variables: {', '.join(missing)}"
         )
+        logger.error(message)
+        raise RuntimeError(message)
 
-    logger.info("Environment validation successful.")
+    logger.info("Environment validation completed successfully.")

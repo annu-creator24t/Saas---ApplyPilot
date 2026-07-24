@@ -1,4 +1,7 @@
-from app.repositories.analysis_history_repository import AnalysisHistoryRepository
+from app.repositories.analysis_history_repository import (
+    AnalysisHistoryRepository,
+)
+from app.schemas.common import APIResponse
 
 
 class AnalysisHistoryService:
@@ -14,29 +17,29 @@ class AnalysisHistoryService:
 
         for analysis in analyses:
 
-            result.append({
+            result.append(
+                {
+                    "analysis_id": str(analysis["_id"]),
+                    "resume_id": str(
+                        analysis["resume_id"]
+                    ),
+                    "resume_name": analysis.get(
+                        "resume_name",
+                        "Unknown Resume",
+                    ),
+                    "overall_score": analysis.get(
+                        "overall_score",
+                        0,
+                    ),
+                    "created_at": str(
+                        analysis["created_at"]
+                    ),
+                }
+            )
 
-                "analysis_id": str(analysis["_id"]),
-
-                "resume_id": str(
-                    analysis["resume_id"]
-                ),
-
-                "resume_name": analysis.get(
-                    "resume_name",
-                    "Unknown Resume"
-                ),
-
-                "overall_score": analysis.get(
-                    "overall_score",
-                    0
-                ),
-
-                "created_at": str(
-                    analysis["created_at"]
-                )
-            })
-
-        return {
-            "analyses": result
-        }
+        return APIResponse(
+            message="Analysis history fetched successfully.",
+            data={
+                "analyses": result,
+            },
+        )

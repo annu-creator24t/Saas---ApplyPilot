@@ -1,4 +1,5 @@
 from app.repositories.dashboard_repository import DashboardRepository
+from app.schemas.common import APIResponse
 
 
 class DashboardService:
@@ -28,15 +29,24 @@ class DashboardService:
             average = 0
             highest = 0
 
-        return {
+        dashboard = {
             "total_resumes": total_resumes,
             "total_analyses": total_analyses,
             "average_score": average,
             "highest_score": highest,
-            "latest_resume":
+            "latest_resume": (
                 latest_resume.get("file_name")
-                if latest_resume else None,
-            "latest_analysis_score":
+                if latest_resume
+                else None
+            ),
+            "latest_analysis_score": (
                 latest_analysis.get("overall_score")
-                if latest_analysis else None,
+                if latest_analysis
+                else None
+            ),
         }
+
+        return APIResponse(
+            message="Dashboard data fetched successfully.",
+            data=dashboard,
+        )

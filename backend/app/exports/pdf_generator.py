@@ -1,313 +1,306 @@
 from io import BytesIO
+from typing import Any
 
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import StyleSheet1, getSampleStyleSheet
 from reportlab.platypus import (
     Paragraph,
     SimpleDocTemplate,
     Spacer,
 )
 
+from app.core.logger import logger
+from app.handlers.exceptions import AIException
 
-def generate_ats_pdf(analysis: dict) -> BytesIO:
+
+def _create_document() -> tuple[
+    BytesIO,
+    SimpleDocTemplate,
+    StyleSheet1,
+    list,
+]:
+    """
+    Create a new PDF document.
+    """
     buffer = BytesIO()
-
-    doc = SimpleDocTemplate(buffer)
-
+    document = SimpleDocTemplate(buffer)
     styles = getSampleStyleSheet()
+    story: list = []
 
-    story = []
+    return buffer, document, styles, story
 
-    story.append(
-        Paragraph("<b>ApplyPilot ATS Report</b>", styles["Title"])
-    )
 
-    story.append(Spacer(1, 12))
-
+def _add_title(
+    story: list,
+    styles: StyleSheet1,
+    title: str,
+) -> None:
     story.append(
         Paragraph(
-            f"<b>ATS Score:</b> {analysis.get('ats_score')}",
+            f"<b>{title}</b>",
+            styles["Title"],
+        )
+    )
+    story.append(Spacer(1, 20))
+
+
+def _add_heading(
+    story: list,
+    styles: StyleSheet1,
+    heading: str,
+) -> None:
+    story.append(
+        Paragraph(
+            f"<b>{heading}</b>",
+            styles["Heading2"],
+        )
+    )
+
+
+def _add_paragraph(
+    story: list,
+    styles: StyleSheet1,
+    text: str,
+) -> None:
+    story.append(
+        Paragraph(
+            text,
             styles["BodyText"],
         )
     )
 
-    story.append(Spacer(1, 12))
 
-    story.append(
-        Paragraph("<b>Strengths</b>", styles["Heading2"])
-    )
-
-    for item in analysis.get("strengths", []):
-        story.append(
-            Paragraph(f"• {item}", styles["BodyText"])
+def _add_bullet_list(
+    story: list,
+    styles: StyleSheet1,
+    items: list[str],
+) -> None:
+    for item in items:
+        _add_paragraph(
+            story,
+            styles,
+            f"• {item}",
         )
 
-    story.append(Spacer(1, 12))
 
-    story.append(
-        Paragraph("<b>Weaknesses</b>", styles["Heading2"])
-    )
+def _add_space(story: list, height: int = 15) -> None:
+    story.append(Spacer(1, height))
 
-    for item in analysis.get("weaknesses", []):
-        story.append(
-            Paragraph(f"• {item}", styles["BodyText"])
-        )
 
-    story.append(Spacer(1, 12))
-
-    story.append(
-        Paragraph("<b>Recommendations</b>", styles["Heading2"])
-    )
-
-    for item in analysis.get("recommendations", []):
-        story.append(
-            Paragraph(f"• {item}", styles["BodyText"])
-        )
-
-    doc.build(story)
-
+def _build_pdf(
+    buffer: BytesIO,
+    document: SimpleDocTemplate,
+    story: list,
+) -> BytesIO:
+    document.build(story)
     buffer.seek(0)
-
     return buffer
+
+
+def generate_ats_pdf(
+    analysis: dict[str, Any],
+) -> BytesIO:
+    """
+    Generate ATS analysis PDF.
+    """
+    try:
+        buffer, document, styles, story = _create_document()
+
+        _add_title(story, styles, "ApplyPilot ATS Report")
+
+        _add_paragraph(
+            story,
+            styles,
+            f"<b>ATS Score:</b> {analysis.get('ats_score', 'N/A')}",
+        )
+
+        _add_space(story)
+
+        for section in (
+            "Strengths",
+            "Weaknesses",
+            "Recommendations",
+        ):
+            _add_heading(story, styles, section)
+            _add_bullet_list(
+                story,
+                styles,
+                analysis.get(section.lower(), []),
+            )
+            _add_space(story)
+
+        return _build_pdf(buffer, document, story)
+
+    except Exception:
+        logger.exception("Failed to generate ATS PDF.")
+
+        raise AIException(
+            "Failed to generate ATS PDF.",
+            error_code="PDF_GENERATION_ERROR",
+        )
 
 
 def generate_cover_letter_pdf(
     cover_letter: str,
 ) -> BytesIO:
+    """
+    Generate cover letter PDF.
+    """
+    try:
+        buffer, document, styles, story = _create_document()
 
-    buffer = BytesIO()
-
-    doc = SimpleDocTemplate(buffer)
-
-    styles = getSampleStyleSheet()
-
-    story = []
-
-    story.append(
-        Paragraph(
-            "<b>ApplyPilot Cover Letter</b>",
-            styles["Title"],
+        _add_title(
+            story,
+            styles,
+            "ApplyPilot Cover Letter",
         )
-    )
 
-    story.append(Spacer(1, 20))
-
-    for paragraph in cover_letter.split("\n"):
-
-        if paragraph.strip():
-
-            story.append(
-                Paragraph(
+        for paragraph in cover_letter.split("\n"):
+            if paragraph.strip():
+                _add_paragraph(
+                    story,
+                    styles,
                     paragraph.strip(),
-                    styles["BodyText"],
                 )
-            )
+                _add_space(story, 10)
 
-            story.append(Spacer(1, 10))
+        return _build_pdf(buffer, document, story)
 
-    doc.build(story)
+    except Exception:
+        logger.exception(
+            "Failed to generate cover letter PDF."
+        )
 
-    buffer.seek(0)
-
-    return buffer
+        raise AIException(
+            "Failed to generate cover letter PDF.",
+            error_code="PDF_GENERATION_ERROR",
+        )
 
 
 def generate_interview_pdf(
-    interview: dict,
+    interview: dict[str, Any],
 ) -> BytesIO:
+    """
+    Generate interview questions PDF.
+    """
+    try:
+        buffer, document, styles, story = _create_document()
 
-    buffer = BytesIO()
-
-    doc = SimpleDocTemplate(buffer)
-
-    styles = getSampleStyleSheet()
-
-    story = []
-
-    story.append(
-        Paragraph(
-            "<b>ApplyPilot Interview Questions</b>",
-            styles["Title"],
-        )
-    )
-
-    story.append(Spacer(1, 20))
-
-    story.append(
-        Paragraph(
-            "<b>Technical Questions</b>",
-            styles["Heading2"],
-        )
-    )
-
-    for i, question in enumerate(
-        interview.get("technical", []),
-        start=1,
-    ):
-        story.append(
-            Paragraph(
-                f"{i}. {question}",
-                styles["BodyText"],
-            )
+        _add_title(
+            story,
+            styles,
+            "ApplyPilot Interview Questions",
         )
 
-    story.append(Spacer(1, 15))
+        sections = {
+            "Technical Questions": "technical",
+            "Behavioral Questions": "behavioral",
+            "HR Questions": "hr",
+        }
 
-    story.append(
-        Paragraph(
-            "<b>Behavioral Questions</b>",
-            styles["Heading2"],
-        )
-    )
+        for title, key in sections.items():
+            _add_heading(story, styles, title)
 
-    for i, question in enumerate(
-        interview.get("behavioral", []),
-        start=1,
-    ):
-        story.append(
-            Paragraph(
-                f"{i}. {question}",
-                styles["BodyText"],
-            )
-        )
+            for index, question in enumerate(
+                interview.get(key, []),
+                start=1,
+            ):
+                _add_paragraph(
+                    story,
+                    styles,
+                    f"{index}. {question}",
+                )
 
-    story.append(Spacer(1, 15))
+            _add_space(story)
 
-    story.append(
-        Paragraph(
-            "<b>HR Questions</b>",
-            styles["Heading2"],
-        )
-    )
+        return _build_pdf(buffer, document, story)
 
-    for i, question in enumerate(
-        interview.get("hr", []),
-        start=1,
-    ):
-        story.append(
-            Paragraph(
-                f"{i}. {question}",
-                styles["BodyText"],
-            )
+    except Exception:
+        logger.exception(
+            "Failed to generate interview PDF."
         )
 
-    doc.build(story)
-
-    buffer.seek(0)
-
-    return buffer
+        raise AIException(
+            "Failed to generate interview PDF.",
+            error_code="PDF_GENERATION_ERROR",
+        )
 
 
 def generate_resume_improvement_pdf(
-    improvement: dict,
+    improvement: dict[str, Any],
 ) -> BytesIO:
+    """
+    Generate resume improvement PDF.
+    """
+    try:
+        buffer, document, styles, story = _create_document()
 
-    buffer = BytesIO()
-
-    doc = SimpleDocTemplate(buffer)
-
-    styles = getSampleStyleSheet()
-
-    story = []
-
-    story.append(
-        Paragraph(
-            "<b>ApplyPilot Resume Improvement</b>",
-            styles["Title"],
+        _add_title(
+            story,
+            styles,
+            "ApplyPilot Resume Improvement",
         )
-    )
 
-    story.append(Spacer(1, 20))
-
-    story.append(
-        Paragraph(
-            "<b>Professional Summary</b>",
-            styles["Heading2"],
-        )
-    )
-
-    story.append(
-        Paragraph(
-            improvement.get(
-                "professional_summary",
-                "",
+        sections = [
+            (
+                "Professional Summary",
+                improvement.get(
+                    "professional_summary",
+                    "",
+                ),
             ),
-            styles["BodyText"],
-        )
-    )
+            (
+                "Experience",
+                improvement.get(
+                    "experience",
+                    "",
+                ),
+            ),
+            (
+                "Projects",
+                improvement.get(
+                    "projects",
+                    "",
+                ),
+            ),
+        ]
 
-    story.append(Spacer(1, 15))
+        for heading, value in sections:
+            _add_heading(story, styles, heading)
+            _add_paragraph(story, styles, value)
+            _add_space(story)
 
-    story.append(
-        Paragraph(
-            "<b>Skills</b>",
-            styles["Heading2"],
-        )
-    )
-
-    for skill in improvement.get("skills", []):
-
-        story.append(
-            Paragraph(
-                f"• {skill}",
-                styles["BodyText"],
-            )
-        )
-
-    story.append(Spacer(1, 15))
-
-    story.append(
-        Paragraph(
-            "<b>Experience</b>",
-            styles["Heading2"],
-        )
-    )
-
-    story.append(
-        Paragraph(
-            improvement.get("experience", ""),
-            styles["BodyText"],
-        )
-    )
-
-    story.append(Spacer(1, 15))
-
-    story.append(
-        Paragraph(
-            "<b>Projects</b>",
-            styles["Heading2"],
-        )
-    )
-
-    story.append(
-        Paragraph(
-            improvement.get("projects", ""),
-            styles["BodyText"],
-        )
-    )
-
-    story.append(Spacer(1, 15))
-
-    story.append(
-        Paragraph(
-            "<b>Recommendations</b>",
-            styles["Heading2"],
-        )
-    )
-
-    for recommendation in improvement.get(
-        "recommendations",
-        [],
-    ):
-
-        story.append(
-            Paragraph(
-                f"• {recommendation}",
-                styles["BodyText"],
-            )
+        _add_heading(story, styles, "Skills")
+        _add_bullet_list(
+            story,
+            styles,
+            improvement.get("skills", []),
         )
 
-    doc.build(story)
+        _add_space(story)
 
-    buffer.seek(0)
+        _add_heading(
+            story,
+            styles,
+            "Recommendations",
+        )
 
-    return buffer
+        _add_bullet_list(
+            story,
+            styles,
+            improvement.get(
+                "recommendations",
+                [],
+            ),
+        )
+
+        return _build_pdf(buffer, document, story)
+
+    except Exception:
+        logger.exception(
+            "Failed to generate resume improvement PDF."
+        )
+
+        raise AIException(
+            "Failed to generate resume improvement PDF.",
+            error_code="PDF_GENERATION_ERROR",
+        )

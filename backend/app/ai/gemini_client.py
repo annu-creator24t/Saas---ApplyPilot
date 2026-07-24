@@ -8,59 +8,78 @@ from app.handlers.exceptions import AIException
 client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 
-def generate(prompt: str):
+def generate(prompt: str) -> str:
+    """
+    Generate content using the Gemini model.
+    """
     try:
         response = client.models.generate_content(
             model=settings.GEMINI_MODEL,
             contents=prompt,
         )
 
-        if not response.text:
+        text = getattr(response, "text", None)
+
+        if not text:
             raise AIException(
                 "Gemini returned an empty response.",
                 error_code="AI_EMPTY_RESPONSE",
             )
 
-        return response.text
+        return text
 
-    except ClientError as e:
-        logger.exception("Gemini Client Error")
+    except ClientError as exc:
+        logger.exception("Gemini client error.")
 
-        status = e.status_code
+        status_code = getattr(exc, "status_code", None)
 
-        if status == 401:
-            raise AIException(
+        error_map = {
+            401: (
                 "Invalid Gemini API key.",
-                error_code="AI_INVALID_KEY",
-            )
-
-        elif status == 404:
-            raise AIException(
+                "AI_INVALID_KEY",
+            ),
+            403: (
+                "Access denied by Gemini API.",
+                "AI_ACCESS_DENIED",
+            ),
+            404: (
                 "Gemini model not found.",
-                error_code="AI_MODEL_NOT_FOUND",
-            )
-
-        elif status == 429:
-            raise AIException(
+                "AI_MODEL_NOT_FOUND",
+            ),
+            429: (
                 "Gemini API quota exceeded.",
-                error_code="AI_QUOTA_EXCEEDED",
-            )
+                "AI_QUOTA_EXCEEDED",
+            ),
+            500: (
+                "Gemini internal server error.",
+                "AI_INTERNAL_ERROR",
+            ),
+            503: (
+                "Gemini service is temporarily unavailable.",
+                "AI_SERVICE_BUSY",
+            ),
+        }
 
-        elif status == 503:
-            raise AIException(
-                "Gemini service is temporarily busy. Please try again in a few minutes.",
-                error_code="AI_SERVICE_BUSY",
-            )
-
-        raise AIException(
-            "Gemini service unavailable.",
-            error_code="AI_SERVICE_ERROR",
+        message, error_code = error_map.get(
+            status_code,
+            (
+                "Gemini service unavailable.",
+                "AI_SERVICE_ERROR",
+            ),
         )
 
+        raise AIException(
+            message=message,
+            error_code=error_code,
+        )
+
+    except AIException:
+        raise
+
     except Exception:
-        logger.exception("Unexpected Gemini Error")
+        logger.exception("Unexpected Gemini error.")
 
         raise AIException(
-            "Unexpected AI service error.",
+            message="Unexpected AI service error.",
             error_code="AI_UNKNOWN_ERROR",
         )

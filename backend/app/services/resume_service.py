@@ -1,13 +1,18 @@
 from datetime import datetime
 
-from fastapi import HTTPException, UploadFile
+from fastapi import UploadFile
 
+from app.handlers.exceptions import (
+    AuthorizationException,
+    NotFoundException,
+)
 from app.integrations.cloudinary import (
     delete_resume,
     upload_resume,
 )
 from app.parsers.parser import extract_resume_text
 from app.repositories.resume_repository import ResumeRepository
+from app.schemas.common import APIResponse
 from app.utils.file_handler import (
     delete_file,
     save_resume,
@@ -50,19 +55,27 @@ class ResumeService:
 
         resume_id = await self.repository.create_resume(payload)
 
-        return {
-            "resume_id": resume_id,
-            "filename": file.filename,
-            "resume_url": cloudinary["url"],
-            "text_length": len(text),
-            "status": "uploaded",
-        }
+        return APIResponse(
+            message="Resume uploaded successfully.",
+            data={
+                "resume_id": resume_id,
+                "filename": file.filename,
+                "resume_url": cloudinary["url"],
+                "text_length": len(text),
+                "status": "uploaded",
+            },
+        )
 
     async def get_user_resumes(
         self,
         user_id: str,
     ):
-        return await self.repository.get_user_resumes(user_id)
+        resumes = await self.repository.get_user_resumes(user_id)
+
+        return APIResponse(
+            message="Resumes fetched successfully.",
+            data=resumes,
+        )
 
     async def get_resume_details(
         self,
@@ -72,18 +85,15 @@ class ResumeService:
         resume = await self.repository.get_resume(resume_id)
 
         if not resume:
-            raise HTTPException(
-                status_code=404,
-                detail="Resume not found",
-            )
+            raise NotFoundException("Resume not found.")
 
         if str(resume["user_id"]) != str(user_id):
-            raise HTTPException(
-                status_code=403,
-                detail="Unauthorized",
-            )
+            raise AuthorizationException("Unauthorized.")
 
-        return resume
+        return APIResponse(
+            message="Resume fetched successfully.",
+            data=resume,
+        )
 
     async def rename_resume(
         self,
@@ -94,25 +104,19 @@ class ResumeService:
         resume = await self.repository.get_resume(resume_id)
 
         if not resume:
-            raise HTTPException(
-                status_code=404,
-                detail="Resume not found",
-            )
+            raise NotFoundException("Resume not found.")
 
         if str(resume["user_id"]) != str(user_id):
-            raise HTTPException(
-                status_code=403,
-                detail="Unauthorized",
-            )
+            raise AuthorizationException("Unauthorized.")
 
         await self.repository.rename_resume(
             resume_id,
             title,
         )
 
-        return {
-            "message": "Resume renamed successfully."
-        }
+        return APIResponse(
+            message="Resume renamed successfully.",
+        )
 
     async def delete_resume(
         self,
@@ -122,16 +126,10 @@ class ResumeService:
         resume = await self.repository.get_resume(resume_id)
 
         if not resume:
-            raise HTTPException(
-                status_code=404,
-                detail="Resume not found",
-            )
+            raise NotFoundException("Resume not found.")
 
         if str(resume["user_id"]) != str(user_id):
-            raise HTTPException(
-                status_code=403,
-                detail="Unauthorized",
-            )
+            raise AuthorizationException("Unauthorized.")
 
         public_id = resume.get("public_id")
 
@@ -140,6 +138,6 @@ class ResumeService:
 
         await self.repository.delete_resume(resume_id)
 
-        return {
-            "message": "Resume deleted successfully."
-        }
+        return APIResponse(
+            message="Resume deleted successfully.",
+        )

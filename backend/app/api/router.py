@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api import auth, users, resume
+from app.api import auth, resume, users
 from app.api.analysis import router as analysis_router
 from app.api.analysis_history import router as analysis_history_router
 from app.api.cover_letter import router as cover_letter_router
@@ -18,6 +18,7 @@ api_router.include_router(users.router)
 
 # Resume
 api_router.include_router(resume.router)
+
 
 # AI Features
 api_router.include_router(analysis_router)

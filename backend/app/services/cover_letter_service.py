@@ -3,15 +3,14 @@ from datetime import datetime
 from app.ai.gemini_client import generate
 from app.ai.prompts import build_cover_letter_prompt
 from app.handlers.exceptions import (
+    AIException,
     AuthorizationException,
     NotFoundException,
 )
 from app.repositories.cover_letter_repository import CoverLetterRepository
 from app.repositories.resume_repository import ResumeRepository
-from app.schemas.cover_letter import (
-    CoverLetterRequest,
-    CoverLetterResponse,
-)
+from app.schemas.common import APIResponse
+from app.schemas.cover_letter import CoverLetterRequest
 
 
 class CoverLetterService:
@@ -24,7 +23,7 @@ class CoverLetterService:
         self,
         user_id: str,
         request: CoverLetterRequest,
-    ) -> CoverLetterResponse:
+    ):
 
         # Fetch Resume
         resume = await self.resume_repository.get_resume(
@@ -33,15 +32,6 @@ class CoverLetterService:
 
         if not resume:
             raise NotFoundException("Resume not found.")
-
-        # DEBUG (remove after testing)
-        print("\n========== COVER LETTER DEBUG ==========")
-        print("Resume ID      :", resume.get("_id"))
-        print("Resume user_id :", resume.get("user_id"))
-        print("Passed user_id :", user_id)
-        print("Resume type    :", type(resume.get("user_id")))
-        print("Passed type    :", type(user_id))
-        print("========================================\n")
 
         # Security Check
         if str(resume.get("user_id")) != str(user_id):
@@ -64,7 +54,10 @@ class CoverLetterService:
         )
 
         # Generate Cover Letter
-        cover_letter = generate(prompt).strip()
+        try:
+            cover_letter = generate(prompt).strip()
+        except Exception as e:
+            raise AIException(str(e))
 
         # Save Cover Letter
         await self.cover_letter_repository.create_cover_letter(
@@ -77,6 +70,9 @@ class CoverLetterService:
             }
         )
 
-        return CoverLetterResponse(
-            cover_letter=cover_letter
+        return APIResponse(
+            message="Cover letter generated successfully.",
+            data={
+                "cover_letter": cover_letter,
+            },
         )

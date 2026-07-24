@@ -1,28 +1,27 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Depends
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer,
+)
 
-from app.utils.jwt import verify_access_token
+from app.auth.jwt import verify_access_token
+from app.handlers.exceptions import AuthenticationException
 
 security = HTTPBearer()
 
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-):
-
-    print("=" * 50)
-    print("Middleware Called")
-    print("Credentials:", credentials)
-    print("=" * 50)
-
+) -> dict:
+    """
+    Validate the access token and return the decoded JWT payload.
+    """
     token = credentials.credentials
 
-    payload = verify_access_token(token)
+    try:
+        return verify_access_token(token)
 
-    if payload is None:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid or expired token.",
+    except Exception:
+        raise AuthenticationException(
+            "Invalid or expired authentication token."
         )
-
-    return payload

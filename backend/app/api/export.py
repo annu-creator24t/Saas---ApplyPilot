@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import StreamingResponse
 
 from app.core.dependencies import get_current_user
@@ -8,6 +8,11 @@ from app.exports.pdf_generator import (
     generate_cover_letter_pdf,
     generate_interview_pdf,
     generate_resume_improvement_pdf,
+)
+
+from app.handlers.exceptions import (
+    AuthorizationException,
+    NotFoundException,
 )
 
 from app.repositories.resume_repository import ResumeRepository
@@ -33,7 +38,7 @@ def pdf_response(pdf, filename: str):
         pdf,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f"attachment; filename={filename}"
+            "Content-Disposition": f'attachment; filename="{filename}"'
         },
     )
 
@@ -42,7 +47,12 @@ def pdf_response(pdf, filename: str):
 # ATS REPORT
 # ======================================================
 
-@router.get("/ats/{resume_id}")
+@router.get(
+    "/ats/{resume_id}",
+    status_code=status.HTTP_200_OK,
+    summary="Export ATS Report",
+    description="Download the ATS analysis report as a PDF.",
+)
 async def export_ats_report(
     resume_id: str,
     current_user=Depends(get_current_user),
@@ -50,24 +60,15 @@ async def export_ats_report(
     resume = await resume_repository.get_resume(resume_id)
 
     if not resume:
-        raise HTTPException(
-            status_code=404,
-            detail="Resume not found",
-        )
+        raise NotFoundException("Resume not found.")
 
     if str(resume["user_id"]) != str(current_user["_id"]):
-        raise HTTPException(
-            status_code=403,
-            detail="Unauthorized",
-        )
+        raise AuthorizationException("You are not authorized to access this resume.")
 
     analysis = resume.get("analysis")
 
     if not analysis:
-        raise HTTPException(
-            status_code=404,
-            detail="Analysis not found",
-        )
+        raise NotFoundException("ATS analysis not found.")
 
     pdf = generate_ats_pdf(analysis)
 
@@ -81,7 +82,12 @@ async def export_ats_report(
 # COVER LETTER
 # ======================================================
 
-@router.get("/cover-letter/{cover_letter_id}")
+@router.get(
+    "/cover-letter/{cover_letter_id}",
+    status_code=status.HTTP_200_OK,
+    summary="Export Cover Letter",
+    description="Download the generated cover letter as a PDF.",
+)
 async def export_cover_letter(
     cover_letter_id: str,
     current_user=Depends(get_current_user),
@@ -91,16 +97,10 @@ async def export_cover_letter(
     )
 
     if not cover_letter:
-        raise HTTPException(
-            status_code=404,
-            detail="Cover Letter not found",
-        )
+        raise NotFoundException("Cover letter not found.")
 
     if str(cover_letter["user_id"]) != str(current_user["_id"]):
-        raise HTTPException(
-            status_code=403,
-            detail="Unauthorized",
-        )
+        raise AuthorizationException("You are not authorized to access this cover letter.")
 
     pdf = generate_cover_letter_pdf(
         cover_letter["cover_letter"]
@@ -116,7 +116,12 @@ async def export_cover_letter(
 # INTERVIEW QUESTIONS
 # ======================================================
 
-@router.get("/interview/{interview_id}")
+@router.get(
+    "/interview/{interview_id}",
+    status_code=status.HTTP_200_OK,
+    summary="Export Interview Questions",
+    description="Download the generated interview questions as a PDF.",
+)
 async def export_interview(
     interview_id: str,
     current_user=Depends(get_current_user),
@@ -126,16 +131,10 @@ async def export_interview(
     )
 
     if not interview:
-        raise HTTPException(
-            status_code=404,
-            detail="Interview not found",
-        )
+        raise NotFoundException("Interview not found.")
 
     if str(interview["user_id"]) != str(current_user["_id"]):
-        raise HTTPException(
-            status_code=403,
-            detail="Unauthorized",
-        )
+        raise AuthorizationException("You are not authorized to access this interview.")
 
     pdf = generate_interview_pdf(interview)
 
@@ -149,7 +148,12 @@ async def export_interview(
 # RESUME IMPROVEMENT
 # ======================================================
 
-@router.get("/resume-improvement/{improvement_id}")
+@router.get(
+    "/resume-improvement/{improvement_id}",
+    status_code=status.HTTP_200_OK,
+    summary="Export Resume Improvement",
+    description="Download the AI-generated resume improvement report as a PDF.",
+)
 async def export_resume_improvement(
     improvement_id: str,
     current_user=Depends(get_current_user),
@@ -159,16 +163,10 @@ async def export_resume_improvement(
     )
 
     if not improvement:
-        raise HTTPException(
-            status_code=404,
-            detail="Resume Improvement not found",
-        )
+        raise NotFoundException("Resume improvement report not found.")
 
     if str(improvement["user_id"]) != str(current_user["_id"]):
-        raise HTTPException(
-            status_code=403,
-            detail="Unauthorized",
-        )
+        raise AuthorizationException("You are not authorized to access this report.")
 
     pdf = generate_resume_improvement_pdf(
         improvement

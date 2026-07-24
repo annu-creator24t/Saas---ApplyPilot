@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,7 +10,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "ApplyPilot API"
     APP_VERSION: str = "1.0.0"
 
-    DEBUG: bool = True
+    DEBUG: bool = False
 
     HOST: str = "0.0.0.0"
     PORT: int = 8000
@@ -62,8 +64,8 @@ class Settings(BaseSettings):
     # File Upload
     # ==========================
     MAX_FILE_SIZE: int = 5 * 1024 * 1024
-    ALLOWED_FILE_TYPES: str = "pdf,docx"
-    UPLOAD_DIRECTORY: str = "uploads/resumes"
+    ALLOWED_FILE_TYPES: tuple[str, ...] = ("pdf", "docx")
+    UPLOAD_DIRECTORY: Path = Path("uploads/resumes")
 
     model_config = SettingsConfigDict(
         env_file=".env",

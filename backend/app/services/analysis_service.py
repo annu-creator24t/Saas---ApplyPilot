@@ -1,4 +1,4 @@
-from app.ai.ats_service import ATSService
+from app.services.ats_service import ATSService
 from app.repositories.resume_repository import ResumeRepository
 
 

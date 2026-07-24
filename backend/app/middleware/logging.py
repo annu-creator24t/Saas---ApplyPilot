@@ -1,30 +1,43 @@
 import time
+from typing import Callable
 
+from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
-from fastapi import Request
 
 from app.core.logger import logger
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):
+    """
+    Middleware to log incoming requests and their processing time.
+    """
 
-    async def dispatch(self, request: Request, call_next):
-
+    async def dispatch(
+        self,
+        request: Request,
+        call_next: Callable,
+    ) -> Response:
         start_time = time.perf_counter()
 
-        response = await call_next(request)
+        try:
+            response = await call_next(request)
+        finally:
+            process_time = (
+                time.perf_counter() - start_time
+            ) * 1000
 
-        process_time = round(
-            (time.perf_counter() - start_time) * 1000,
-            2,
-        )
+            status_code = (
+                response.status_code
+                if "response" in locals()
+                else 500
+            )
 
-        logger.info(
-            "%s %s | %s | %.2f ms",
-            request.method,
-            request.url.path,
-            response.status_code,
-            process_time,
-        )
+            logger.info(
+                "%s %s | %s | %.2f ms",
+                request.method,
+                request.url.path,
+                status_code,
+                process_time,
+            )
 
         return response

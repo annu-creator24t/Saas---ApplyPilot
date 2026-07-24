@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 from bson import ObjectId
 
 from app.db.base import get_collection
@@ -9,16 +11,25 @@ class ResumeRepository:
     def collection(self):
         return get_collection("resumes")
 
-    async def create_resume(self, data: dict):
+    async def create_resume(
+        self,
+        data: dict[str, Any],
+    ) -> str:
         result = await self.collection.insert_one(data)
         return str(result.inserted_id)
 
-    async def get_resume(self, resume_id: str):
+    async def get_resume(
+        self,
+        resume_id: str,
+    ) -> Optional[dict]:
         return await self.collection.find_one(
             {"_id": ObjectId(resume_id)}
         )
 
-    async def get_user_resumes(self, user_id: str):
+    async def get_user_resumes(
+        self,
+        user_id: str,
+    ) -> list[dict]:
         cursor = (
             self.collection.find(
                 {"user_id": user_id}
@@ -32,7 +43,7 @@ class ResumeRepository:
         self,
         resume_id: str,
         title: str,
-    ):
+    ) -> bool:
         result = await self.collection.update_one(
             {"_id": ObjectId(resume_id)},
             {
@@ -47,14 +58,14 @@ class ResumeRepository:
     async def update_analysis(
         self,
         resume_id: str,
-        analysis: dict,
-    ):
+        analysis: dict[str, Any],
+    ) -> None:
         await self.collection.update_one(
             {"_id": ObjectId(resume_id)},
             {
                 "$set": {
                     "analysis": analysis,
-                    "ats_score": analysis["ats_score"],
+                    "ats_score": analysis.get("ats_score"),
                 }
             },
         )
@@ -63,7 +74,7 @@ class ResumeRepository:
         self,
         resume_id: str,
         extracted_text: str,
-    ):
+    ) -> bool:
         result = await self.collection.update_one(
             {"_id": ObjectId(resume_id)},
             {
@@ -78,7 +89,7 @@ class ResumeRepository:
     async def delete_resume(
         self,
         resume_id: str,
-    ):
+    ) -> bool:
         result = await self.collection.delete_one(
             {"_id": ObjectId(resume_id)}
         )

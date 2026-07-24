@@ -4,15 +4,14 @@ from app.ai.gemini_client import generate
 from app.ai.prompts import build_interview_prompt
 from app.ai.response_parser import parse_interview_questions
 from app.handlers.exceptions import (
+    AIException,
     AuthorizationException,
     NotFoundException,
 )
 from app.repositories.interview_repository import InterviewRepository
 from app.repositories.resume_repository import ResumeRepository
-from app.schemas.interview import (
-    InterviewRequest,
-    InterviewResponse,
-)
+from app.schemas.common import APIResponse
+from app.schemas.interview import InterviewRequest
 
 
 class InterviewService:
@@ -25,7 +24,7 @@ class InterviewService:
         self,
         user_id: str,
         request: InterviewRequest,
-    ) -> InterviewResponse:
+    ):
 
         # Fetch Resume
         resume = await self.resume_repository.get_resume(
@@ -55,14 +54,15 @@ class InterviewService:
             request.job_description,
         )
 
-        # Generate Questions
-        response = generate(prompt)
-
-        # Parse Response
-        questions = parse_interview_questions(response)
+        # Generate & Parse Questions
+        try:
+            response = generate(prompt)
+            questions = parse_interview_questions(response)
+        except Exception as e:
+            raise AIException(str(e))
 
         # Save Interview
-        await self.interview_repository.create_interview(
+        interview_id = await self.interview_repository.create_interview(
             {
                 "user_id": resume.get("user_id"),
                 "resume_id": request.resume_id,
@@ -74,5 +74,13 @@ class InterviewService:
             }
         )
 
-        # Return Response
-        return InterviewResponse(**questions)
+        # Return Standardized Response
+        return APIResponse(
+            message="Interview questions generated successfully.",
+            data={
+                "interview_id": interview_id,
+                "technical": questions["technical"],
+                "behavioral": questions["behavioral"],
+                "hr": questions["hr"],
+            },
+        )

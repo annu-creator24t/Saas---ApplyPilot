@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.schemas.auth import TokenResponse
+from app.schemas.common import APIResponse
 from app.schemas.user import UserCreate
 from app.services.user_service import UserService
 
@@ -10,40 +10,31 @@ router = APIRouter(
     tags=["Authentication"],
 )
 
+service = UserService()
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+
+@router.post(
+    "/register",
+    response_model=APIResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Register User",
+    description="Register a new user account.",
+)
 async def register(user: UserCreate):
-    service = UserService()
-
-    try:
-        user_id = await service.register_user(user)
-
-        return {
-            "message": "User registered successfully.",
-            "user_id": user_id,
-        }
-
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e),
-        )
+    return await service.register_user(user)
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post(
+    "/login",
+    response_model=APIResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Login User",
+    description="Authenticate a user and return access & refresh tokens.",
+)
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
-    service = UserService()
-
-    try:
-        return await service.login_user(
-            form_data.username,   # Email
-            form_data.password,
-        )
-
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=str(e),
-        )
+    return await service.login_user(
+        form_data.username,
+        form_data.password,
+    )

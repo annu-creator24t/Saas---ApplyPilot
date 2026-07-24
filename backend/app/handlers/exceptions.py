@@ -1,17 +1,32 @@
+from typing import Optional
+
+
 class ApplyPilotException(Exception):
+    """
+    Base exception for all application-specific errors.
+    """
+
     def __init__(
         self,
         message: str,
         status_code: int = 400,
         error_code: str = "APPLICATION_ERROR",
-    ):
+    ) -> None:
+        super().__init__(message)
         self.message = message
         self.status_code = status_code
         self.error_code = error_code
 
 
 class AuthenticationException(ApplyPilotException):
-    def __init__(self, message="Authentication Failed"):
+    """
+    Raised when user authentication fails.
+    """
+
+    def __init__(
+        self,
+        message: str = "Authentication failed.",
+    ) -> None:
         super().__init__(
             message=message,
             status_code=401,
@@ -20,7 +35,14 @@ class AuthenticationException(ApplyPilotException):
 
 
 class AuthorizationException(ApplyPilotException):
-    def __init__(self, message="Unauthorized"):
+    """
+    Raised when a user is not authorized to access a resource.
+    """
+
+    def __init__(
+        self,
+        message: str = "You are not authorized to perform this action.",
+    ) -> None:
         super().__init__(
             message=message,
             status_code=403,
@@ -29,7 +51,14 @@ class AuthorizationException(ApplyPilotException):
 
 
 class NotFoundException(ApplyPilotException):
-    def __init__(self, message="Resource Not Found"):
+    """
+    Raised when a requested resource does not exist.
+    """
+
+    def __init__(
+        self,
+        message: str = "Resource not found.",
+    ) -> None:
         super().__init__(
             message=message,
             status_code=404,
@@ -38,7 +67,14 @@ class NotFoundException(ApplyPilotException):
 
 
 class ValidationException(ApplyPilotException):
-    def __init__(self, message="Validation Failed"):
+    """
+    Raised when request validation fails.
+    """
+
+    def __init__(
+        self,
+        message: str = "Validation failed.",
+    ) -> None:
         super().__init__(
             message=message,
             status_code=422,
@@ -47,13 +83,33 @@ class ValidationException(ApplyPilotException):
 
 
 class AIException(ApplyPilotException):
+    """
+    Raised when an AI service fails.
+    """
+
     def __init__(
         self,
-        message="AI Service Failed",
-        error_code="AI_SERVICE_ERROR",
-    ):
+        message: str = "AI service failed.",
+        error_code: str = "AI_SERVICE_ERROR",
+    ) -> None:
         super().__init__(
             message=message,
             status_code=503,
             error_code=error_code,
+        )
+
+
+class DatabaseException(ApplyPilotException):
+    """
+    Raised when a database operation fails.
+    """
+
+    def __init__(
+        self,
+        message: str = "Database operation failed.",
+    ) -> None:
+        super().__init__(
+            message=message,
+            status_code=500,
+            error_code="DATABASE_ERROR",
         )
