@@ -1,5 +1,10 @@
-from fastapi import APIRouter, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    status,
+)
 
+from app.core.dependencies import get_current_user
 from app.schemas.common import APIResponse
 from app.services.analysis_service import AnalysisService
 
@@ -20,5 +25,9 @@ service = AnalysisService()
 )
 async def analyze_resume(
     resume_id: str,
+    current_user=Depends(get_current_user),
 ):
-    return await service.analyze_resume(resume_id)
+    return await service.analyze_resume(
+        resume_id=resume_id,
+        user_id=str(current_user["_id"]),
+    )

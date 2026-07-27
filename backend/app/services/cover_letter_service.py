@@ -3,14 +3,16 @@ from datetime import datetime
 from app.ai.gemini_client import generate
 from app.ai.prompts import build_cover_letter_prompt
 from app.handlers.exceptions import (
-    AIException,
     AuthorizationException,
     NotFoundException,
 )
 from app.repositories.cover_letter_repository import CoverLetterRepository
 from app.repositories.resume_repository import ResumeRepository
 from app.schemas.common import APIResponse
-from app.schemas.cover_letter import CoverLetterRequest
+from app.schemas.cover_letter import (
+    CoverLetterRequest,
+    CoverLetterResponse,
+)
 
 
 class CoverLetterService:
@@ -54,10 +56,7 @@ class CoverLetterService:
         )
 
         # Generate Cover Letter
-        try:
-            cover_letter = generate(prompt).strip()
-        except Exception as e:
-            raise AIException(str(e))
+        cover_letter = generate(prompt).strip()
 
         # Save Cover Letter
         await self.cover_letter_repository.create_cover_letter(
@@ -72,7 +71,7 @@ class CoverLetterService:
 
         return APIResponse(
             message="Cover letter generated successfully.",
-            data={
-                "cover_letter": cover_letter,
-            },
+            data=CoverLetterResponse(
+                cover_letter=cover_letter,
+            ),
         )

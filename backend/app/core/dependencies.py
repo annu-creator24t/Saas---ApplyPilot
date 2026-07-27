@@ -7,11 +7,12 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 
 from app.auth.jwt import verify_access_token
-from app.db.base import get_collection
 from app.db.connection import get_database
 from app.handlers.exceptions import AuthenticationException
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/auth/login"
+)
 
 
 async def get_db() -> Any:
@@ -48,7 +49,9 @@ async def get_current_user(
             "Invalid authentication token."
         )
 
-    user = await get_collection("users").find_one(
+    db = get_database()
+
+    user = await db["users"].find_one(
         {
             "_id": object_id,
         }

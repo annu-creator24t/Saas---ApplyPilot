@@ -38,11 +38,11 @@ def parse_response(response: str) -> ATSAnalysis:
             error_code="AI_INVALID_JSON",
         )
 
-    except Exception:
-        raise AIException(
-            "Failed to parse ATS analysis.",
-            error_code="AI_PARSE_ERROR",
-        )
+    except Exception as e:
+     raise AIException(
+        message=f"Failed to parse ATS analysis: {str(e)}",
+        error_code="AI_PARSE_ERROR",
+    )
 
 
 def parse_interview_questions(
@@ -62,6 +62,38 @@ def parse_interview_questions(
         )
 
 
+
+def parse_interview_evaluation(response: str) -> dict:
+    """
+    Parse interview evaluation response from Gemini.
+    Expected JSON:
+
+    {
+        "score": 8,
+        "strengths": ["..."],
+        "improvements": ["..."],
+        "ideal_answer": "..."
+    }
+    """
+
+    try:
+        if "```json" in response:
+            response = response.split("```json")[1]
+            response = response.split("```")[0]
+
+        elif "```" in response:
+            response = response.split("```")[1]
+            response = response.split("```")[0]
+
+        response = response.strip()
+
+        return json.loads(response)
+
+    except Exception as e:
+        raise ValueError(
+            f"Failed to parse interview evaluation: {e}"
+        )
+    
 def parse_resume_improvement(
     response: str,
 ) -> dict[str, Any]:

@@ -1,17 +1,36 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+} from "react";
 
-type ResumeContextType = {
-  result: any;
-  setResult: (value: any) => void;
+import { Resume } from "@/types/resume";
+import { ATSAnalysis } from "@/types/analysis";
 
-  resumeText: string;
-  setResumeText: (value: string) => void;
+interface ResumeContextType {
+  resumes: Resume[];
+  setResumes: React.Dispatch<React.SetStateAction<Resume[]>>;
 
-  jobDescription: string;
-  setJobDescription: (value: string) => void;
-};
+  selectedResume: Resume | null;
+  setSelectedResume: React.Dispatch<
+    React.SetStateAction<Resume | null>
+  >;
+
+  result: ATSAnalysis | null;
+  setResult: React.Dispatch<
+    React.SetStateAction<ATSAnalysis | null>
+  >;
+
+  loading: boolean;
+  setLoading: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+
+  clearAnalysis: () => void;
+}
 
 const ResumeContext =
   createContext<ResumeContextType | null>(null);
@@ -19,27 +38,36 @@ const ResumeContext =
 export function ResumeProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const [result, setResult] = useState<any>(null);
+  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [selectedResume, setSelectedResume] =
+    useState<Resume | null>(null);
+  const [result, setResult] =
+    useState<ATSAnalysis | null>(null);
+  const [loading, setLoading] =
+    useState(false);
 
-  const [resumeText, setResumeText] =
-    useState("");
-
-  const [jobDescription, setJobDescription] =
-    useState("");
+  function clearAnalysis() {
+    setResult(null);
+  }
 
   return (
     <ResumeContext.Provider
       value={{
+        resumes,
+        setResumes,
+
+        selectedResume,
+        setSelectedResume,
+
         result,
         setResult,
 
-        resumeText,
-        setResumeText,
+        loading,
+        setLoading,
 
-        jobDescription,
-        setJobDescription,
+        clearAnalysis,
       }}
     >
       {children}
@@ -50,8 +78,11 @@ export function ResumeProvider({
 export function useResume() {
   const context = useContext(ResumeContext);
 
-  if (!context)
-    throw new Error("ResumeContext missing");
+  if (!context) {
+    throw new Error(
+      "useResume must be used inside ResumeProvider"
+    );
+  }
 
   return context;
 }

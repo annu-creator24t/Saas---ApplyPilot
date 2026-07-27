@@ -1,5 +1,10 @@
-from app.services.ats_service import ATSService
+from app.handlers.exceptions import (
+    AuthorizationException,
+    NotFoundException,
+)
 from app.repositories.resume_repository import ResumeRepository
+from app.schemas.common import APIResponse
+from app.services.ats_service import ATSService
 
 
 class AnalysisService:
@@ -8,26 +13,47 @@ class AnalysisService:
         self.repository = ResumeRepository()
         self.ats = ATSService()
 
-    async def analyze_resume(self, resume_id: str):
-
-        # Fetch resume from MongoDB
-        resume = await self.repository.get_resume(resume_id)
+    async def analyze_resume(
+        self,
+        resume_id: str,
+        user_id: str,
+    ):
+        # Fetch resume
+        resume = await self.repository.get_resume(
+            resume_id
+        )
 
         if not resume:
-            return {
-                "error": "Resume not found"
-            }
+            raise NotFoundException(
+                "Resume not found."
+            )
 
-        # Run ATS Analysis
+        # Verify ownership
+        if str(resume["user_id"]) != str(user_id):
+            raise AuthorizationException(
+                "Unauthorized."
+            )
+
+        # Run ATS analysis
         analysis = self.ats.analyze(
             resume["extracted_text"]
         )
 
-        # Save analysis back to MongoDB
+        # Save analysis
         await self.repository.update_analysis(
             resume_id,
-            analysis.model_dump()
+            analysis.model_dump(),
         )
 
-        # Return analysis to API
-        return analysis
+        # Fetch updated resume
+        updated_resume = await self.repository.get_resume(
+            resume_id
+        )
+
+        return APIResponse(
+            message="Resume analyzed successfully.",
+            data={
+                "analysis": analysis.model_dump(),
+                "resume": updated_resume,
+            },
+        )

@@ -7,7 +7,8 @@ from app.api.cover_letter import router as cover_letter_router
 from app.api.dashboard import router as dashboard_router
 from app.api.export import router as export_router
 from app.api.health import router as health_router
-from app.api.interview import router as interview_router
+from app.api.interview_practice import router as interview_practice_router
+from app.api.interview_questions import router as interview_questions_router
 from app.api.resume_improvement import router as resume_improvement_router
 
 api_router = APIRouter()
@@ -19,11 +20,11 @@ api_router.include_router(users.router)
 # Resume
 api_router.include_router(resume.router)
 
-
 # AI Features
 api_router.include_router(analysis_router)
 api_router.include_router(cover_letter_router)
-api_router.include_router(interview_router)
+api_router.include_router(interview_questions_router)
+api_router.include_router(interview_practice_router)
 api_router.include_router(resume_improvement_router)
 
 # Dashboard & History

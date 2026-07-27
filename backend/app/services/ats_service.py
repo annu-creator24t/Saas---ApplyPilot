@@ -21,5 +21,8 @@ class ATSService:
                 data=analysis,
             )
 
+        except AIException:
+            raise
+
         except Exception as e:
-            raise AIException(str(e))
+            raise AIException(f"Unexpected AI error: {str(e)}")

@@ -2,7 +2,15 @@ def build_resume_prompt(resume: str) -> str:
     return f"""
 You are an expert ATS Resume Reviewer.
 
-Analyze the following resume.
+Evaluate this resume exactly as an ATS system would.
+
+Score based on:
+
+- ATS compatibility
+- keywords
+- formatting
+- grammar
+- relevance
 
 Return ONLY valid JSON.
 
