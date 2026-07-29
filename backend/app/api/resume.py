@@ -35,7 +35,7 @@ async def upload_resume(
     current_user: dict = Depends(get_current_user),
 ):
     return await service.upload_resume(
-        user_id=current_user["sub"],   # ✅ Fixed
+        user_id=str(current_user["_id"]),
         file=file,
     )
 
@@ -55,7 +55,7 @@ async def get_user_resumes(
     current_user: dict = Depends(get_current_user),
 ):
     return await service.get_user_resumes(
-        current_user["sub"]            # ✅ Fixed
+        str(current_user["_id"])
     )
 
 
@@ -76,7 +76,7 @@ async def get_resume(
 ):
     return await service.get_resume_details(
         resume_id,
-        current_user["sub"],           # ✅ Fixed
+        str(current_user["_id"]),
     )
 
 
@@ -99,7 +99,7 @@ async def rename_resume(
     return await service.rename_resume(
         resume_id=resume_id,
         title=data.title,
-        user_id=current_user["sub"],   # ✅ Fixed
+        user_id=str(current_user["_id"]),
     )
 
 
@@ -120,5 +120,5 @@ async def delete_resume(
 ):
     return await service.delete_resume(
         resume_id,
-        current_user["sub"],           
+        str(current_user["_id"]),
     )

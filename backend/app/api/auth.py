@@ -13,6 +13,10 @@ router = APIRouter(
 service = UserService()
 
 
+# =====================================================
+# Register
+# =====================================================
+
 @router.post(
     "/register",
     response_model=APIResponse,
@@ -23,6 +27,10 @@ service = UserService()
 async def register(user: UserCreate):
     return await service.register_user(user)
 
+
+# =====================================================
+# Login - Used by Frontend
+# =====================================================
 
 @router.post(
     "/login",
@@ -38,3 +46,27 @@ async def login(
         form_data.username,
         form_data.password,
     )
+
+
+# =====================================================
+# OAuth2 Token - Used by Swagger Authorize
+# =====================================================
+
+@router.post(
+    "/token",
+    status_code=status.HTTP_200_OK,
+    summary="OAuth2 Token",
+    description="OAuth2-compatible login endpoint used by Swagger.",
+)
+async def oauth2_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+):
+    response = await service.login_user(
+        form_data.username,
+        form_data.password,
+    )
+
+    return {
+        "access_token": response.data["access_token"],
+        "token_type": "bearer",
+    }

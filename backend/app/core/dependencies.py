@@ -11,7 +11,7 @@ from app.db.connection import get_database
 from app.handlers.exceptions import AuthenticationException
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/auth/login"
+    tokenUrl="/auth/token"
 )
 
 
@@ -25,9 +25,12 @@ async def get_db() -> Any:
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
 ) -> dict[str, Any]:
-    """
-    Validate the access token and return the authenticated user.
-    """
+
+    print("=" * 50)
+    print("TOKEN RECEIVED:")
+    print(token)
+    print("=" * 50)
+
     try:
         payload = verify_access_token(token)
     except JWTError:

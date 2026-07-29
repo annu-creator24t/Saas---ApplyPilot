@@ -5,19 +5,14 @@ from app.ai.response_parser import parse_interview_questions
 from app.prompts.interview_questions_prompt import (
     build_interview_questions_prompt,
 )
-
 from app.handlers.exceptions import (
     AuthorizationException,
     NotFoundException,
 )
-
 from app.repositories.interview_questions_repository import (
     InterviewQuestionsRepository,
 )
-from app.repositories.resume_repository import (
-    ResumeRepository,
-)
-
+from app.repositories.resume_repository import ResumeRepository
 from app.schemas.common import APIResponse
 from app.schemas.interview_questions import (
     InterviewQuestionsRequest,
@@ -29,15 +24,17 @@ class InterviewQuestionsService:
 
     def __init__(self):
         self.resume_repository = ResumeRepository()
-        self.questions_repository = (
-            InterviewQuestionsRepository()
-        )
+        self.questions_repository = InterviewQuestionsRepository()
 
     async def generate_questions(
         self,
         user: dict,
         request: InterviewQuestionsRequest,
     ):
+
+        # =====================================================
+        # Get Resume
+        # =====================================================
 
         resume = await self.resume_repository.get_resume(
             request.resume_id
@@ -48,30 +45,52 @@ class InterviewQuestionsService:
                 "Resume not found."
             )
 
+        # =====================================================
+        # Verify Resume Ownership
+        # =====================================================
+
         if str(resume["user_id"]) != str(user["_id"]):
             raise AuthorizationException(
                 "You are not authorized to access this resume."
             )
 
-        resume_text = resume.get(
-            "extracted_text"
-        )
+        # =====================================================
+        # Get Resume Text
+        # =====================================================
+
+        resume_text = resume.get("extracted_text")
 
         if not resume_text:
             raise NotFoundException(
                 "Resume text not found."
             )
 
+        # =====================================================
+        # Build AI Prompt
+        # =====================================================
+
         prompt = build_interview_questions_prompt(
             resume_text,
             request.job_description,
         )
 
-        response = await generate(prompt)
+        # =====================================================
+        # Generate Interview Questions
+        # =====================================================
+
+        response = generate(prompt)
+
+        # =====================================================
+        # Parse AI Response
+        # =====================================================
 
         questions = parse_interview_questions(
             response
         )
+
+        # =====================================================
+        # Store Questions
+        # =====================================================
 
         interview_id = (
             await self.questions_repository.create_questions(
@@ -86,6 +105,10 @@ class InterviewQuestionsService:
                 }
             )
         )
+
+        # =====================================================
+        # Response
+        # =====================================================
 
         return APIResponse(
             message="Interview questions generated successfully.",
