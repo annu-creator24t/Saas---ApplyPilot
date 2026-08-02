@@ -21,7 +21,6 @@ from app.middleware import (
 from app.schemas.common import APIResponse
 
 
-@asynccontextmanager
 async def lifespan(
     app: FastAPI,
 ) -> AsyncIterator[None]:

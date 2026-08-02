@@ -9,7 +9,7 @@ interface ApiResponse<T> {
 }
 
 export interface AnalysisResponse {
-  analysis: ATSAnalysis;
+  analysis: ApiResponse<ATSAnalysis>;
   resume: Resume;
 }
 

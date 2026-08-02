@@ -21,10 +21,16 @@ export default function ResumeAnalyzer() {
 
   const [loading, setLoading] = useState(false);
 
-  // Load resumes from backend
+  // =====================================================
+  // Load Resumes
+  // =====================================================
+
   async function loadResumes() {
     try {
       const response = await getUserResumes();
+
+      console.log("===== RESUMES RESPONSE =====");
+      console.log(response);
 
       setResumes(response.data);
 
@@ -32,13 +38,17 @@ export default function ResumeAnalyzer() {
         setSelectedResume(response.data[0]);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Failed to load resumes:", error);
     }
   }
 
   useEffect(() => {
     loadResumes();
   }, []);
+
+  // =====================================================
+  // Analyze Resume
+  // =====================================================
 
   async function handleAnalyze() {
     if (!selectedResume) {
@@ -49,14 +59,30 @@ export default function ResumeAnalyzer() {
     try {
       setLoading(true);
 
+      console.log("================================");
+      console.log("Resume ID:", selectedResume.resume_id);
+      console.log("================================");
+
       const response = await analyzeResume(
         selectedResume.resume_id
       );
 
+      // ================= DEBUG =================
+
+      console.log("FULL RESPONSE");
+      console.log(response);
+
+      console.log("RESPONSE.DATA");
+      console.log(response.data);
+
+      console.log("ANALYSIS");
+      console.log(response.data.analysis);
+
+      // =========================================
+
       setResult(response.data.analysis);
 
       setSelectedResume(response.data.resume);
-
       setResumes((prev) =>
         prev.map((resume) =>
           resume.resume_id === response.data.resume.resume_id
@@ -65,11 +91,17 @@ export default function ResumeAnalyzer() {
         )
       );
     } catch (error: any) {
-      console.error(error);
+      console.error("Analysis Error:", error);
+
+      console.error(
+        "Backend Response:",
+        error?.response?.data
+      );
 
       alert(
+        error?.response?.data?.error?.message ??
         error?.response?.data?.message ??
-          "Analysis failed."
+        "Analysis failed."
       );
     } finally {
       setLoading(false);
@@ -79,7 +111,7 @@ export default function ResumeAnalyzer() {
   return (
     <div className="space-y-8">
 
-      {/* Upload */}
+      {/* Upload Resume */}
       <ResumeUpload onUploadSuccess={loadResumes} />
 
       {/* Resume List */}
@@ -91,12 +123,14 @@ export default function ResumeAnalyzer() {
           </h2>
 
           <div className="space-y-3">
-
             {resumes.map((resume) => (
               <button
                 key={resume.resume_id}
                 type="button"
-                onClick={() => setSelectedResume(resume)}
+                onClick={() => {
+                  setSelectedResume(resume);
+                  setResult(null);
+                }}
                 className={`w-full rounded-lg border p-4 text-left transition ${
                   selectedResume?.resume_id === resume.resume_id
                     ? "border-cyan-500 bg-cyan-50"
@@ -111,19 +145,20 @@ export default function ResumeAnalyzer() {
                   {resume.original_filename}
                 </p>
 
-                {resume.ats_score !== null && (
-                  <p className="mt-2 text-cyan-600 font-medium">
-                    ATS Score: {resume.ats_score}%
-                  </p>
-                )}
+                {resume.ats_score !== null &&
+                  resume.ats_score !== undefined && (
+                    <p className="mt-2 font-medium text-cyan-600">
+                      ATS Score: {resume.ats_score}%
+                    </p>
+                  )}
               </button>
             ))}
-
           </div>
+
         </div>
       )}
 
-      {/* Analyze */}
+      {/* Analyze Button */}
       <button
         type="button"
         onClick={handleAnalyze}
@@ -133,7 +168,7 @@ export default function ResumeAnalyzer() {
         {loading ? "Analyzing..." : "Analyze Resume"}
       </button>
 
-      {/* Result */}
+      {/* Results */}
       {result && <ResultDashboard />}
 
     </div>
