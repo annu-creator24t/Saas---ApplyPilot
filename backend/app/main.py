@@ -56,13 +56,13 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# Configure CORS
-setup_cors(app)
-
-# Register Middleware
+# Register Custom Middleware
 app.add_middleware(RequestIDMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(LoggingMiddleware)
+
+# Configure CORS (Must be registered last to wrap all incoming requests & responses)
+setup_cors(app)
 
 # Register Exception Handlers
 register_exception_handlers(app)

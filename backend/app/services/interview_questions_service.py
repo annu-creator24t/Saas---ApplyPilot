@@ -18,6 +18,7 @@ from app.schemas.interview_questions import (
     InterviewQuestionsRequest,
     InterviewQuestionsResponse,
 )
+from app.services.subscription_service import SubscriptionService
 
 
 class InterviewQuestionsService:
@@ -25,12 +26,15 @@ class InterviewQuestionsService:
     def __init__(self):
         self.resume_repository = ResumeRepository()
         self.questions_repository = InterviewQuestionsRepository()
+        self.subscription_service = SubscriptionService()
 
     async def generate_questions(
         self,
         user: dict,
         request: InterviewQuestionsRequest,
     ):
+        user_id = str(user["_id"])
+        await self.subscription_service.check_ai_permission(user_id)
 
         # =====================================================
         # Get Resume
@@ -87,6 +91,8 @@ class InterviewQuestionsService:
         questions = parse_interview_questions(
             response
         )
+
+        await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         # =====================================================
         # Store Questions

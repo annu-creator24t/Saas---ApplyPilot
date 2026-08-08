@@ -49,6 +49,7 @@ async def evaluate_answer(
     result = await service.evaluate_answer(
         question=request.question,
         answer=request.answer,
+        user_id=str(current_user["_id"]),
     )
 
     return APIResponse(

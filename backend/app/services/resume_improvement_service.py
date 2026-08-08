@@ -14,6 +14,7 @@ from app.repositories.resume_improvement_repository import (
 )
 
 from app.schemas.common import APIResponse
+from app.services.subscription_service import SubscriptionService
 
 
 class ResumeImprovementService:
@@ -21,6 +22,7 @@ class ResumeImprovementService:
     def __init__(self):
         self.resume_repository = ResumeRepository()
         self.improvement_repository = ResumeImprovementRepository()
+        self.subscription_service = SubscriptionService()
 
     async def improve_resume(
         self,
@@ -28,6 +30,7 @@ class ResumeImprovementService:
         job_description: str,
         user_id: str,
     ):
+        await self.subscription_service.check_ai_permission(user_id)
 
         resume = await self.resume_repository.get_resume(resume_id)
 
@@ -56,6 +59,8 @@ class ResumeImprovementService:
             parsed = parse_resume_improvement(response)
         except Exception as e:
             raise AIException(str(e))
+
+        await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         improvement_data = {
             "user_id": user_id,

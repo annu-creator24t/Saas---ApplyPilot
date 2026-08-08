@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { analyzeResume } from "@/services/analysis.service";
 import { getUserResumes } from "@/services/resume.service";
@@ -25,7 +25,7 @@ export default function ResumeAnalyzer() {
   // Load Resumes
   // =====================================================
 
-  async function loadResumes() {
+  const loadResumes = useCallback(async () => {
     try {
       const response = await getUserResumes();
 
@@ -40,11 +40,11 @@ export default function ResumeAnalyzer() {
     } catch (error) {
       console.error("Failed to load resumes:", error);
     }
-  }
+  }, [selectedResume]);
 
   useEffect(() => {
     loadResumes();
-  }, []);
+  }, [loadResumes]);
 
   // =====================================================
   // Analyze Resume
@@ -90,19 +90,10 @@ export default function ResumeAnalyzer() {
             : resume
         )
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Analysis Error:", error);
-
-      console.error(
-        "Backend Response:",
-        error?.response?.data
-      );
-
-      alert(
-        error?.response?.data?.error?.message ??
-        error?.response?.data?.message ??
-        "Analysis failed."
-      );
+      const errRes = (error as { response?: { data?: { message?: string; error?: { message?: string } } } })?.response?.data;
+      alert(errRes?.error?.message ?? errRes?.message ?? "Analysis failed.");
     } finally {
       setLoading(false);
     }

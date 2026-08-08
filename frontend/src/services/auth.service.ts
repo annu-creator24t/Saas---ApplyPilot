@@ -27,6 +27,10 @@ export const login = async (data: LoginData) => {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   });
+  return response.data;
+};
 
+export const getProfile = async () => {
+  const response = await api.get("/users/me");
   return response.data;
 };

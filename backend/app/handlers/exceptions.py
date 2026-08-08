@@ -99,6 +99,22 @@ class AIException(ApplyPilotException):
         )
 
 
+class AIUsageLimitException(ApplyPilotException):
+    """
+    Raised when a user has exhausted their free AI usage quota.
+    """
+
+    def __init__(
+        self,
+        message: str = "You have used all 3 free AI analyses. Upgrade to ApplyPilot Pro for ₹99/month.",
+    ) -> None:
+        super().__init__(
+            message=message,
+            status_code=403,
+            error_code="AI_USAGE_LIMIT_REACHED",
+        )
+
+
 class DatabaseException(ApplyPilotException):
     """
     Raised when a database operation fails.

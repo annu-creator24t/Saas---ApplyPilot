@@ -18,6 +18,16 @@ class User(BaseModel):
 
     is_active: bool = True
 
+    subscription_status: str = "free"
+    subscription_plan: str = "free"
+    subscription_start: Optional[datetime] = None
+    subscription_end: Optional[datetime] = None
+    free_usage_count: int = 0
+
+    payment_status: str = "none"
+    payment_submitted_at: Optional[datetime] = None
+    payment_reference: Optional[str] = None
+
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     updated_at: datetime = Field(default_factory=datetime.utcnow)

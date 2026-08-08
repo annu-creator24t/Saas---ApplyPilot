@@ -9,11 +9,12 @@ export interface Resume {
   file_size: number;
   content_type: string;
   ats_score: number | null;
+  extracted_text?: string;
   analysis?: ATSAnalysis;
   created_at: string;
 }
 
-export interface ResumeUploadResponse extends Resume {}
+export type ResumeUploadResponse = Resume;
 
 export interface RenameResumeRequest {
   title: string;

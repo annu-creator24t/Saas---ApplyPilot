@@ -91,3 +91,31 @@ export async function deleteResume(
 
   return response.data;
 }
+
+// ======================================================
+// Download Original Resume File
+// ======================================================
+
+export async function downloadResumeFile(
+  resumeId: string,
+  filename: string
+) {
+  const response = await api.get(`/resume/${resumeId}/download`, {
+    responseType: "blob",
+  });
+
+  const contentType = (response.headers["content-type"] as string) || "application/octet-stream";
+
+  const blob = new Blob([response.data], {
+    type: contentType,
+  });
+
+  const downloadUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = downloadUrl;
+  link.setAttribute("download", filename || "resume.pdf");
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(downloadUrl);
+}

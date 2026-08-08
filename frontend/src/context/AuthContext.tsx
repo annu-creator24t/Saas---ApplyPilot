@@ -36,34 +36,54 @@ export function AuthProvider({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("access_token");
-    const storedUser = localStorage.getItem("user");
+    const initAuth = async () => {
+      const storedToken = localStorage.getItem("access_token");
+      if (storedToken) {
+        setToken(storedToken);
+        try {
+          const profileRes = await AuthService.getProfile();
+          if (profileRes?.data) {
+            setUser(profileRes.data);
+            localStorage.setItem("user", JSON.stringify(profileRes.data));
+          }
+        } catch (e) {
+          // Token expired or invalid
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("user");
+          setToken(null);
+          setUser(null);
+        }
+      }
+      setLoading(false);
+    };
 
-    if (storedToken) {
-      setToken(storedToken);
-    }
-
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-
-    setLoading(false);
+    initAuth();
   }, []);
 
- const login = async (email: string, password: string) => {
-  const response = await AuthService.login({
-    email,
-    password,
-  });
+  const login = async (email: string, password: string) => {
+    const response = await AuthService.login({
+      email,
+      password,
+    });
 
-  const accessToken = response.data.access_token;
+    const accessToken = response.data.access_token;
+    localStorage.setItem("access_token", accessToken);
+    setToken(accessToken);
 
-  localStorage.setItem("access_token", accessToken);
+    try {
+      const profileRes = await AuthService.getProfile();
+      if (profileRes?.data) {
+        setUser(profileRes.data);
+        localStorage.setItem("user", JSON.stringify(profileRes.data));
+      }
+    } catch (e) {
+      // Fallback user object
+      const fallbackUser = { email };
+      setUser(fallbackUser);
+    }
 
-  setToken(accessToken);
-
-  return response;
-};
+    return response;
+  };
 
   const logout = () => {
     localStorage.removeItem("access_token");

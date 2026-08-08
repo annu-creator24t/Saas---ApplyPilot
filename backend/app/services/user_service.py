@@ -56,27 +56,15 @@ class UserService:
         email: str,
         password: str,
     ):
-
-        print("=" * 50)
-        print("Email received:", email)
-
         user = await self.repository.get_user_by_email(email)
-
-        print("User found:", user is not None)
 
         if not user:
             raise AuthenticationException("Invalid credentials.")
-
-        print("Stored email:", user["email"])
-        print("Stored hash:", user["password"])
 
         is_valid = verify_password(
             password,
             user["password"],
         )
-
-        print("Password valid:", is_valid)
-        print("=" * 50)
 
         if not is_valid:
             raise AuthenticationException("Invalid credentials.")
@@ -108,7 +96,12 @@ class UserService:
         if not user:
             raise NotFoundException("User not found.")
 
-        user["id"] = str(user["_id"])
+        user["id"] = str(user.pop("_id", ""))
+        user.pop("password", None)
+        user.setdefault("subscription_status", "free")
+        user.setdefault("subscription_plan", "free")
+        user.setdefault("free_usage_count", 0)
+        user.setdefault("payment_status", "none")
 
         return APIResponse(
             message="Profile fetched successfully.",

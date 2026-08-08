@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 
+from app.handlers.exceptions import ValidationException
 from app.schemas.common import APIResponse
 from app.schemas.user import UserCreate
 from app.services.user_service import UserService
@@ -29,7 +30,7 @@ async def register(user: UserCreate):
 
 
 # =====================================================
-# Login - Used by Frontend
+# Login - Supports JSON and Form-Data
 # =====================================================
 
 @router.post(
@@ -37,15 +38,24 @@ async def register(user: UserCreate):
     response_model=APIResponse,
     status_code=status.HTTP_200_OK,
     summary="Login User",
-    description="Authenticate a user and return access & refresh tokens.",
+    description="Authenticate a user using JSON payload or form data, returning access & refresh tokens.",
 )
-async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-):
-    return await service.login_user(
-        form_data.username,
-        form_data.password,
-    )
+async def login(request: Request):
+    content_type = request.headers.get("content-type", "")
+
+    if "application/json" in content_type:
+        body = await request.json()
+        email = body.get("email") or body.get("username")
+        password = body.get("password")
+    else:
+        form = await request.form()
+        email = form.get("username") or form.get("email")
+        password = form.get("password")
+
+    if not email or not password:
+        raise ValidationException("Email and password are required.")
+
+    return await service.login_user(str(email), str(password))
 
 
 # =====================================================

@@ -1,212 +1,179 @@
 "use client";
 
 import { useState } from "react";
-
+import Link from "next/link";
 import { useResume } from "@/context/ResumeContext";
-
 import { generateInterviewQuestions } from "@/services/interview-questions.service";
-
-import {
-  InterviewQuestion,
-  InterviewQuestionsResponse,
-} from "@/types/interview-questions";
+import ResumeSelector from "@/components/resume/ResumeSelector";
+import { InterviewQuestion, InterviewQuestionsResponse } from "@/types/interview-questions";
+import { HelpCircle, Sparkles, Code2, Users, Briefcase, ChevronDown, Loader2, AlertTriangle, Zap } from "lucide-react";
 
 export default function InterviewQuestionsPage() {
   const { selectedResume } = useResume();
-
-  const [jobDescription, setJobDescription] =
-    useState("");
-
-  const [result, setResult] =
-    useState<InterviewQuestionsResponse | null>(
-      null
-    );
-
-  const [loading, setLoading] =
-    useState(false);
+  const [jobDescription, setJobDescription] = useState("");
+  const [result, setResult] = useState<InterviewQuestionsResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [quotaReached, setQuotaReached] = useState(false);
 
   async function handleGenerate() {
-    if (!selectedResume) {
-      alert("Please upload and select a resume first.");
+    if (!selectedResume?.resume_id) {
+      setErrorMsg("Please select or upload a resume.");
       return;
     }
 
     if (!jobDescription.trim()) {
-      alert("Please enter a job description.");
+      setErrorMsg("Please enter a target job description.");
       return;
     }
 
     try {
       setLoading(true);
+      setErrorMsg(null);
+      setQuotaReached(false);
 
-      const response =
-        await generateInterviewQuestions({
-          resume_id:
-            selectedResume.resume_id,
-          job_description: jobDescription,
-        });
-
+      const response = await generateInterviewQuestions({
+        resume_id: selectedResume.resume_id,
+        job_description: jobDescription,
+      });
       setResult(response.data);
     } catch (error: any) {
-      console.error(error);
+      const errCode = error?.response?.data?.error?.code || error?.response?.data?.code;
+      const message = error?.response?.data?.error?.message || error?.response?.data?.message || "Failed to generate interview questions.";
 
-      alert(
-        error?.response?.data?.message ??
-          "Failed to generate interview questions."
-      );
+      if (errCode === "AI_USAGE_LIMIT_REACHED" || error?.response?.status === 403) {
+        setQuotaReached(true);
+        setErrorMsg(message);
+      } else {
+        setErrorMsg(message);
+      }
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="space-y-8">
-
+    <div className="space-y-6 pb-12 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold">
-          Interview Questions
-        </h1>
-
-        <p className="mt-2 text-slate-500">
-          Generate personalized technical,
-          behavioral, and HR interview
-          questions from your resume.
-        </p>
+        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-3.5 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-2">
+          <HelpCircle className="h-3.5 w-3.5" /> AI Interview Prep
+        </div>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Interview Question Generator</h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400">Generate technical, behavioral, and HR questions tailored to your resume and target role.</p>
       </div>
 
-      <div className="rounded-2xl bg-white p-6 shadow">
+      {/* Reusable Resume Selector */}
+      <ResumeSelector
+        title="Master Resume for Interview Questions"
+        subtitle="Questions will be tailored to match your active resume."
+      />
 
-        <label className="mb-2 block font-medium">
-          Job Description
-        </label>
-
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm">
+        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Target Job Description *</label>
         <textarea
-          rows={8}
+          rows={6}
           value={jobDescription}
-          onChange={(e) =>
-            setJobDescription(
-              e.target.value
-            )
-          }
+          onChange={(e) => setJobDescription(e.target.value)}
           placeholder="Paste the Job Description here..."
-          className="w-full rounded-xl border p-4 outline-none focus:border-blue-500"
+          className="w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3.5 text-xs text-slate-900 dark:text-slate-200 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none transition"
         />
 
         <button
           type="button"
           onClick={handleGenerate}
-          disabled={loading}
-          className="mt-5 rounded-xl bg-blue-600 px-6 py-3 font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+          disabled={loading || !selectedResume || !jobDescription.trim()}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-xs font-bold text-white shadow-md hover:opacity-90 transition disabled:opacity-50"
         >
-          {loading
-            ? "Generating..."
-            : "Generate Questions"}
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> Generating Questions...
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" /> Generate Questions
+            </>
+          )}
         </button>
-
       </div>
 
-      {result && (
-        <div className="space-y-10">
+      {errorMsg && (
+        <div className={`rounded-2xl p-5 border shadow-sm ${
+          quotaReached
+            ? "bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30 text-amber-900 dark:text-amber-200"
+            : "bg-rose-50 dark:bg-rose-500/10 border-rose-300 dark:border-rose-500/30 text-rose-900 dark:text-rose-200"
+        }`}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-bold text-xs md:text-sm">
+                  {quotaReached ? "Free AI Credit Limit Exhausted" : "Notice"}
+                </h3>
+                <p className="mt-0.5 text-xs opacity-90">{errorMsg}</p>
+              </div>
+            </div>
 
-          <QuestionSection
-            title="Technical Questions"
-            questions={result.technical}
-          />
-
-          <QuestionSection
-            title="Behavioral Questions"
-            questions={result.behavioral}
-          />
-
-          <QuestionSection
-            title="HR Questions"
-            questions={result.hr}
-          />
-
+            {quotaReached && (
+              <Link
+                href="/dashboard/subscription"
+                className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-500 transition shrink-0"
+              >
+                <Zap className="h-4 w-4" /> Upgrade to Pro (₹99/mo)
+              </Link>
+            )}
+          </div>
         </div>
       )}
 
+      {result && (
+        <div className="space-y-8">
+          <QuestionSection title="Technical Questions" icon={<Code2 className="h-4 w-4 text-indigo-500" />} questions={result.technical} />
+          <QuestionSection title="Behavioral Questions" icon={<Users className="h-4 w-4 text-emerald-500" />} questions={result.behavioral} />
+          <QuestionSection title="HR & Situational Questions" icon={<Briefcase className="h-4 w-4 text-amber-500" />} questions={result.hr} />
+        </div>
+      )}
     </div>
   );
 }
 
 interface QuestionSectionProps {
   title: string;
+  icon: React.ReactNode;
   questions: InterviewQuestion[];
 }
 
-function QuestionSection({
-  title,
-  questions,
-}: QuestionSectionProps) {
-  if (!questions.length) {
-    return (
-      <div>
-        <h2 className="mb-4 text-2xl font-bold">
-          {title}
-        </h2>
-
-        <p className="text-slate-500">
-          No questions generated.
-        </p>
-      </div>
-    );
-  }
+function QuestionSection({ title, icon, questions }: QuestionSectionProps) {
+  if (!questions || !questions.length) return null;
 
   return (
-    <div>
-
-      <h2 className="mb-5 text-2xl font-bold">
-        {title}
+    <div className="space-y-4">
+      <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        {icon} {title}
       </h2>
 
-      <div className="space-y-5">
-
-        {questions.map(
-          (
-            question,
-            index
-          ) => (
-            <div
-              key={index}
-              className="rounded-2xl border bg-white p-6 shadow-sm"
-            >
-
-              <h3 className="text-lg font-semibold">
-                {index + 1}.{" "}
-                {question.question}
+      <div className="space-y-3">
+        {questions.map((q, idx) => (
+          <div key={idx} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 space-y-3 shadow-sm">
+            <div className="flex items-start justify-between gap-4">
+              <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-100 leading-relaxed">
+                {idx + 1}. {q.question}
               </h3>
-
-              <div className="mt-4 flex gap-3">
-
-                <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-                  {question.category}
-                </span>
-
-                <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                  {question.difficulty}
-                </span>
-
-              </div>
-
-              <details className="mt-5">
-
-                <summary className="cursor-pointer font-medium text-blue-600">
-                  Show Ideal Answer
-                </summary>
-
-                <div className="mt-4 rounded-xl bg-slate-50 p-4 whitespace-pre-wrap leading-7">
-                  {question.ideal_answer}
-                </div>
-
-              </details>
-
+              <span className="shrink-0 rounded-full bg-indigo-500/10 px-2.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                {q.category}
+              </span>
             </div>
-          )
-        )}
 
+            <details className="group">
+              <summary className="cursor-pointer text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
+                Show Ideal Answer <ChevronDown className="h-3.5 w-3.5 transition group-open:rotate-180" />
+              </summary>
+              <div className="mt-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                {q.ideal_answer}
+              </div>
+            </details>
+          </div>
+        ))}
       </div>
-
     </div>
   );
 }

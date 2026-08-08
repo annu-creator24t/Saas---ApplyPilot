@@ -29,6 +29,7 @@ from app.schemas.interview_practice import (
     InterviewPracticeRequest,
     InterviewPracticeResponse,
 )
+from app.services.subscription_service import SubscriptionService
 
 
 class InterviewPracticeService:
@@ -38,12 +39,15 @@ class InterviewPracticeService:
         self.practice_repository = (
             InterviewPracticeRepository()
         )
+        self.subscription_service = SubscriptionService()
 
     async def start_practice(
         self,
         user: dict,
         request: InterviewPracticeRequest,
     ):
+        user_id = str(user["_id"])
+        await self.subscription_service.check_ai_permission(user_id)
 
         resume = await self.resume_repository.get_resume(
             request.resume_id
@@ -79,6 +83,8 @@ class InterviewPracticeService:
             response
         )
 
+        await self.subscription_service.deduct_ai_credit_on_success(user_id)
+
         all_questions = (
             questions["technical"]
             + questions["behavioral"]
@@ -111,7 +117,10 @@ class InterviewPracticeService:
         self,
         question: str,
         answer: str,
+        user_id: str = None,
     ):
+        if user_id:
+            await self.subscription_service.check_ai_permission(user_id)
 
         prompt = build_interview_evaluation_prompt(
             question,
@@ -120,6 +129,11 @@ class InterviewPracticeService:
 
         response = generate(prompt)
 
-        return parse_interview_evaluation(
+        result = parse_interview_evaluation(
             response
         )
+
+        if user_id:
+            await self.subscription_service.deduct_ai_credit_on_success(user_id)
+
+        return result
