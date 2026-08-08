@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.ai.gemini_client import generate
+from app.ai.groq_client import generate
 from app.ai.response_parser import (
     parse_interview_questions,
     parse_interview_evaluation,

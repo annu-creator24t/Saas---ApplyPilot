@@ -32,9 +32,15 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     # ==========================
+    # Groq AI
+    # ==========================
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "openai/gpt-oss-120b"
+
+    # ==========================
     # Gemini AI
     # ==========================
-    GEMINI_API_KEY: str
+    GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.5-flash"
 
     # ==========================

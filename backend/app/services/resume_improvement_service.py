@@ -1,4 +1,4 @@
-from app.ai.gemini_client import generate
+from app.ai.groq_client import generate
 from app.ai.prompts import build_resume_improvement_prompt
 from app.ai.response_parser import parse_resume_improvement
 

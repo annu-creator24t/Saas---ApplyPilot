@@ -208,45 +208,15 @@ export default function SubscriptionPage() {
 
           {/* QR & UPI Details Box */}
           <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-4">
-            {/* Visual Custom QR Code Box */}
-            <div className="relative p-4 bg-white rounded-2xl border border-slate-200 shadow-md">
-              <svg
-                className="w-44 h-44"
-                viewBox="0 0 100 100"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Simulated QR Code SVG Pattern */}
-                <rect width="100" height="100" fill="white" />
-                {/* Outer corners */}
-                <rect x="5" y="5" width="25" height="25" fill="#0f172a" />
-                <rect x="9" y="9" width="17" height="17" fill="white" />
-                <rect x="13" y="13" width="9" height="9" fill="#0f172a" />
-
-                <rect x="70" y="5" width="25" height="25" fill="#0f172a" />
-                <rect x="74" y="9" width="17" height="17" fill="white" />
-                <rect x="78" y="13" width="9" height="9" fill="#0f172a" />
-
-                <rect x="5" y="70" width="25" height="25" fill="#0f172a" />
-                <rect x="9" y="74" width="17" height="17" fill="white" />
-                <rect x="13" y="78" width="9" height="9" fill="#0f172a" />
-
-                {/* Random code bits */}
-                <rect x="35" y="5" width="6" height="12" fill="#0f172a" />
-                <rect x="45" y="10" width="15" height="6" fill="#0f172a" />
-                <rect x="35" y="25" width="25" height="6" fill="#0f172a" />
-                <rect x="5" y="35" width="12" height="15" fill="#0f172a" />
-                <rect x="22" y="35" width="8" height="25" fill="#0f172a" />
-                <rect x="35" y="35" width="30" height="30" fill="#4f46e5" rx="3" />
-                <path d="M50 42L58 58H42L50 42Z" fill="white" />
-                <rect x="70" y="35" width="25" height="10" fill="#0f172a" />
-                <rect x="80" y="50" width="15" height="15" fill="#0f172a" />
-                <rect x="35" y="70" width="20" height="8" fill="#0f172a" />
-                <rect x="60" y="70" width="10" height="25" fill="#0f172a" />
-                <rect x="75" y="75" width="20" height="20" fill="#0f172a" />
-              </svg>
-              <div className="mt-2 text-[10px] font-extrabold uppercase text-slate-700 tracking-wider">
-                Scan to Pay ₹99
+            {/* User Actual Paytm QR Code Box */}
+            <div className="relative p-3 bg-white rounded-2xl border border-slate-200 shadow-md flex flex-col items-center">
+              <img
+                src="/upi-qr.png"
+                alt="Paytm UPI QR Code - Annu Tiwari"
+                className="w-56 h-auto rounded-xl object-contain shadow-sm"
+              />
+              <div className="mt-3 text-[11px] font-extrabold uppercase text-slate-800 tracking-wider bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                Scan with any UPI App (GPay, Paytm, PhonePe)
               </div>
             </div>
 

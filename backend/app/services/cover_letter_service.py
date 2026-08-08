@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.ai.gemini_client import generate
+from app.ai.groq_client import generate
 from app.ai.prompts import build_cover_letter_prompt
 from app.handlers.exceptions import (
     AuthorizationException,

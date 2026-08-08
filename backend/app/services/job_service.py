@@ -1,6 +1,6 @@
 import json
 from typing import Optional
-from app.ai.gemini_client import generate
+from app.ai.groq_client import generate
 from app.ai.response_parser import _clean_json_response
 from app.handlers.exceptions import AIException, NotFoundException, ValidationException
 from app.prompts.job_match_prompt import build_job_match_prompt

@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Any
 
 from app.handlers.exceptions import AIException
@@ -7,9 +8,12 @@ from app.schemas.ats import ATSAnalysis
 
 def _clean_json_response(response: str) -> str:
     """
-    Remove Markdown code fences from AI responses.
+    Remove Markdown code fences and reasoning tags from AI responses.
     """
     response = response.strip()
+
+    # Remove reasoning/thinking blocks if model generates them
+    response = re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL).strip()
 
     if response.startswith("```json"):
         response = response.replace("```json", "", 1)
@@ -39,10 +43,10 @@ def parse_response(response: str) -> ATSAnalysis:
         )
 
     except Exception as e:
-     raise AIException(
-        message=f"Failed to parse ATS analysis: {str(e)}",
-        error_code="AI_PARSE_ERROR",
-    )
+        raise AIException(
+            message=f"Failed to parse ATS analysis: {str(e)}",
+            error_code="AI_PARSE_ERROR",
+        )
 
 
 def parse_interview_questions(
@@ -62,10 +66,9 @@ def parse_interview_questions(
         )
 
 
-
 def parse_interview_evaluation(response: str) -> dict:
     """
-    Parse interview evaluation response from Gemini.
+    Parse interview evaluation response from AI.
     Expected JSON:
 
     {
@@ -75,19 +78,9 @@ def parse_interview_evaluation(response: str) -> dict:
         "ideal_answer": "..."
     }
     """
-
     try:
-        if "```json" in response:
-            response = response.split("```json")[1]
-            response = response.split("```")[0]
-
-        elif "```" in response:
-            response = response.split("```")[1]
-            response = response.split("```")[0]
-
-        response = response.strip()
-
-        return json.loads(response)
+        cleaned = _clean_json_response(response)
+        return json.loads(cleaned)
 
     except Exception as e:
         raise ValueError(
