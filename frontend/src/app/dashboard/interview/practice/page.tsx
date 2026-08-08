@@ -3,31 +3,48 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useResume } from "@/context/ResumeContext";
+import { useJobDescription } from "@/context/JobDescriptionContext";
 import { startInterviewPractice, evaluateAnswer } from "@/services/interview-practice.service";
 import ResumeSelector from "@/components/resume/ResumeSelector";
-import PracticeQuestion from "@/components/interview/PracticeQuestion";
-import EvaluationCard from "@/components/interview/EvaluationCard";
-import InterviewSummary from "@/components/interview/InterviewSummary";
-import { PracticeQuestion as Question, Evaluation } from "@/types/interview-practice";
-import { Mic, Sparkles, CheckCircle2, ArrowRight, Loader2, AlertTriangle, Zap } from "lucide-react";
+import JobDescriptionSelector from "@/components/job/JobDescriptionSelector";
+import {
+  Mic,
+  Sparkles,
+  AlertTriangle,
+  Loader2,
+  Send,
+  Award,
+  Zap,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function InterviewPracticePage() {
   const { selectedResume } = useResume();
-  const [jobDescription, setJobDescription] = useState("");
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [current, setCurrent] = useState(0);
-  const [answer, setAnswer] = useState("");
-  const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
-  const [results, setResults] = useState<Evaluation[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [completed, setCompleted] = useState(false);
+  const { selectedJobDescription } = useJobDescription();
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [jobDescription, setJobDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [feedback, setFeedback] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [quotaReached, setQuotaReached] = useState(false);
 
-  async function handleStart() {
+  const handleJDChange = (jdText: string) => {
+    setJobDescription(jdText);
+  };
+
+  const handleStartPractice = async () => {
     if (!selectedResume?.resume_id) {
-      setErrorMsg("Please select or upload a resume to start practice.");
+      setErrorMsg("Please select or upload a master resume.");
+      return;
+    }
+
+    const targetJd = jobDescription.trim() || selectedJobDescription?.job_description || "";
+    if (!targetJd) {
+      setErrorMsg("Please select or enter a target job description.");
       return;
     }
 
@@ -35,21 +52,19 @@ export default function InterviewPracticePage() {
       setLoading(true);
       setErrorMsg(null);
       setQuotaReached(false);
+      setFeedback(null);
+      setUserAnswer("");
+      setCurrentIndex(0);
 
       const response = await startInterviewPractice({
         resume_id: selectedResume.resume_id,
-        job_description: jobDescription,
+        job_description: targetJd,
       });
 
-      setQuestions(response.data.questions);
-      setCurrent(0);
-      setAnswer("");
-      setEvaluation(null);
-      setResults([]);
-      setCompleted(false);
+      setSession(response.data);
     } catch (error: any) {
       const errCode = error?.response?.data?.error?.code || error?.response?.data?.code;
-      const message = error?.response?.data?.error?.message || error?.response?.data?.message || "Failed to start interview session.";
+      const message = error?.response?.data?.error?.message || error?.response?.data?.message || "Failed to start practice session.";
 
       if (errCode === "AI_USAGE_LIMIT_REACHED" || error?.response?.status === 403) {
         setQuotaReached(true);
@@ -60,75 +75,89 @@ export default function InterviewPracticePage() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  async function handleEvaluate() {
-    if (!answer.trim()) {
-      setErrorMsg("Answer cannot be empty.");
-      return;
-    }
+  const questionsList = session?.questions || (session?.current_question ? [session.current_question] : []);
+  const rawCurrent = questionsList[currentIndex];
+  const currentQuestionText = typeof rawCurrent === "object" && rawCurrent !== null
+    ? rawCurrent.question || JSON.stringify(rawCurrent)
+    : (typeof rawCurrent === "string" ? rawCurrent : "");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userAnswer.trim() || !currentQuestionText) return;
 
     try {
-      setLoading(true);
+      setSubmitting(true);
       setErrorMsg(null);
 
       const response = await evaluateAnswer({
-        question: questions[current].question,
-        answer,
+        question: currentQuestionText,
+        answer: userAnswer,
       });
 
-      setEvaluation(response.data);
-      setResults((prev) => {
-        const copy = [...prev];
-        copy[current] = response.data;
-        return copy;
-      });
+      setFeedback(response.data);
     } catch (error: any) {
-      const errCode = error?.response?.data?.error?.code || error?.response?.data?.code;
-      const message = error?.response?.data?.error?.message || error?.response?.data?.message || "Evaluation failed.";
-
-      if (errCode === "AI_USAGE_LIMIT_REACHED" || error?.response?.status === 403) {
-        setQuotaReached(true);
-        setErrorMsg(message);
-      } else {
-        setErrorMsg(message);
-      }
+      setErrorMsg(error?.response?.data?.message || "Failed to analyze practice answer.");
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
-  }
+  };
 
-  function nextQuestion() {
-    if (current === questions.length - 1) {
-      setCompleted(true);
-      return;
-    }
-
-    setCurrent((prev) => prev + 1);
-    setAnswer("");
-    setEvaluation(null);
-  }
-
-  if (completed) {
-    return <InterviewSummary results={results} />;
-  }
+  const handleNextQuestion = () => {
+    setUserAnswer("");
+    setFeedback(null);
+    setCurrentIndex((prev) => prev + 1);
+  };
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-12">
+      {/* Header */}
       <div>
         <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-3.5 py-1 text-xs font-bold text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 mb-2">
-          <Mic className="h-3.5 w-3.5" /> Interactive Practice
+          <Mic className="h-3.5 w-3.5" /> AI Mock Interview Practice
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">AI Interview Simulator</h1>
-        <p className="text-xs text-slate-600 dark:text-slate-400">Practice real interview questions and receive instant AI feedback on your answers.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Interview Simulator</h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400">
+          Simulate a real-time AI interview session tailored to your active resume and target role. Type or speak your response for instant feedback.
+        </p>
       </div>
 
-      {/* Reusable Resume Selector */}
-      <ResumeSelector
-        title="Master Resume for Interview Simulation"
-        subtitle="Questions and feedback will align with your active resume."
-      />
+      {/* Grid: Independent Selectors */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ResumeSelector
+          title="1. Active Master Resume"
+          subtitle="Resume background used to personalize mock questions."
+        />
 
+        <JobDescriptionSelector
+          title="2. Target Job Description"
+          subtitle="Job role requirements used to simulate interviewer prompts."
+          onChangeJD={handleJDChange}
+        />
+      </div>
+
+      {/* Action Button Card */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm space-y-3">
+        <button
+          type="button"
+          onClick={handleStartPractice}
+          disabled={loading || !selectedResume || !(jobDescription.trim() || selectedJobDescription?.job_description)}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-xs font-bold text-white shadow-md hover:opacity-90 transition disabled:opacity-50"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> Preparing AI Interview Session...
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" /> Start Mock Interview Session
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Error & Quota Alert */}
       {errorMsg && (
         <div className={`rounded-2xl p-5 border shadow-sm ${
           quotaReached
@@ -158,74 +187,111 @@ export default function InterviewPracticePage() {
         </div>
       )}
 
-      {questions.length === 0 && (
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm">
-          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Target Job Description (Optional)</label>
-          <textarea
-            rows={6}
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            placeholder="Paste Job Description..."
-            className="w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3.5 text-xs text-slate-900 dark:text-slate-200 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none transition"
-          />
+      {/* Practice Interview Session */}
+      {session && questionsList.length > 0 && (
+        currentIndex < questionsList.length ? (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                  Interviewer Prompt {currentIndex + 1} of {questionsList.length}
+                </span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Question {currentIndex + 1}/{questionsList.length}
+                </span>
+              </div>
+              <h2 className="text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                &quot;{currentQuestionText}&quot;
+              </h2>
 
-          <button
-            onClick={handleStart}
-            disabled={loading || !selectedResume}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-xs font-bold text-white shadow-md hover:opacity-90 transition disabled:opacity-50"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Preparing Practice Session...
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" /> Start Interview Session
-              </>
-            )}
-          </button>
-        </div>
-      )}
+              <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+                <textarea
+                  rows={5}
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  placeholder="Type your response here..."
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:border-cyan-500 focus:outline-none transition"
+                />
 
-      {questions.length > 0 && !completed && (
-        <div className="space-y-6">
-          <PracticeQuestion
-            question={questions[current]}
-            answer={answer}
-            setAnswer={setAnswer}
-          />
-
-          {!evaluation && (
-            <button
-              onClick={handleEvaluate}
-              disabled={loading || !answer.trim()}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-xs font-bold text-white shadow-md hover:bg-emerald-500 transition disabled:opacity-50"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Evaluating Answer...
-                </>
-              ) : (
-                <>
-                  <CheckCircle2 className="h-4 w-4" /> Submit & Evaluate Answer
-                </>
-              )}
-            </button>
-          )}
-
-          {evaluation && (
-            <div className="space-y-4">
-              <EvaluationCard evaluation={evaluation} />
-
-              <button
-                onClick={nextQuestion}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-xs font-bold text-white shadow-md hover:opacity-90 transition"
-              >
-                {current === questions.length - 1 ? "Finish & View Summary" : "Next Question"} <ArrowRight className="h-4 w-4" />
-              </button>
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={submitting || !userAnswer.trim()}
+                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-500 disabled:opacity-50 transition"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" /> Evaluating Answer...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-3.5 w-3.5" /> Submit Answer for AI Feedback
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
             </div>
-          )}
-        </div>
+
+            {/* Feedback Output */}
+            {feedback && (
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4 animate-in fade-in">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Award className="h-4 w-4 text-indigo-500" /> AI Feedback & Evaluation
+                  </h3>
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                    Score: {feedback.score ?? feedback.overall_score ?? 85}/100
+                  </span>
+                </div>
+
+                <div className="space-y-3 text-xs text-slate-700 dark:text-slate-300">
+                  <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 leading-relaxed">
+                    <span className="font-bold text-slate-900 dark:text-white block mb-1">Strengths & Feedback:</span>
+                    {typeof feedback.feedback === "string" ? feedback.feedback : (feedback.strengths ? feedback.strengths.join(", ") : JSON.stringify(feedback))}
+                  </div>
+
+                  {(feedback.improved_answer || feedback.ideal_answer) && (
+                    <div className="bg-cyan-500/10 dark:bg-cyan-500/10 p-4 rounded-xl border border-cyan-500/20 leading-relaxed text-slate-900 dark:text-slate-100">
+                      <span className="font-bold text-cyan-600 dark:text-cyan-400 block mb-1">Model / Improved Response:</span>
+                      {feedback.improved_answer || feedback.ideal_answer}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={handleNextQuestion}
+                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-500 transition"
+                  >
+                    <span>Next Question</span>
+                    <CheckCircle2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/30 p-8 text-center space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <CheckCircle2 className="h-6 w-6" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              Mock Interview Session Completed!
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+              You answered all role-specific interview questions for this practice session. You can review your feedback or start another practice set anytime.
+            </p>
+            <button
+              type="button"
+              onClick={handleStartPractice}
+              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-500 transition"
+            >
+              <Sparkles className="h-4 w-4" /> Start New Practice Session
+            </button>
+          </div>
+        )
       )}
     </div>
   );

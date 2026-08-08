@@ -4,7 +4,8 @@ from pathlib import Path
 
 from fastapi import HTTPException, UploadFile
 
-UPLOAD_DIR = Path("uploads/resumes")
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+UPLOAD_DIR = BASE_DIR / "uploads" / "resumes"
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 

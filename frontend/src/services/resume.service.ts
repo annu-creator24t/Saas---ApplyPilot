@@ -100,22 +100,39 @@ export async function downloadResumeFile(
   resumeId: string,
   filename: string
 ) {
-  const response = await api.get(`/resume/${resumeId}/download`, {
-    responseType: "blob",
-  });
+  try {
+    const response = await api.get(`/resume/${resumeId}/download`, {
+      responseType: "blob",
+    });
 
-  const contentType = (response.headers["content-type"] as string) || "application/octet-stream";
+    const contentType = (response.headers["content-type"] as string) || "application/octet-stream";
 
-  const blob = new Blob([response.data], {
-    type: contentType,
-  });
+    const blob = new Blob([response.data], {
+      type: contentType,
+    });
 
-  const downloadUrl = window.URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = downloadUrl;
-  link.setAttribute("download", filename || "resume.pdf");
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.URL.revokeObjectURL(downloadUrl);
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.setAttribute("download", filename || "resume.pdf");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(downloadUrl);
+  } catch (error: any) {
+    if (error?.response?.data instanceof Blob) {
+      try {
+        const text = await error.response.data.text();
+        const json = JSON.parse(text);
+        if (json?.message) {
+          throw new Error(json.message);
+        }
+      } catch (parseErr: any) {
+        if (parseErr?.message && !parseErr.message.includes("Unexpected token")) {
+          throw parseErr;
+        }
+      }
+    }
+    throw error;
+  }
 }

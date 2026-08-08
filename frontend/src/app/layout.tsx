@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { AuthProvider } from "@/context/AuthContext";
 import { ResumeProvider } from "@/context/ResumeContext";
+import { JobDescriptionProvider } from "@/context/JobDescriptionContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 export const metadata: Metadata = {
@@ -37,7 +38,9 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <ResumeProvider>
-              {children}
+              <JobDescriptionProvider>
+                {children}
+              </JobDescriptionProvider>
             </ResumeProvider>
           </AuthProvider>
         </ThemeProvider>

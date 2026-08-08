@@ -1,9 +1,16 @@
+import io
+import os
 from datetime import datetime
 from pathlib import Path
+import zipfile
 
+import cloudinary
+import cloudinary.utils
 import httpx
 from fastapi import Response, UploadFile
 
+from app.core.config import settings
+from app.core.logger import logger
 from app.handlers.exceptions import (
     AuthorizationException,
     NotFoundException,
@@ -47,10 +54,10 @@ class ResumeService:
         file_url = f"/uploads/resumes/{saved_file['filename']}"
         public_id = ""
         try:
-            cloudinary = await upload_resume(saved_file["path"])
-            if cloudinary and cloudinary.get("url"):
-                file_url = cloudinary["url"]
-                public_id = cloudinary.get("public_id", "")
+            cloudinary_res = await upload_resume(saved_file["path"])
+            if cloudinary_res and cloudinary_res.get("url"):
+                file_url = cloudinary_res["url"]
+                public_id = cloudinary_res.get("public_id", "")
         except Exception:
             pass
 
@@ -149,17 +156,45 @@ class ResumeService:
         stored_filename = resume.get("stored_filename")
         original_filename = resume.get("original_filename", "resume.pdf")
         content_type = resume.get("content_type", "application/pdf")
+        public_id = resume.get("public_id")
 
-        # 1. Check local upload directory first
-        local_path = Path("uploads/resumes") / stored_filename if stored_filename else None
-        if local_path and local_path.exists():
-            with open(local_path, "rb") as f:
+        # 1. Multi-path search for local file
+        candidate_filenames = []
+        if stored_filename:
+            candidate_filenames.append(stored_filename)
+        if file_url and not file_url.startswith("http"):
+            candidate_filenames.append(file_url.split("/")[-1])
+
+        base_backend_dir = Path(__file__).resolve().parent.parent.parent
+        base_workspace_dir = base_backend_dir.parent
+
+        candidate_paths = []
+        for fname in candidate_filenames:
+            candidate_paths.extend([
+                base_backend_dir / "uploads" / "resumes" / fname,
+                base_backend_dir / "uploads" / fname,
+                base_workspace_dir / "uploads" / "resumes" / fname,
+                base_workspace_dir / "backend" / "uploads" / "resumes" / fname,
+                Path("uploads/resumes") / fname,
+                Path("uploads") / fname,
+            ])
+
+        found_path = None
+        for p in candidate_paths:
+            if p and p.exists() and p.is_file():
+                found_path = p
+                break
+
+        if found_path:
+            with open(found_path, "rb") as f:
                 content = f.read()
+            safe_filename = original_filename.replace('"', '\\"')
             return Response(
                 content=content,
-                media_type=content_type,
+                media_type=content_type or "application/pdf",
                 headers={
-                    "Content-Disposition": f'attachment; filename="{original_filename}"'
+                    "Content-Disposition": f'attachment; filename="{safe_filename}"',
+                    "Access-Control-Expose-Headers": "Content-Disposition",
                 },
             )
 
@@ -168,16 +203,78 @@ class ResumeService:
             try:
                 async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
                     resp = await client.get(file_url)
-                    if resp.status_code == 200:
+                    if resp.status_code == 200 and len(resp.content) > 0:
+                        safe_filename = original_filename.replace('"', '\\"')
                         return Response(
                             content=resp.content,
-                            media_type=content_type or resp.headers.get("content-type", "application/octet-stream"),
+                            media_type=content_type or resp.headers.get("content-type", "application/pdf"),
                             headers={
-                                "Content-Disposition": f'attachment; filename="{original_filename}"'
+                                "Content-Disposition": f'attachment; filename="{safe_filename}"',
+                                "Access-Control-Expose-Headers": "Content-Disposition",
                             },
                         )
             except Exception:
                 pass
+
+            # If direct HTTP GET failed (e.g. Cloudinary 401 ACL error for raw uploads), try Cloudinary signed archive fetch
+            try:
+                c_public_id = public_id
+                if not c_public_id and "res.cloudinary.com" in file_url:
+                    parts = file_url.split("/upload/")
+                    if len(parts) > 1:
+                        sub = parts[1]
+                        if "/" in sub:
+                            sub_parts = sub.split("/", 1)
+                            if sub_parts[0].startswith("v") and sub_parts[0][1:].isdigit():
+                                c_public_id = sub_parts[1]
+                            else:
+                                c_public_id = sub
+
+                if c_public_id:
+                    cloudinary.config(
+                        cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+                        api_key=settings.CLOUDINARY_API_KEY,
+                        api_secret=settings.CLOUDINARY_API_SECRET,
+                        secure=True,
+                    )
+
+                    archive_url = cloudinary.utils.download_archive_url(
+                        public_ids=[c_public_id],
+                        resource_type="raw",
+                        mode="download",
+                    )
+                    async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
+                        c_resp = await client.get(archive_url)
+                        if c_resp.status_code == 200 and len(c_resp.content) > 0:
+                            z = zipfile.ZipFile(io.BytesIO(c_resp.content))
+                            zip_files = z.namelist()
+                            if zip_files:
+                                extracted_content = z.read(zip_files[0])
+                                safe_filename = original_filename.replace('"', '\\"')
+                                return Response(
+                                    content=extracted_content,
+                                    media_type=content_type or "application/pdf",
+                                    headers={
+                                        "Content-Disposition": f'attachment; filename="{safe_filename}"',
+                                        "Access-Control-Expose-Headers": "Content-Disposition",
+                                    },
+                                )
+            except Exception as c_err:
+                logger.warning(f"Cloudinary signed archive download failed: {c_err}")
+
+        # 3. Fallback for legacy uploads where local file was deleted and Cloudinary is restricted
+        extracted_text = resume.get("extracted_text")
+        if extracted_text and str(extracted_text).strip():
+            safe_base = os.path.splitext(original_filename)[0] or "resume"
+            fallback_filename = f"{safe_base}_extracted.txt"
+            return Response(
+                content=str(extracted_text).encode("utf-8"),
+                media_type="text/plain;charset=utf-8",
+                headers={
+                    "Content-Disposition": f'attachment; filename="{fallback_filename}"',
+                    "Access-Control-Expose-Headers": "Content-Disposition",
+                },
+            )
 
         raise NotFoundException("Resume file unavailable for download.")
 

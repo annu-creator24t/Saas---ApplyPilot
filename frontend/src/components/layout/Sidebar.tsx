@@ -95,32 +95,22 @@ export default function Sidebar() {
           >
             <div className="flex items-center justify-between text-xs font-semibold">
               <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-                <Zap className={`h-3.5 w-3.5 ${isPro ? "text-emerald-500" : "text-indigo-500"}`} />
+                <Zap className="h-3.5 w-3.5 text-emerald-500" />
                 AI Credits
               </span>
-              <span
-                className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                  isPro
-                    ? "bg-emerald-500 text-white"
-                    : Number(creditsRemaining) === 0
-                    ? "bg-rose-500 text-white"
-                    : "bg-indigo-600 text-white"
-                }`}
-              >
-                {isPro ? "PRO UNLIMITED" : `${creditsRemaining} / 3`}
+              <span className="rounded-full bg-emerald-600 text-white px-2 py-0.5 text-[10px] font-bold">
+                UNLIMITED (TEST MODE)
               </span>
             </div>
 
-            {!isPro && (
-              <div className="mt-2 flex items-center justify-between text-[11px]">
-                <span className="text-slate-500 dark:text-slate-400">
-                  {Number(creditsRemaining) === 0 ? "Quota exhausted" : `${creditsRemaining} free checks left`}
-                </span>
-                <span className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">
-                  Upgrade ₹99 →
-                </span>
-              </div>
-            )}
+            <div className="mt-2 flex items-center justify-between text-[11px]">
+              <span className="text-slate-500 dark:text-slate-400">
+                Quota enforcement disabled for testing
+              </span>
+              <span className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">
+                View Plan →
+              </span>
+            </div>
           </Link>
         </div>
       </div>

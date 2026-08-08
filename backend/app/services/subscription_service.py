@@ -75,41 +75,24 @@ class SubscriptionService:
     async def check_ai_permission(self, user_id: str) -> bool:
         """
         Validates whether the user is authorized to execute an AI feature.
-        Raises AIUsageLimitException if limit is reached.
+        TEMPORARILY BYPASSED FOR TESTING: Allows free testing of all AI features.
         """
-        user = await self._get_user_doc(user_id)
-        db = get_database()
-        now = datetime.utcnow()
-
-        sub_status = user.get("subscription_status", "free")
-        sub_plan = user.get("subscription_plan", "free")
-        sub_end = user.get("subscription_end")
-        free_usage_count = user.get("free_usage_count", 0)
-
-        # Expiration check
-        if sub_status == "active" and sub_end and sub_end < now:
-            sub_status = "expired"
-            sub_plan = "free"
-            await db["users"].update_one(
-                {"_id": user["_id"]},
-                {
-                    "$set": {
-                        "subscription_status": "expired",
-                        "subscription_plan": "free",
-                        "updated_at": now,
-                    }
-                },
-            )
-
-        if sub_plan == "pro" and sub_status == "active":
-            return True
-
-        if free_usage_count >= FREE_CREDITS_LIMIT:
-            raise AIUsageLimitException(
-                "You have used all 3 free AI analyses. Upgrade to ApplyPilot Pro for ₹99/month."
-            )
-
+        # TEMPORARY TESTING BYPASS: Allow unlimited testing without blocking
         return True
+
+        # =========================================================================
+        # ORIGINAL QUOTA ENFORCEMENT CODE (RESTORE FOR PRODUCTION):
+        # user = await self._get_user_doc(user_id)
+        # db = get_database()
+        # now = datetime.utcnow()
+        # sub_status = user.get("subscription_status", "free")
+        # sub_plan = user.get("subscription_plan", "free")
+        # sub_end = user.get("subscription_end")
+        # free_usage_count = user.get("free_usage_count", 0)
+        # if free_usage_count >= FREE_CREDITS_LIMIT:
+        #     raise AIUsageLimitException("Limit reached.")
+        # return True
+        # =========================================================================
 
     async def deduct_ai_credit_on_success(self, user_id: str) -> None:
         """

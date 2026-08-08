@@ -46,7 +46,7 @@ export default function SubscriptionPage() {
   }, []);
 
   const handleCopyUpi = () => {
-    navigator.clipboard.writeText("applypilot@upi");
+    navigator.clipboard.writeText("7565987815@ptsbi");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -254,7 +254,7 @@ export default function SubscriptionPage() {
             <div className="w-full max-w-xs space-y-1">
               <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase">UPI ID</span>
               <div className="flex items-center justify-between rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
-                <span>applypilot@upi</span>
+                <span>7565987815@ptsbi</span>
                 <button
                   onClick={handleCopyUpi}
                   type="button"

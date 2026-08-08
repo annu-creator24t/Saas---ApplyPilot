@@ -60,6 +60,26 @@ async def get_user_resumes(
 
 
 # =====================================================
+# Download Original Resume
+# =====================================================
+
+@router.get(
+    "/{resume_id}/download",
+    status_code=status.HTTP_200_OK,
+    summary="Download Original Resume",
+    description="Download the original uploaded resume file for the authenticated user.",
+)
+async def download_resume(
+    resume_id: str,
+    current_user: dict = Depends(get_current_user),
+):
+    return await service.download_resume(
+        resume_id=resume_id,
+        user_id=str(current_user["_id"]),
+    )
+
+
+# =====================================================
 # Get Resume Details
 # =====================================================
 
@@ -77,26 +97,6 @@ async def get_resume(
     return await service.get_resume_details(
         resume_id,
         str(current_user["_id"]),
-    )
-
-
-# =====================================================
-# Download Original Resume
-# =====================================================
-
-@router.get(
-    "/{resume_id}/download",
-    status_code=status.HTTP_200_OK,
-    summary="Download Original Resume",
-    description="Download the original uploaded resume file for the authenticated user.",
-)
-async def download_resume(
-    resume_id: str,
-    current_user: dict = Depends(get_current_user),
-):
-    return await service.download_resume(
-        resume_id=resume_id,
-        user_id=str(current_user["_id"]),
     )
 
 

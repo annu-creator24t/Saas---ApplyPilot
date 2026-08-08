@@ -3,13 +3,27 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useResume } from "@/context/ResumeContext";
+import { useJobDescription } from "@/context/JobDescriptionContext";
 import { generateCoverLetter } from "@/services/coverLetter.service";
 import ResumeSelector from "@/components/resume/ResumeSelector";
+import JobDescriptionSelector from "@/components/job/JobDescriptionSelector";
 import CopyButton from "@/components/common/CopyButton";
-import { FileText, Sparkles, FileCode, AlertTriangle, Loader2, Zap } from "lucide-react";
+import { exportAsDocx, exportAsTxt, exportAsPdf } from "@/utils/export";
+import {
+  FileText,
+  Sparkles,
+  FileCode,
+  AlertTriangle,
+  Loader2,
+  Zap,
+  Download,
+  FileSpreadsheet,
+  Printer,
+} from "lucide-react";
 
 export default function CoverLetterPage() {
   const { selectedResume } = useResume();
+  const { selectedJobDescription } = useJobDescription();
 
   const [jobDescription, setJobDescription] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
@@ -17,14 +31,20 @@ export default function CoverLetterPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [quotaReached, setQuotaReached] = useState(false);
 
+  // Sync active JD when selected from selector
+  const handleJDChange = (jdText: string) => {
+    setJobDescription(jdText);
+  };
+
   async function handleGenerate() {
     if (!selectedResume?.resume_id) {
       setErrorMsg("Please select or upload a master resume.");
       return;
     }
 
-    if (!jobDescription.trim()) {
-      setErrorMsg("Please enter a job description.");
+    const targetJd = jobDescription.trim() || selectedJobDescription?.job_description || "";
+    if (!targetJd) {
+      setErrorMsg("Please select or enter a target job description.");
       return;
     }
 
@@ -35,7 +55,7 @@ export default function CoverLetterPage() {
 
       const response = await generateCoverLetter({
         resume_id: selectedResume.resume_id,
-        job_description: jobDescription,
+        job_description: targetJd,
       });
 
       setCoverLetter(response.data.cover_letter);
@@ -54,6 +74,23 @@ export default function CoverLetterPage() {
     }
   }
 
+  const handleExportDocx = () => {
+    if (!coverLetter) return;
+    const title = `Cover Letter - ${selectedJobDescription?.job_title || "Target Role"}`;
+    exportAsDocx(`Cover_Letter_${selectedJobDescription?.company_name || "Company"}.doc`, title, coverLetter);
+  };
+
+  const handleExportTxt = () => {
+    if (!coverLetter) return;
+    exportAsTxt(`Cover_Letter_${selectedJobDescription?.company_name || "Company"}.txt`, coverLetter);
+  };
+
+  const handleExportPdf = () => {
+    if (!coverLetter) return;
+    const title = `Cover Letter - ${selectedJobDescription?.job_title || "Target Role"}`;
+    exportAsPdf(`Cover_Letter_${selectedJobDescription?.company_name || "Company"}.pdf`, title, coverLetter);
+  };
+
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-12">
       {/* Header */}
@@ -62,30 +99,29 @@ export default function CoverLetterPage() {
           <Sparkles className="h-3.5 w-3.5" /> AI Cover Letter Generator
         </div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">AI Cover Letter Generator</h1>
-        <p className="text-xs text-slate-600 dark:text-slate-400">Generate a tailored, high-converting cover letter using your active master resume.</p>
+        <p className="text-xs text-slate-600 dark:text-slate-400">Generate a tailored, high-converting cover letter using your active master resume and target job description.</p>
       </div>
 
-      {/* Unified Resume Selector Component */}
-      <ResumeSelector
-        title="Active Master Resume for Cover Letter"
-        subtitle="This resume details will be used to personalize your cover letter."
-      />
-
-      {/* Input Section */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm">
-        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Target Job Description *</label>
-        <textarea
-          value={jobDescription}
-          onChange={(e) => setJobDescription(e.target.value)}
-          rows={7}
-          placeholder="Paste the job description requirements here..."
-          className="w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3.5 text-xs text-slate-900 dark:text-slate-200 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none transition"
+      {/* Grid: Independent Resume & JD Selectors */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ResumeSelector
+          title="1. Active Master Resume"
+          subtitle="Resume details used to personalize your application."
         />
 
+        <JobDescriptionSelector
+          title="2. Target Job Description"
+          subtitle="Job role requirements used to tailor your cover letter."
+          onChangeJD={handleJDChange}
+        />
+      </div>
+
+      {/* Action Button Card */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm space-y-3">
         <button
           type="button"
           onClick={handleGenerate}
-          disabled={loading || !selectedResume || !jobDescription.trim()}
+          disabled={loading || !selectedResume || !(jobDescription.trim() || selectedJobDescription?.job_description)}
           className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-xs font-bold text-white shadow-md hover:opacity-90 transition disabled:opacity-50"
         >
           {loading ? (
@@ -129,13 +165,42 @@ export default function CoverLetterPage() {
         </div>
       )}
 
-      {/* Generated Output */}
+      {/* Generated Output & Download Section */}
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 gap-3">
           <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <FileCode className="h-4 w-4 text-purple-500" /> Generated Cover Letter
           </h2>
-          {coverLetter && <CopyButton text={coverLetter} />}
+
+          {coverLetter && (
+            <div className="flex items-center gap-2">
+              <CopyButton text={coverLetter} />
+              <button
+                onClick={handleExportDocx}
+                type="button"
+                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                <span>Word (.doc)</span>
+              </button>
+              <button
+                onClick={handleExportPdf}
+                type="button"
+                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              >
+                <Printer className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                <span>PDF</span>
+              </button>
+              <button
+                onClick={handleExportTxt}
+                type="button"
+                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              >
+                <Download className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span>TXT</span>
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="min-h-[250px] rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-300 whitespace-pre-wrap">

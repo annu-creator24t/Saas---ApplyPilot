@@ -3,9 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useResume } from "@/context/ResumeContext";
+import { useJobDescription } from "@/context/JobDescriptionContext";
 import { analyzeResume } from "@/services/analysis.service";
 import ResumeSelector from "@/components/resume/ResumeSelector";
+import JobDescriptionSelector from "@/components/job/JobDescriptionSelector";
 import { ATSAnalysis } from "@/types/analysis";
+import { exportAsDocx, exportAsTxt, exportAsPdf } from "@/utils/export";
 import {
   FileCheck2,
   Sparkles,
@@ -17,10 +20,15 @@ import {
   FileText,
   Zap,
   Info,
+  Download,
+  FileSpreadsheet,
+  Printer,
 } from "lucide-react";
 
 export default function StandaloneATSCheckerPage() {
   const { selectedResume } = useResume();
+  const { selectedJobDescription } = useJobDescription();
+
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<ATSAnalysis | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -78,6 +86,47 @@ export default function StandaloneATSCheckerPage() {
     };
   };
 
+  const formatReportText = () => {
+    if (!result) return "";
+    return `APPLYPILOT ATS AUDIT REPORT
+Resume: ${selectedResume?.original_filename || "Master Resume"}
+ATS Compatibility Score: ${result.ats_score}/100
+
+SUMMARY:
+${result.summary}
+
+STRENGTHS:
+${result.strengths?.map((s) => `- ${s}`).join("\n")}
+
+WEAKNESSES:
+${result.weaknesses?.map((w) => `- ${w}`).join("\n")}
+
+FORMATTING:
+${result.formatting}
+
+GRAMMAR & TONE:
+${result.grammar}
+
+RECOMMENDATIONS:
+${result.recommendations?.map((r) => `- ${r}`).join("\n")}
+`;
+  };
+
+  const handleExportDocx = () => {
+    if (!result) return;
+    exportAsDocx(`ATS_Audit_Report_${selectedResume?.title || "Resume"}.doc`, "ApplyPilot ATS Audit Report", formatReportText());
+  };
+
+  const handleExportTxt = () => {
+    if (!result) return;
+    exportAsTxt(`ATS_Audit_Report_${selectedResume?.title || "Resume"}.txt`, formatReportText());
+  };
+
+  const handleExportPdf = () => {
+    if (!result) return;
+    exportAsPdf(`ATS_Audit_Report_${selectedResume?.title || "Resume"}.pdf`, "ApplyPilot ATS Audit Report", formatReportText());
+  };
+
   return (
     <div className="space-y-8 pb-12 max-w-5xl mx-auto">
       {/* Header Banner */}
@@ -89,15 +138,22 @@ export default function StandaloneATSCheckerPage() {
           Resume ATS Checker
         </h1>
         <p className="mt-1 max-w-2xl text-xs md:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-          Check how ATS-friendly your resume is without requiring a job description. Evaluate overall structure, formatting, keyword usage, readability, section completeness, and contact details.
+          Evaluate overall structure, formatting, keyword usage, readability, section completeness, and contact details with or without a target job description.
         </p>
       </div>
 
-      {/* Reusable Unified Resume Selector */}
-      <ResumeSelector
-        title="Select Master Resume for ATS Scoring"
-        subtitle="Choose an existing uploaded resume or upload a new one to evaluate."
-      />
+      {/* Grid: Independent Selectors */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ResumeSelector
+          title="Master Resume for ATS Scoring"
+          subtitle="Choose an existing uploaded resume or upload a new file."
+        />
+
+        <JobDescriptionSelector
+          title="Target Role (Optional)"
+          subtitle="Optionally compare against a target role description."
+        />
+      </div>
 
       {/* Action Button Card */}
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -153,7 +209,7 @@ export default function StandaloneATSCheckerPage() {
         </div>
       )}
 
-      {/* ATS Results View */}
+      {/* ATS Results View & Export Bar */}
       {result && (
         <div className="space-y-6 animate-in fade-in duration-300">
           {/* ATS Score Header Card */}
@@ -179,12 +235,39 @@ export default function StandaloneATSCheckerPage() {
                   </p>
                 </div>
               </div>
+
+              {/* Report Export Action Buttons */}
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  onClick={handleExportDocx}
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                >
+                  <FileSpreadsheet className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <span>Word (.doc)</span>
+                </button>
+                <button
+                  onClick={handleExportPdf}
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                >
+                  <Printer className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  <span>PDF</span>
+                </button>
+                <button
+                  onClick={handleExportTxt}
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                >
+                  <Download className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span>TXT</span>
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Strengths vs Weaknesses Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Strengths Card */}
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
               <h3 className="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-2 mb-4">
                 <CheckCircle2 className="h-5 w-5" /> Strengths ({result.strengths?.length || 0})
@@ -199,7 +282,6 @@ export default function StandaloneATSCheckerPage() {
               </ul>
             </div>
 
-            {/* Weaknesses Card */}
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
               <h3 className="text-sm font-bold text-rose-600 dark:text-rose-400 flex items-center gap-2 mb-4">
                 <AlertTriangle className="h-5 w-5" /> Weaknesses / Risks ({result.weaknesses?.length || 0})
