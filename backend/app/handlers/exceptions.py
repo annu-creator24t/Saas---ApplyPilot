@@ -106,7 +106,7 @@ class AIUsageLimitException(ApplyPilotException):
 
     def __init__(
         self,
-        message: str = "You have used all 3 free AI analyses. Upgrade to ApplyPilot Pro for ₹99/month.",
+        message: str = "You have used all 3 free AI uses. Upgrade to Premium for unlimited access.",
     ) -> None:
         super().__init__(
             message=message,

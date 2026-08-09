@@ -14,15 +14,21 @@ class ATSService:
             response = generate(prompt)
 
             print("=" * 80)
-            print("RAW GEMINI RESPONSE")
-            print(response)
+            print("RAW LLM RESPONSE")
+            try:
+                print(response)
+            except Exception:
+                print(response.encode('ascii', 'ignore').decode('ascii'))
             print("=" * 80)
 
             analysis = parse_response(response)
 
             print("=" * 80)
             print("PARSED ANALYSIS")
-            print(analysis)
+            try:
+                print(analysis)
+            except Exception:
+                print(str(analysis).encode('ascii', 'ignore').decode('ascii'))
             print("=" * 80)
 
             return analysis

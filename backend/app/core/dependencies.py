@@ -61,8 +61,22 @@ async def get_current_user(
     )
 
     if not user:
-        raise AuthenticationException(
-            "User not found."
-        )
+        raise AuthenticationException("User not found.")
 
     return user
+
+
+async def get_current_admin_user(
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    """
+    Ensures that the authenticated user has Admin permissions.
+    Raises 403 Forbidden for non-admin users.
+    """
+    is_admin = current_user.get("is_admin", False) or current_user.get("role") == "admin"
+    
+    if not is_admin:
+        from app.handlers.exceptions import AuthorizationException
+        raise AuthorizationException("Access denied. Admin authorization required.")
+
+    return current_user

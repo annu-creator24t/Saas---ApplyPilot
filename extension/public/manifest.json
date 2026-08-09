@@ -14,11 +14,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*.linkedin.com/*",
-        "https://*.indeed.com/*",
-        "https://*.glassdoor.com/*",
-        "https://*.greenhouse.io/*",
-        "https://*.lever.co/*"
+        "<all_urls>"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
@@ -31,12 +27,6 @@
     "tabs"
   ],
   "host_permissions": [
-    "https://*.linkedin.com/*",
-    "https://*.indeed.com/*",
-    "https://*.glassdoor.com/*",
-    "https://*.greenhouse.io/*",
-    "https://*.lever.co/*",
-    "http://localhost/*",
-    "http://127.0.0.1/*"
+    "<all_urls>"
   ]
 }

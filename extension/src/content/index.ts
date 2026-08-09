@@ -1,4 +1,4 @@
-import { extractJobFromDOM } from "./extractors";
+import { extractJobFromDOM, extractVisibleBodyText } from "./extractors";
 
 console.log("[ApplyPilot Content Script] Loaded on", window.location.hostname);
 
@@ -15,7 +15,19 @@ chrome.runtime.onMessage.addListener(
       } catch (err: any) {
         sendResponse({ success: false, error: err.message });
       }
+      return true;
     }
+
+    if (request.action === "EXTRACT_PAGE_CONTENT") {
+      try {
+        const content = extractVisibleBodyText();
+        sendResponse({ success: true, content });
+      } catch (err: any) {
+        sendResponse({ success: false, error: err.message });
+      }
+      return true;
+    }
+
     return true;
   }
 );

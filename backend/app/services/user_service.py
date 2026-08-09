@@ -34,6 +34,12 @@ class UserService:
             "profile_picture": None,
             "is_verified": False,
             "is_active": True,
+            "is_admin": False,
+            "role": "user",
+            "subscription_status": "free",
+            "subscription_plan": "free",
+            "free_usage_count": 0,
+            "payment_status": "none",
             "created_at": datetime.utcnow(),
             "updated_at": datetime.utcnow(),
         }
@@ -102,6 +108,8 @@ class UserService:
         user.setdefault("subscription_plan", "free")
         user.setdefault("free_usage_count", 0)
         user.setdefault("payment_status", "none")
+        user.setdefault("is_admin", False)
+        user.setdefault("role", "user")
 
         return APIResponse(
             message="Profile fetched successfully.",
@@ -167,3 +175,66 @@ class UserService:
         return APIResponse(
             message="Password changed successfully.",
         )
+
+    # =====================================================
+    # Request Password Reset Code
+    # =====================================================
+
+    async def request_password_reset(self, email: str):
+        user = await self.repository.get_user_by_email(email)
+        if not user:
+            raise NotFoundException("User with this email address does not exist.")
+
+        import secrets
+        reset_code = str(secrets.randbelow(899999) + 100000)
+
+        await self.repository.update_user(
+            str(user["_id"]),
+            {
+                "reset_code": reset_code,
+                "reset_code_created_at": datetime.utcnow(),
+            },
+        )
+
+        return APIResponse(
+            message="Password reset code generated successfully.",
+            data={
+                "email": email,
+                "reset_code": reset_code,
+            },
+        )
+
+    # =====================================================
+    # Reset Password with Code
+    # =====================================================
+
+    async def reset_password(self, email: str, reset_code: str, new_password: str):
+        user = await self.repository.get_user_by_email(email)
+        if not user:
+            raise NotFoundException("User with this email address does not exist.")
+
+        stored_code = user.get("reset_code")
+        created_at = user.get("reset_code_created_at")
+
+        if not stored_code or stored_code != reset_code:
+            raise ValidationException("Invalid or expired password reset code.")
+
+        if created_at:
+            if isinstance(created_at, datetime):
+                time_elapsed = (datetime.utcnow() - created_at).total_seconds()
+                if time_elapsed > 900:  # 15 minutes expiration
+                    raise ValidationException("Invalid or expired password reset code.")
+
+        await self.repository.update_user(
+            str(user["_id"]),
+            {
+                "password": hash_password(new_password),
+                "reset_code": None,
+                "reset_code_created_at": None,
+                "updated_at": datetime.utcnow(),
+            },
+        )
+
+        return APIResponse(
+            message="Password reset successfully. You can now sign in with your new password.",
+        )

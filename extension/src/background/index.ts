@@ -8,6 +8,13 @@ chrome.runtime.onMessage.addListener(
     _sender: any,
     sendResponse: (response?: any) => void
   ) => {
+    if (message.action === "VERIFY_TOKEN") {
+      handleVerifyToken()
+        .then((res) => sendResponse({ success: true, data: res }))
+        .catch((err) => sendResponse({ success: false, error: err.message }));
+      return true;
+    }
+
     if (message.action === "LOGIN") {
       handleLogin(message.payload)
         .then((res) => sendResponse({ success: true, data: res }))
@@ -15,8 +22,36 @@ chrome.runtime.onMessage.addListener(
       return true;
     }
 
+    if (message.action === "FETCH_RESUMES") {
+      handleFetchResumes()
+        .then((res) => sendResponse({ success: true, data: res }))
+        .catch((err) => sendResponse({ success: false, error: err.message }));
+      return true;
+    }
+
     if (message.action === "ANALYZE_JOB") {
       handleAnalyzeJob(message.payload)
+        .then((res) => sendResponse({ success: true, data: res }))
+        .catch((err) => sendResponse({ success: false, error: err.message }));
+      return true;
+    }
+
+    if (message.action === "GENERATE_COVER_LETTER") {
+      handleGenerateCoverLetter(message.payload)
+        .then((res) => sendResponse({ success: true, data: res }))
+        .catch((err) => sendResponse({ success: false, error: err.message }));
+      return true;
+    }
+
+    if (message.action === "GENERATE_INTERVIEW_QUESTIONS") {
+      handleGenerateInterviewQuestions(message.payload)
+        .then((res) => sendResponse({ success: true, data: res }))
+        .catch((err) => sendResponse({ success: false, error: err.message }));
+      return true;
+    }
+
+    if (message.action === "GENERATE_RESUME_IMPROVEMENT") {
+      handleGenerateResumeImprovement(message.payload)
         .then((res) => sendResponse({ success: true, data: res }))
         .catch((err) => sendResponse({ success: false, error: err.message }));
       return true;
@@ -39,6 +74,27 @@ async function getStoredToken(): Promise<string | null> {
   });
 }
 
+async function handleVerifyToken() {
+  const token = await getStoredToken();
+  if (!token) throw new Error("NOT_AUTHENTICATED");
+
+  const res = await fetch(`${API_BASE_URL}/users/me`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (res.status === 401 || res.status === 403) {
+    await chrome.storage.local.remove(["access_token", "user", "selected_resume_id"]);
+    throw new Error("NOT_AUTHENTICATED");
+  }
+
+  const json = await res.json();
+  if (!res.ok) {
+    throw new Error(json.error?.message || json.detail || json.message || "Failed to verify token.");
+  }
+  return json.data;
+}
+
 async function handleLogin(credentials: any) {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
@@ -58,6 +114,31 @@ async function handleLogin(credentials: any) {
   return json.data;
 }
 
+async function handleFetchResumes() {
+  const token = await getStoredToken();
+  if (!token) {
+    throw new Error("NOT_AUTHENTICATED");
+  }
+
+  const res = await fetch(`${API_BASE_URL}/resume`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (res.status === 401 || res.status === 403) {
+    await chrome.storage.local.remove(["access_token", "user", "selected_resume_id"]);
+    throw new Error("NOT_AUTHENTICATED");
+  }
+
+  const json = await res.json();
+  if (!res.ok) {
+    throw new Error(json.error?.message || json.detail || json.message || "Failed to fetch resumes.");
+  }
+  return json.data || [];
+}
+
 async function handleAnalyzeJob(jobPayload: any) {
   const token = await getStoredToken();
   if (!token) {
@@ -73,9 +154,89 @@ async function handleAnalyzeJob(jobPayload: any) {
     body: JSON.stringify(jobPayload),
   });
 
+  if (res.status === 401 || res.status === 403) {
+    await chrome.storage.local.remove(["access_token", "user", "selected_resume_id"]);
+    throw new Error("NOT_AUTHENTICATED");
+  }
+
   const json = await res.json();
   if (!res.ok) {
     throw new Error(json.error?.message || json.detail || json.message || "Job analysis failed.");
+  }
+  return json.data;
+}
+
+async function handleGenerateCoverLetter(payload: { resume_id: string; job_description: string }) {
+  const token = await getStoredToken();
+  if (!token) throw new Error("NOT_AUTHENTICATED");
+
+  const res = await fetch(`${API_BASE_URL}/cover-letter/generate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (res.status === 401 || res.status === 403) {
+    await chrome.storage.local.remove(["access_token", "user", "selected_resume_id"]);
+    throw new Error("NOT_AUTHENTICATED");
+  }
+
+  const json = await res.json();
+  if (!res.ok) {
+    throw new Error(json.error?.message || json.detail || json.message || "Failed to generate cover letter.");
+  }
+  return json.data;
+}
+
+async function handleGenerateInterviewQuestions(payload: { resume_id: string; job_description: string }) {
+  const token = await getStoredToken();
+  if (!token) throw new Error("NOT_AUTHENTICATED");
+
+  const res = await fetch(`${API_BASE_URL}/interview/questions/generate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (res.status === 401 || res.status === 403) {
+    await chrome.storage.local.remove(["access_token", "user", "selected_resume_id"]);
+    throw new Error("NOT_AUTHENTICATED");
+  }
+
+  const json = await res.json();
+  if (!res.ok) {
+    throw new Error(json.error?.message || json.detail || json.message || "Failed to generate interview questions.");
+  }
+  return json.data;
+}
+
+async function handleGenerateResumeImprovement(payload: { resume_id: string; job_description: string }) {
+  const token = await getStoredToken();
+  if (!token) throw new Error("NOT_AUTHENTICATED");
+
+  const res = await fetch(`${API_BASE_URL}/resume-improvement/generate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (res.status === 401 || res.status === 403) {
+    await chrome.storage.local.remove(["access_token", "user", "selected_resume_id"]);
+    throw new Error("NOT_AUTHENTICATED");
+  }
+
+  const json = await res.json();
+  if (!res.ok) {
+    throw new Error(json.error?.message || json.detail || json.message || "Failed to generate resume optimization.");
   }
   return json.data;
 }
@@ -95,9 +256,15 @@ async function handleTrackApplication(appPayload: any) {
     body: JSON.stringify(appPayload),
   });
 
+  if (res.status === 401 || res.status === 403) {
+    await chrome.storage.local.remove(["access_token", "user", "selected_resume_id"]);
+    throw new Error("NOT_AUTHENTICATED");
+  }
+
   const json = await res.json();
   if (!res.ok) {
     throw new Error(json.detail || json.message || "Failed to save application.");
   }
   return json.data;
 }
+

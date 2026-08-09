@@ -18,6 +18,9 @@ class User(BaseModel):
 
     is_active: bool = True
 
+    is_admin: bool = False
+    role: str = "user"
+
     subscription_status: str = "free"
     subscription_plan: str = "free"
     subscription_start: Optional[datetime] = None

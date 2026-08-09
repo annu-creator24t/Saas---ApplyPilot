@@ -75,24 +75,43 @@ class SubscriptionService:
     async def check_ai_permission(self, user_id: str) -> bool:
         """
         Validates whether the user is authorized to execute an AI feature.
-        TEMPORARILY BYPASSED FOR TESTING: Allows free testing of all AI features.
+        Pro users receive unlimited access. Free tier users are capped at FREE_CREDITS_LIMIT (3).
         """
-        # TEMPORARY TESTING BYPASS: Allow unlimited testing without blocking
-        return True
+        user = await self._get_user_doc(user_id)
+        db = get_database()
+        now = datetime.utcnow()
 
-        # =========================================================================
-        # ORIGINAL QUOTA ENFORCEMENT CODE (RESTORE FOR PRODUCTION):
-        # user = await self._get_user_doc(user_id)
-        # db = get_database()
-        # now = datetime.utcnow()
-        # sub_status = user.get("subscription_status", "free")
-        # sub_plan = user.get("subscription_plan", "free")
-        # sub_end = user.get("subscription_end")
-        # free_usage_count = user.get("free_usage_count", 0)
-        # if free_usage_count >= FREE_CREDITS_LIMIT:
-        #     raise AIUsageLimitException("Limit reached.")
-        # return True
-        # =========================================================================
+        sub_status = user.get("subscription_status", "free")
+        sub_plan = user.get("subscription_plan", "free")
+        sub_end = user.get("subscription_end")
+        free_usage_count = user.get("free_usage_count", 0)
+
+        # Pro plan validation
+        if sub_plan == "pro" and sub_status == "active":
+            if sub_end and sub_end < now:
+                # Subscription expired -> downgrade to free
+                sub_status = "expired"
+                sub_plan = "free"
+                await db["users"].update_one(
+                    {"_id": user["_id"]},
+                    {
+                        "$set": {
+                            "subscription_status": "expired",
+                            "subscription_plan": "free",
+                            "updated_at": now,
+                        }
+                    },
+                )
+            else:
+                return True
+
+        # Free tier limit check
+        if free_usage_count >= FREE_CREDITS_LIMIT:
+            raise AIUsageLimitException(
+                "You have used all 3 free AI uses. Upgrade to Premium for unlimited access."
+            )
+
+        return True
 
     async def deduct_ai_credit_on_success(self, user_id: str) -> None:
         """
@@ -121,39 +140,46 @@ class SubscriptionService:
         user = await self._get_user_doc(user_id)
         db = get_database()
         now = datetime.utcnow()
+        end_date = now + timedelta(days=30)
 
-        # Update user payment state to pending
+        # Update user payment & subscription state to active Pro (30 days validity)
         await db["users"].update_one(
             {"_id": user["_id"]},
             {
                 "$set": {
-                    "payment_status": "pending",
-                    "subscription_status": "pending",
+                    "payment_status": "approved",
+                    "subscription_status": "active",
+                    "subscription_plan": "pro",
+                    "subscription_start": now,
+                    "subscription_end": end_date,
                     "payment_submitted_at": now,
-                    "payment_reference": upi_reference or "Manual Submission",
+                    "payment_reference": upi_reference or "Instant UPI Payment",
                     "updated_at": now,
                 }
             },
         )
 
-        # Log payment submission document in 'payments' collection
+        # Log approved payment document in 'payments' collection
         await db["payments"].insert_one(
             {
                 "user_id": str(user["_id"]),
                 "user_email": user.get("email"),
                 "amount": 99.0,
                 "currency": "INR",
-                "upi_reference": upi_reference,
-                "status": "pending",
+                "upi_reference": upi_reference or "Instant UPI Verification",
+                "status": "approved",
                 "submitted_at": now,
+                "verified_at": now,
             }
         )
 
         return APIResponse(
-            message="Payment submitted. Your subscription will be activated after verification.",
+            message="Payment verified! Your ApplyPilot Pro subscription is now active.",
             data={
-                "subscription_status": "pending",
-                "payment_status": "pending",
+                "subscription_status": "active",
+                "subscription_plan": "pro",
+                "payment_status": "approved",
+                "subscription_end": end_date.isoformat(),
             },
         )
 

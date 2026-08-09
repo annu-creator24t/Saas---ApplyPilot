@@ -19,6 +19,7 @@ import {
   Rocket,
   CreditCard,
   Zap,
+  BarChart3,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -46,6 +47,8 @@ export default function Sidebar() {
     router.push("/login");
   };
 
+  const isAdmin = (user as any)?.is_admin === true || (user as any)?.role === "admin";
+
   const navItems = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { label: "ATS Resume Checker", href: "/dashboard/ats-checker", icon: FileCheck2 },
@@ -56,10 +59,14 @@ export default function Sidebar() {
     { label: "Interview Prep AI", href: "/dashboard/interview", icon: Mic },
     { label: "Subscription & Pro", href: "/dashboard/subscription", icon: CreditCard },
     { label: "Profile", href: "/dashboard/profile", icon: User },
+    ...(isAdmin
+      ? [{ label: "Admin Owner Stats", href: "/dashboard/admin", icon: BarChart3 }]
+      : []),
   ];
 
   const isPro = subData?.is_pro || (user as any)?.subscription_plan === "pro";
-  const creditsRemaining = subData ? subData.free_credits_remaining : Math.max(0, 3 - ((user as any)?.free_usage_count || 0));
+  const rawRemaining = subData ? subData.free_credits_remaining : Math.max(0, 3 - ((user as any)?.free_usage_count || 0));
+  const freeCreditsNum = typeof rawRemaining === "number" ? rawRemaining : 0;
 
   return (
     <aside className="flex h-screen w-72 flex-col border-r border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 shadow-xl transition-colors duration-200">
@@ -90,25 +97,27 @@ export default function Sidebar() {
             className={`block rounded-xl border p-3 transition-all ${
               isPro
                 ? "bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border-emerald-500/30 hover:border-emerald-500/50"
-                : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-indigo-500/40"
+                : freeCreditsNum > 0
+                ? "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-indigo-500/40"
+                : "bg-rose-500/10 border-rose-500/30 hover:border-rose-500/50"
             }`}
           >
             <div className="flex items-center justify-between text-xs font-semibold">
               <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-                <Zap className="h-3.5 w-3.5 text-emerald-500" />
+                <Zap className={`h-3.5 w-3.5 ${isPro ? "text-emerald-500" : freeCreditsNum > 0 ? "text-indigo-500" : "text-rose-500"}`} />
                 AI Credits
               </span>
-              <span className="rounded-full bg-emerald-600 text-white px-2 py-0.5 text-[10px] font-bold">
-                UNLIMITED (TEST MODE)
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold text-white ${isPro ? "bg-emerald-600" : freeCreditsNum > 0 ? "bg-indigo-600" : "bg-rose-600"}`}>
+                {isPro ? "PRO ACTIVE" : `${freeCreditsNum} / 3 LEFT`}
               </span>
             </div>
 
             <div className="mt-2 flex items-center justify-between text-[11px]">
-              <span className="text-slate-500 dark:text-slate-400">
-                Quota enforcement disabled for testing
+              <span className="text-slate-500 dark:text-slate-400 truncate">
+                {isPro ? "Unlimited AI access enabled" : freeCreditsNum > 0 ? `${freeCreditsNum} free AI generations left` : "Limit reached (0/3 remaining)"}
               </span>
-              <span className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">
-                View Plan →
+              <span className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline shrink-0 ml-1">
+                {isPro ? "Pro Status" : "Upgrade →"}
               </span>
             </div>
           </Link>

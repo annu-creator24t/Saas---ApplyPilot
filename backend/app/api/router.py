@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api import auth, resume, users
+from app.api.admin import router as admin_router
 from app.api.analysis import router as analysis_router
 from app.api.analysis_history import router as analysis_history_router
 from app.api.applications import router as applications_router
@@ -22,6 +23,7 @@ api_router.include_router(users.router)
 
 # Subscription & Billing
 api_router.include_router(subscription_router)
+api_router.include_router(admin_router)
 
 # Resume
 api_router.include_router(resume.router)

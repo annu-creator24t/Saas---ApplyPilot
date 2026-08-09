@@ -74,3 +74,17 @@ class ChangePasswordRequest(BaseModel):
         ...,
         min_length=8,
     )
+
+
+# =====================================================
+# Forgot & Reset Password
+# =====================================================
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    reset_code: str = Field(..., min_length=4, max_length=10)
+    new_password: str = Field(..., min_length=8)

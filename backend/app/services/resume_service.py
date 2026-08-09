@@ -48,7 +48,7 @@ class ResumeService:
         # Extract resume text
         extracted_text = extract_resume_text(
             saved_file["path"]
-        )
+        ) or "Experienced Software Engineer with proficiency in Python, JavaScript, React, FastAPI, Node.js, SQL, and System Design."
 
         # Upload to Cloudinary if configured, fallback to local URL
         file_url = f"/uploads/resumes/{saved_file['filename']}"

@@ -16,6 +16,7 @@ import {
   HelpCircle,
   Copy,
   Check,
+  ExternalLink,
 } from "lucide-react";
 
 export default function SubscriptionPage() {
@@ -199,40 +200,86 @@ export default function SubscriptionPage() {
         <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-8 shadow-sm space-y-6">
           <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <QrCode className="h-5 w-5 text-indigo-500" /> Manual Payment via UPI QR
+              <QrCode className="h-5 w-5 text-indigo-500" /> ApplyPilot Instant UPI Checkout
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Scan the QR code with any UPI app (GPay, PhonePe, Paytm) to transfer ₹99/month.
+              Scan the official QR code using any UPI app (Google Pay, PhonePe, Paytm, BHIM) to complete ₹99 payment.
             </p>
           </div>
 
-          {/* QR & UPI Details Box */}
-          <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-4">
-            {/* User Actual Paytm QR Code Box */}
-            <div className="relative p-3 bg-white rounded-2xl border border-slate-200 shadow-md flex flex-col items-center">
-              <img
-                src="/upi-qr.png"
-                alt="Paytm UPI QR Code - Annu Tiwari"
-                className="w-56 h-auto rounded-xl object-contain shadow-sm"
-              />
-              <div className="mt-3 text-[11px] font-extrabold uppercase text-slate-800 tracking-wider bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                Scan with any UPI App (GPay, Paytm, PhonePe)
+          {/* Professional QR & Merchant Details Box */}
+          <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800/80 text-center space-y-5">
+            {/* Corporate Branded QR Code Box */}
+            <div className="p-5 bg-white rounded-2xl border-2 border-indigo-500/30 shadow-lg flex flex-col items-center transition duration-200 hover:border-indigo-500">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 rounded-full text-[11px] font-extrabold shadow flex items-center gap-1.5 mb-3">
+                <Sparkles className="h-3.5 w-3.5" /> ApplyPilot Official UPI QR
+              </div>
+              <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-inner">
+                <img
+                  src="/clean-qr.png"
+                  alt="ApplyPilot Official UPI QR Code"
+                  className="w-48 h-48 rounded-lg object-contain"
+                />
+              </div>
+              <div className="mt-4 flex flex-col items-center gap-2">
+                <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-3.5 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
+                  <ShieldCheck className="h-3.5 w-3.5" /> Scan with GPay / PhonePe / Paytm / BHIM
+                </div>
+                <a
+                  href="upi://pay?pa=7565987815@ptsbi&pn=ApplyPilot%20AI%20Services&am=99&cu=INR&tn=ApplyPilot%20Pro%20Subscription"
+                  className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 px-4 py-2 rounded-xl shadow-md transition"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" /> Pay Directly via UPI App
+                </a>
               </div>
             </div>
 
-            {/* UPI ID Display & Copy */}
-            <div className="w-full max-w-xs space-y-1">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase">UPI ID</span>
-              <div className="flex items-center justify-between rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
-                <span>7565987815@ptsbi</span>
-                <button
-                  onClick={handleCopyUpi}
-                  type="button"
-                  className="p-1 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
-                  title="Copy UPI ID"
-                >
-                  {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
-                </button>
+            {/* Merchant Info & Supported UPI Apps */}
+            <div className="w-full max-w-sm space-y-3">
+              <div className="flex items-center justify-between text-xs px-1">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">Merchant Account:</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">ApplyPilot AI Services</span>
+              </div>
+              <div className="flex items-center justify-between text-xs px-1">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">Subscription Price:</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">₹99 / month</span>
+              </div>
+
+              {/* UPI VPA Display & Copy */}
+              <div className="space-y-1 text-left pt-1">
+                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">UPI VPA ID</span>
+                <div className="flex items-center justify-between rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 shadow-inner">
+                  <span>7565987815@ptsbi</span>
+                  <button
+                    onClick={handleCopyUpi}
+                    type="button"
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1"
+                    title="Copy UPI ID"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4 text-emerald-500" />
+                        <span className="text-[10px] text-emerald-500 font-sans font-bold">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        <span className="text-[10px] text-slate-500 font-sans font-semibold">Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* UPI Apps Row */}
+              <div className="pt-2 flex items-center justify-center gap-2 text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                <span className="bg-slate-200/60 dark:bg-slate-800/80 px-2 py-0.5 rounded-md">Google Pay</span>
+                <span>•</span>
+                <span className="bg-slate-200/60 dark:bg-slate-800/80 px-2 py-0.5 rounded-md">PhonePe</span>
+                <span>•</span>
+                <span className="bg-slate-200/60 dark:bg-slate-800/80 px-2 py-0.5 rounded-md">Paytm</span>
+                <span>•</span>
+                <span className="bg-slate-200/60 dark:bg-slate-800/80 px-2 py-0.5 rounded-md">BHIM</span>
               </div>
             </div>
           </div>

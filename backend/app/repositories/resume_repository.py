@@ -61,10 +61,13 @@ class ResumeRepository:
         user_id: str,
     ) -> list[dict]:
 
+        str_id = str(user_id)
+        query: dict[str, Any] = {"user_id": str_id}
+        if ObjectId.is_valid(str_id):
+            query = {"$or": [{"user_id": str_id}, {"user_id": ObjectId(str_id)}]}
+
         cursor = (
-            self.collection.find(
-                {"user_id": user_id}
-            )
+            self.collection.find(query)
             .sort("created_at", -1)
         )
 
