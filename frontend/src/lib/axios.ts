@@ -22,8 +22,18 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       if (typeof window !== "undefined") {
         localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
         localStorage.removeItem("user");
-        if (!window.location.pathname.startsWith("/login") && !window.location.pathname.startsWith("/signup")) {
+        document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+        const path = window.location.pathname;
+        const isPublicPage =
+          path === "/" ||
+          path.startsWith("/login") ||
+          path.startsWith("/signup") ||
+          path.startsWith("/forgot-password");
+
+        if (!isPublicPage) {
           window.location.href = "/login";
         }
       }

@@ -33,38 +33,11 @@ export function extractJobFromDOM(): ExtractedJobData {
   // 2. DOMAIN-SPECIFIC ADAPTERS
   if (hostname.includes("linkedin.com")) {
     source_site = "LinkedIn";
-    if (!job_title) {
-      job_title = getText([
-        ".job-details-jobs-unified-top-card__job-title",
-        ".jobs-unified-top-card__job-title",
-        ".top-card-layout__title",
-        "h1.t-24",
-        "h1",
-      ]);
-    }
-    if (!company_name) {
-      company_name = getText([
-        ".job-details-jobs-unified-top-card__company-name",
-        ".jobs-unified-top-card__company-name",
-        ".topcard__org-name-link",
-        ".job-details-jobs-unified-top-card__primary-description span",
-      ]);
-    }
-    if (!location) {
-      location = getText([
-        ".job-details-jobs-unified-top-card__bullet",
-        ".jobs-unified-top-card__bullet",
-        ".topcard__flavor--bullet",
-      ]);
-    }
-    if (!job_description) {
-      job_description = getText([
-        "#job-details",
-        ".jobs-description__content",
-        ".description__text",
-        ".jobs-box__html-content",
-      ]);
-    }
+    const linkedinData = extractLinkedInData();
+    if (!job_title && linkedinData.job_title) job_title = linkedinData.job_title;
+    if (!company_name && linkedinData.company_name) company_name = linkedinData.company_name;
+    if (!location && linkedinData.location) location = linkedinData.location;
+    if (!job_description && linkedinData.job_description) job_description = linkedinData.job_description;
   } else if (hostname.includes("indeed.com")) {
     source_site = "Indeed";
     if (!job_title) {
@@ -256,19 +229,31 @@ export function extractJobFromDOM(): ExtractedJobData {
   const cleanedLocation = cleanText(location);
   const cleanedDescription = cleanText(job_description);
 
-  // Filter out common non-job titles (e.g. LinkedIn Feed, Home, Inbox)
+  // Check if title is generic non-job page title (e.g. LinkedIn Feed, Home, Inbox)
   const isNonJobPageTitle = /^\(\d+\)\s*(Feed|Inbox|Home|Notifications)|^(Feed|Home|Dashboard|Messaging|Notifications|Inbox|LinkedIn|Login|Sign In)$/i.test(cleanedTitle.trim());
 
   let finalTitle = cleanedTitle;
   let finalDescription = cleanedDescription;
-  if (isNonJobPageTitle) {
-    finalTitle = "";
-    finalDescription = "";
+
+  if (isNonJobPageTitle || !finalTitle) {
+    if (finalDescription && finalDescription.length >= 30) {
+      // Extract or infer title from description instead of discarding description
+      const roleMatch = finalDescription.match(/(?:role|position|job title|profile)\s*[:\-–—]\s*([^\n\r,•!]{3,40})/i);
+      const isHiringMatch = finalDescription.match(/(?:is|are)\s+hiring\s*[–\-\|:]?\s*([^\n\r!]{3,40})/i);
+      if (roleMatch && roleMatch[1]) {
+        finalTitle = roleMatch[1].trim();
+      } else if (isHiringMatch && isHiringMatch[1]) {
+        finalTitle = isHiringMatch[1].trim();
+      } else {
+        finalTitle = cleanedCompany ? `${cleanedCompany} Job Posting` : "Job Posting";
+      }
+    } else {
+      finalTitle = "";
+      finalDescription = "";
+    }
   }
 
-  const detected = Boolean(
-    !isNonJobPageTitle && finalTitle.length > 0 && finalDescription.length >= 30
-  );
+  const detected = Boolean(finalTitle.length > 0 && finalDescription.length >= 30);
 
   return {
     job_title: finalTitle,
@@ -421,4 +406,167 @@ function getSiteNameFromHostname(hostname: string): string {
   if (hostname.includes("greenhouse.io")) return "Greenhouse";
   if (hostname.includes("lever.co")) return "Lever";
   return formatDomainName(hostname) + " Careers";
+}
+
+/**
+ * Robust LinkedIn Job & Feed Extractor
+ */
+function extractLinkedInData(): {
+  job_title: string;
+  company_name: string;
+  location: string;
+  job_description: string;
+} {
+  let job_title = "";
+  let company_name = "";
+  let location = "";
+  let job_description = "";
+
+  // 1. Try standard LinkedIn Job page selectors (for /jobs/view/..., /jobs/search/..., /jobs/collections/...)
+  job_title = getText([
+    ".job-details-jobs-unified-top-card__job-title",
+    ".jobs-unified-top-card__job-title",
+    ".jobs-search__job-details--container h2",
+    ".jobs-search__job-details--container h1",
+    ".jobs-details__main-content h1",
+    ".jobs-details__main-content h2",
+    ".top-card-layout__title",
+    ".topcard__title",
+    "h1.t-24",
+    "h1.t-20",
+    "h1.job-title",
+    ".job-details-jobs-unified-top-card__container h1",
+    ".job-details-jobs-unified-top-card__container h2",
+  ]);
+
+  company_name = getText([
+    ".job-details-jobs-unified-top-card__company-name",
+    ".jobs-unified-top-card__company-name",
+    ".topcard__org-name-link",
+    ".job-details-jobs-unified-top-card__primary-description a",
+    ".job-details-jobs-unified-top-card__primary-description span",
+    ".jobs-details__main-content [class*='company']",
+    ".jobs-search-results-list__list-item--active [class*='company']",
+    "a[href*='/company/']",
+  ]);
+
+  location = getText([
+    ".job-details-jobs-unified-top-card__bullet",
+    ".jobs-unified-top-card__bullet",
+    ".topcard__flavor--bullet",
+    ".job-details-jobs-unified-top-card__primary-description span:nth-child(2)",
+    ".jobs-unified-top-card__workplace-type",
+    "span.jobs-unified-top-card__bullet",
+  ]);
+
+  job_description = getText([
+    "#job-details",
+    ".jobs-description__content",
+    ".jobs-description-content__text",
+    ".jobs-description__container",
+    "article.jobs-description__container",
+    ".jobs-description",
+    ".description__text",
+    ".jobs-box__html-content",
+    "[data-job-descriptor]",
+    ".jobs-search__job-details--container",
+  ]);
+
+  // 2. If job description wasn't found via job page selectors, extract from LinkedIn feed posts/modals
+  if (!job_description || job_description.length < 30) {
+    const feedPostContainers = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        ".feed-shared-update-v2, div[data-urn], .modal-concept, .artdeco-modal, article, .feed-shared-post"
+      )
+    );
+
+    let targetPostText = "";
+    let targetPostEl: HTMLElement | null = null;
+
+    for (const container of feedPostContainers) {
+      const text = container.innerText || container.textContent || "";
+      if (
+        /(hiring|role:|job|position:|opportunity|opening|salary|full-time|part-time|remote|apply|responsibilities|qualifications|experience|lpa|ctc)/i.test(
+          text
+        ) &&
+        text.length > 50
+      ) {
+        targetPostText = text;
+        targetPostEl = container;
+        break;
+      }
+    }
+
+    if (!targetPostText) {
+      const visibleBody = extractVisibleBodyText();
+      if (
+        /(hiring|role:|job|position:|opportunity|opening|salary|full-time|part-time|remote|apply|responsibilities|qualifications|experience|lpa|ctc)/i.test(
+          visibleBody
+        ) &&
+        visibleBody.length > 50
+      ) {
+        targetPostText = visibleBody;
+      }
+    }
+
+    if (targetPostText) {
+      job_description = targetPostText;
+
+      if (!company_name) {
+        const companyMatch =
+          targetPostText.match(/([A-Z][A-Za-z0-9\s&]{2,25})\s+(?:is|are)\s+hiring/i) ||
+          targetPostText.match(/(?:at|company)\s*[:\-–—]?\s*([A-Z][A-Za-z0-9\s&]{2,25})/i);
+        if (companyMatch && companyMatch[1]) {
+          company_name = companyMatch[1].trim();
+        } else if (targetPostEl) {
+          const authorEl = targetPostEl.querySelector<HTMLElement>(
+            ".update-components-actor__title, .feed-shared-actor__title, span[dir='ltr']"
+          );
+          if (authorEl) {
+            const authorName = authorEl.innerText.split("\n")[0].trim();
+            if (authorName) company_name = authorName;
+          }
+        }
+      }
+
+      if (!job_title) {
+        const roleMatch = targetPostText.match(
+          /(?:role|position|job title|profile)\s*[:\-–—]\s*([^\n\r,•!]+)/i
+        );
+        const hiringMatch = targetPostText.match(
+          /(?:hiring|looking for|hiring for)\s+[–\-\|:]?\s*([A-Z][A-Za-z0-9\s/\-+]{3,40})(?:\s*[!|\-–\n]|\s+at|\s+in|\s+for|\s*$)/i
+        );
+        const isHiringMatch = targetPostText.match(
+          /(?:is|are)\s+hiring\s*[–\-\|:]?\s*([A-Z][A-Za-z0-9\s/\-+]{3,40})(?:\s*[!|\-–\n]|\s+at|\s+in|\s+for|\s*$)/i
+        );
+
+        if (roleMatch && roleMatch[1]) {
+          job_title = roleMatch[1].trim();
+        } else if (isHiringMatch && isHiringMatch[1]) {
+          job_title = isHiringMatch[1].trim();
+        } else if (hiringMatch && hiringMatch[1]) {
+          job_title = hiringMatch[1].trim();
+        } else {
+          const lines = targetPostText
+            .split("\n")
+            .map((l) => l.trim())
+            .filter((l) => l.length > 5 && l.length < 80);
+          if (lines.length > 0) {
+            job_title = lines[0].replace(/^(🚀|📌|📍|⏰|💰|🔗|\*|\-|\#)+/, "").trim();
+          }
+        }
+      }
+
+      if (!location) {
+        const locMatch = targetPostText.match(
+          /(?:location|loc|workplace)\s*[:\-–—]\s*([^\n\r,•!]+)/i
+        );
+        if (locMatch && locMatch[1]) {
+          location = locMatch[1].trim();
+        }
+      }
+    }
+  }
+
+  return { job_title, company_name, location, job_description };
 }

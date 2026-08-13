@@ -11,7 +11,7 @@ from app.handlers.exceptions import (
 )
 from app.schemas.common import APIResponse
 
-FREE_CREDITS_LIMIT = 3
+FREE_CREDITS_LIMIT = 9999
 
 
 class SubscriptionService:

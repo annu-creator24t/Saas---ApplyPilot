@@ -127,4 +127,8 @@
   html {
     @apply font-sans;
   }
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
 }

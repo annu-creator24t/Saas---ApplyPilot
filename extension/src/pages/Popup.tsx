@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../components/Header";
 import {
   Sparkles,
@@ -18,6 +18,7 @@ import {
   Wand2,
   HelpCircle,
   ChevronDown,
+  Upload,
 } from "lucide-react";
 
 interface ResumeItem {
@@ -39,9 +40,11 @@ export default function Popup() {
   const [authLoading, setAuthLoading] = useState(false);
 
   // Resume State
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [resumes, setResumes] = useState<ResumeItem[]>([]);
   const [selectedResumeId, setSelectedResumeId] = useState<string>("");
   const [loadingResumes, setLoadingResumes] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
 
   // Job Extraction State
   const [jobData, setJobData] = useState<any | null>(null);
@@ -84,24 +87,38 @@ export default function Popup() {
 
   // 1. Initial Load & Session Validation
   useEffect(() => {
+    // Check if there is a pending preserved job from previous extraction or navigation
     if (typeof chrome !== "undefined" && chrome.storage) {
-      chrome.storage.local.get(["access_token", "user", "selected_resume_id"], (res: Record<string, any>) => {
-        if (res.access_token) {
-          chrome.runtime.sendMessage({ action: "VERIFY_TOKEN" }, (verifyRes: any) => {
-            if (verifyRes && verifyRes.success) {
-              setToken(res.access_token);
-              setUserEmail(verifyRes.data?.email || res.user || "Logged In");
-              if (res.selected_resume_id) {
-                setSelectedResumeId(res.selected_resume_id);
-              }
-              fetchResumes();
-            } else {
-              chrome.storage.local.remove(["access_token", "user", "selected_resume_id"]);
-              setToken(null);
-              setUserEmail(null);
-              setAuthError("Session expired. Please log in again.");
+      chrome.storage.local.get(["pending_extracted_job"], (res: Record<string, any>) => {
+        if (res.pending_extracted_job && res.pending_extracted_job.job_description) {
+          setJobData(res.pending_extracted_job);
+          if (res.pending_extracted_job.job_title) setManualTitle(res.pending_extracted_job.job_title);
+          if (res.pending_extracted_job.company_name) setManualCompany(res.pending_extracted_job.company_name);
+          if (res.pending_extracted_job.location) setManualLocation(res.pending_extracted_job.location);
+          if (res.pending_extracted_job.job_description) setManualDescription(res.pending_extracted_job.job_description);
+          setExtracting(false);
+        }
+      });
+    }
+
+    if (typeof chrome !== "undefined" && chrome.runtime) {
+      chrome.runtime.sendMessage({ action: "VERIFY_TOKEN" }, (verifyRes: any) => {
+        if (verifyRes && verifyRes.success && verifyRes.data?.access_token) {
+          const activeToken = verifyRes.data.access_token;
+          setToken(activeToken);
+          setUserEmail(verifyRes.data?.email || "Logged In");
+          chrome.storage.local.set({ access_token: activeToken, user: verifyRes.data?.email });
+          chrome.storage.local.get(["selected_resume_id"], (res: Record<string, any>) => {
+            if (res.selected_resume_id) {
+              setSelectedResumeId(res.selected_resume_id);
             }
+            fetchResumes();
           });
+        } else if (verifyRes?.error === "SERVER_UNREACHABLE") {
+          setError("Cannot connect to ApplyPilot server (localhost:8000). Please check backend.");
+        } else {
+          setToken(null);
+          setUserEmail(null);
         }
       });
     }
@@ -109,11 +126,15 @@ export default function Popup() {
     extractActiveTabJob();
   }, []);
 
-  // 2. Auto-run analysis when token, resume, and JD are all ready
+  // 2. Auto-run analysis when token, resume, and JD are ready
   useEffect(() => {
+    const targetResumeId =
+      selectedResumeId ||
+      (resumes.length > 0 ? resumes[0].resume_id || resumes[0].id || resumes[0]._id || "" : "");
+
     if (
       token &&
-      selectedResumeId &&
+      targetResumeId &&
       currentJD &&
       currentJD.trim().length >= 30 &&
       !extracting &&
@@ -122,12 +143,16 @@ export default function Popup() {
       !analysisResult &&
       !hasAutoAnalyzed
     ) {
+      if (!selectedResumeId) {
+        setSelectedResumeId(targetResumeId);
+      }
       setHasAutoAnalyzed(true);
-      executeAnalysis(selectedResumeId, currentJD, currentTitle, currentCompany);
+      executeAnalysis(targetResumeId, currentJD, currentTitle, currentCompany);
     }
   }, [
     token,
     selectedResumeId,
+    resumes,
     currentJD,
     extracting,
     loadingResumes,
@@ -144,7 +169,6 @@ export default function Popup() {
       if (res && res.success && Array.isArray(res.data)) {
         setResumes(res.data);
         if (res.data.length > 0) {
-          // Select user's MOST RECENTLY SUBMITTED resume (first item in sorted array)
           const firstResume = res.data[0];
           const firstId = firstResume.resume_id || firstResume.id || firstResume._id;
           
@@ -166,11 +190,79 @@ export default function Popup() {
 
   const handleSelectResume = (id: string) => {
     setSelectedResumeId(id);
-    setHasAutoAnalyzed(false); // Allow auto-analysis on new selection if needed
+    setHasAutoAnalyzed(false); // Allow auto-analysis on new selection
     setAnalysisResult(null);
     if (typeof chrome !== "undefined" && chrome.storage) {
       chrome.storage.local.set({ selected_resume_id: id });
     }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedExtensions = [".pdf", ".docx"];
+    const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+    if (!allowedExtensions.includes(ext)) {
+      setError("Only PDF (.pdf) and Word (.docx) files are supported.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Maximum file size is 5 MB.");
+      return;
+    }
+
+    setUploadingResume(true);
+    setError(null);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(",")[1] || result;
+
+      chrome.runtime.sendMessage(
+        {
+          action: "UPLOAD_RESUME",
+          payload: {
+            base64,
+            fileName: file.name,
+            fileType: file.type || "application/pdf",
+          },
+        },
+        (res: any) => {
+          setUploadingResume(false);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+
+          if (res && res.success) {
+            const newResume = res.data;
+            const newId = newResume.resume_id || newResume.id || newResume._id || "";
+
+            setResumes((prev) => [newResume, ...prev]);
+            if (newId) {
+              setSelectedResumeId(newId);
+              if (typeof chrome !== "undefined" && chrome.storage) {
+                chrome.storage.local.set({ selected_resume_id: newId });
+              }
+            }
+            setHasAutoAnalyzed(false); // Trigger analysis with the new resume automatically
+            setAnalysisResult(null);
+          } else {
+            if (res?.error === "NOT_AUTHENTICATED") {
+              handleLogout();
+              setAuthError("Session expired. Please log in again.");
+            } else {
+              setError(res?.error || "Failed to upload resume.");
+            }
+          }
+        }
+      );
+    };
+    reader.onerror = () => {
+      setUploadingResume(false);
+      setError("Failed to read selected file.");
+    };
+    reader.readAsDataURL(file);
   };
 
   const extractActiveTabJob = () => {
@@ -187,6 +279,17 @@ export default function Popup() {
         return;
       }
 
+      const saveJobToStorage = (extracted: any) => {
+        setJobData(extracted);
+        if (extracted.job_title) setManualTitle(extracted.job_title);
+        if (extracted.company_name) setManualCompany(extracted.company_name);
+        if (extracted.location) setManualLocation(extracted.location);
+        if (extracted.job_description) setManualDescription(extracted.job_description);
+        if (typeof chrome !== "undefined" && chrome.storage && extracted.job_description) {
+          chrome.storage.local.set({ pending_extracted_job: extracted });
+        }
+      };
+
       chrome.tabs.sendMessage(activeTab.id, { action: "EXTRACT_JOB" }, (response: any) => {
         if (chrome.runtime.lastError || !response || !response.success) {
           // Infallible DOM script execution fallback
@@ -197,23 +300,13 @@ export default function Popup() {
             },
             (results: any[]) => {
               if (results && results[0] && results[0].result) {
-                const extracted = results[0].result;
-                setJobData(extracted);
-                if (extracted.job_title) setManualTitle(extracted.job_title);
-                if (extracted.company_name) setManualCompany(extracted.company_name);
-                if (extracted.location) setManualLocation(extracted.location);
-                if (extracted.job_description) setManualDescription(extracted.job_description);
+                saveJobToStorage(results[0].result);
               }
               setExtracting(false);
             }
           );
         } else {
-          const extracted = response.data;
-          setJobData(extracted);
-          if (extracted.job_title) setManualTitle(extracted.job_title);
-          if (extracted.company_name) setManualCompany(extracted.company_name);
-          if (extracted.location) setManualLocation(extracted.location);
-          if (extracted.job_description) setManualDescription(extracted.job_description);
+          saveJobToStorage(response.data);
           setExtracting(false);
         }
       });
@@ -233,8 +326,22 @@ export default function Popup() {
         setExtracting(false);
         if (res && res.success && res.content) {
           const newDesc = res.content;
+          let inferredTitle = jobData?.job_title || tab.title || "Job Posting";
+          const isGeneric = !inferredTitle || /^\(\d+\)\s*(Feed|Inbox|Home)|^(Feed|Home|LinkedIn|Inbox|Notifications)/i.test(inferredTitle.trim());
+          if (isGeneric && newDesc) {
+            const roleInDesc = newDesc.match(/(?:role|position|job title|profile)\s*[:\-–—]\s*([^\n\r,•!]{3,40})/i);
+            const isHiringMatch = newDesc.match(/(?:is|are)\s+hiring\s*[–\-\|:]?\s*([^\n\r!]{3,40})/i);
+            if (roleInDesc && roleInDesc[1]) {
+              inferredTitle = roleInDesc[1].trim();
+            } else if (isHiringMatch && isHiringMatch[1]) {
+              inferredTitle = isHiringMatch[1].trim();
+            } else {
+              inferredTitle = "Job Posting";
+            }
+          }
+
           const updated = {
-            job_title: jobData?.job_title || tab.title || "Job Posting",
+            job_title: inferredTitle,
             company_name: jobData?.company_name || formatHost(tab.url),
             location: jobData?.location || "",
             job_description: newDesc,
@@ -579,45 +686,87 @@ export default function Popup() {
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full rounded-xl bg-indigo-600 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-indigo-500 transition flex items-center justify-center gap-2"
+                className="w-full rounded-xl bg-indigo-600 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-indigo-500 transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 {authLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In to Extension"}
               </button>
             </form>
+
+            {/* WEBSITE REDIRECT HELPERS */}
+            <div className="pt-2 border-t border-slate-800 text-center space-y-1.5">
+              <p className="text-[11px] text-slate-400">
+                New to ApplyPilot?{" "}
+                <a
+                  href="http://localhost:3000/register"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-indigo-400 hover:underline inline-flex items-center gap-0.5"
+                >
+                  Create Account on Website <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              </p>
+              <div>
+                <a
+                  href="http://localhost:3000/login"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[10px] text-slate-500 hover:text-slate-300 transition inline-flex items-center gap-0.5"
+                >
+                  Or log in on Web App <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="space-y-3 pt-1">
+            {/* Hidden Resume File Input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept=".pdf,.docx"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+
             {/* 2. RESUME SELECTION CARD */}
             <div className="rounded-xl border border-slate-800 bg-slate-900/90 p-3 space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
                   <FileText className="h-3.5 w-3.5 text-indigo-400" /> Resume
                 </span>
-                <a
-                  href="http://localhost:3000/dashboard/resumes"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[10px] font-medium text-indigo-400 hover:underline flex items-center gap-0.5"
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingResume}
+                  className="text-[10px] font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 bg-indigo-500/10 hover:bg-indigo-500/20 px-2 py-0.5 rounded-md border border-indigo-500/20 transition cursor-pointer disabled:opacity-50"
+                  title="Upload a new resume file directly"
                 >
-                  <Plus className="h-3 w-3" /> Upload New <ExternalLink className="h-2.5 w-2.5" />
-                </a>
+                  {uploadingResume ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Upload className="h-3 w-3" />
+                  )}
+                  <span>{uploadingResume ? "Uploading..." : "+ Upload New"}</span>
+                </button>
               </div>
 
-              {loadingResumes ? (
-                <div className="flex items-center justify-center p-2 text-[11px] text-slate-400 gap-1.5">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading resumes...
+              {loadingResumes || uploadingResume ? (
+                <div className="flex items-center justify-center p-2.5 text-[11px] text-slate-300 gap-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-400" />
+                  <span>{uploadingResume ? "Uploading & analyzing resume text..." : "Loading resumes..."}</span>
                 </div>
               ) : resumes.length === 0 ? (
-                <div className="p-2.5 text-center text-[11px] text-amber-400 bg-amber-500/10 rounded-lg border border-amber-500/20 space-y-1.5">
-                  <p className="font-semibold">Please upload a resume first.</p>
-                  <a
-                    href="http://localhost:3000/dashboard/resumes"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 rounded-md bg-amber-500/20 px-2.5 py-1 text-[11px] font-semibold text-amber-300 hover:bg-amber-500/30 transition"
+                <div className="p-3 text-center text-[11px] bg-indigo-500/10 rounded-lg border border-indigo-500/20 space-y-2">
+                  <p className="font-semibold text-indigo-300">No resume available</p>
+                  <p className="text-[10px] text-slate-400">Upload your PDF or DOCX resume to analyze job match score directly.</p>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingResume}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-md cursor-pointer disabled:opacity-50"
                   >
-                    Upload Resume <ExternalLink className="h-3 w-3" />
-                  </a>
+                    <Upload className="h-3.5 w-3.5" /> Upload Resume File
+                  </button>
                 </div>
               ) : (
                 <div className="relative">
@@ -831,25 +980,34 @@ export default function Popup() {
                 {/* TAB 1: MATCH ANALYSIS */}
                 {activeTab === "analysis" && (
                   <div className="rounded-xl border border-indigo-500/30 bg-slate-900 p-3.5 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-slate-300">Job Match Score</span>
-                      <span className="text-xl font-extrabold text-indigo-400">
-                        {analysisResult.match_score}%
-                      </span>
+                    {/* Score Grid */}
+                    <div className="grid grid-cols-2 gap-2 text-center bg-slate-950/80 p-2.5 rounded-xl border border-indigo-500/20">
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Match Score</span>
+                        <span className="text-2xl font-black text-indigo-400 leading-none">
+                          {analysisResult.match_score}%
+                        </span>
+                      </div>
+                      <div className="space-y-0.5 border-l border-slate-800">
+                        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">ATS Score</span>
+                        <span className="text-2xl font-black text-emerald-400 leading-none">
+                          {analysisResult.ats_score || Math.min(100, Math.round(analysisResult.match_score * 1.05 + 2))}%
+                        </span>
+                      </div>
                     </div>
 
                     <div className="space-y-2 pt-2 border-t border-slate-800 text-[11px]">
                       {/* Matched Skills */}
                       <div>
                         <span className="text-emerald-400 font-semibold flex items-center gap-1 text-[11px]">
-                          <CheckCircle2 className="h-3 w-3" /> Matching Skills:
+                          <CheckCircle2 className="h-3 w-3" /> Matched Skills:
                         </span>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {analysisResult.matched_skills && analysisResult.matched_skills.length > 0 ? (
                             analysisResult.matched_skills.map((s: string, i: number) => (
                               <span
                                 key={i}
-                                className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-emerald-300 border border-emerald-500/20"
+                                className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-emerald-300 border border-emerald-500/20 font-medium"
                               >
                                 {s}
                               </span>
@@ -870,7 +1028,7 @@ export default function Popup() {
                             analysisResult.missing_skills.map((s: string, i: number) => (
                               <span
                                 key={i}
-                                className="rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-300 border border-amber-500/20"
+                                className="rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-300 border border-amber-500/20 font-medium"
                               >
                                 {s}
                               </span>
@@ -892,6 +1050,17 @@ export default function Popup() {
                           </ul>
                         </div>
                       )}
+
+                      <div className="pt-2 border-t border-slate-800 text-center">
+                        <a
+                          href="http://localhost:3000/dashboard/resume-optimizer"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[10px] font-semibold text-indigo-400 hover:underline inline-flex items-center gap-1"
+                        >
+                          Open Full AI Optimizer on Website <ExternalLink className="h-2.5 w-2.5" />
+                        </a>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1057,11 +1226,11 @@ export default function Popup() {
 
       {/* FOOTER TRACK APPLICATION ACTION */}
       {token && (
-        <div className="pt-3 border-t border-slate-800 mt-2">
+        <div className="pt-3 border-t border-slate-800 mt-2 space-y-1.5">
           <button
             onClick={handleTrackApplication}
             disabled={tracking || trackedSuccess || (!currentJD && !manualDescription)}
-            className={`w-full rounded-xl py-2 text-xs font-semibold shadow-md transition flex items-center justify-center gap-2 ${
+            className={`w-full rounded-xl py-2 text-xs font-semibold shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
               trackedSuccess
                 ? "bg-emerald-600 text-white"
                 : "bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-700"
@@ -1076,6 +1245,19 @@ export default function Popup() {
             )}
             <span>{trackedSuccess ? "Saved to Dashboard!" : "1-Click Track Application"}</span>
           </button>
+
+          {trackedSuccess && (
+            <div className="text-center">
+              <a
+                href="http://localhost:3000/dashboard/applications"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[10px] font-semibold text-emerald-400 hover:underline inline-flex items-center gap-1"
+              >
+                View Tracker on Website <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -1084,17 +1266,67 @@ export default function Popup() {
 
 // Infallible DOM extraction fallback function
 function fallbackDOMExtractor() {
-  const h1 = document.querySelector("h1");
-  const job_title = h1 ? h1.innerText.trim() : document.title;
-  const mainEl = document.querySelector("main") || document.querySelector("article") || document.body;
-  const job_description = mainEl ? mainEl.innerText.slice(0, 4000).trim() : "";
+  const hostname = window.location.hostname;
+  const isLinkedIn = hostname.includes("linkedin.com");
+
+  let job_title = "";
+  let company_name = hostname.replace("www.", "").split(".")[0];
+  let job_description = "";
+
+  if (isLinkedIn) {
+    const jobDetailsEl =
+      document.querySelector("#job-details") ||
+      document.querySelector(".jobs-description__content") ||
+      document.querySelector(".jobs-search__job-details--container");
+    if (jobDetailsEl && (jobDetailsEl as HTMLElement).innerText) {
+      job_description = (jobDetailsEl as HTMLElement).innerText;
+    }
+    const titleEl =
+      document.querySelector(".job-details-jobs-unified-top-card__job-title") ||
+      document.querySelector(".jobs-unified-top-card__job-title") ||
+      document.querySelector(".jobs-details__main-content h1");
+    if (titleEl && (titleEl as HTMLElement).innerText) {
+      job_title = (titleEl as HTMLElement).innerText.trim();
+    }
+    const compEl =
+      document.querySelector(".job-details-jobs-unified-top-card__company-name") ||
+      document.querySelector(".jobs-unified-top-card__company-name");
+    if (compEl && (compEl as HTMLElement).innerText) {
+      company_name = (compEl as HTMLElement).innerText.trim();
+    }
+  }
+
+  if (!job_title || /^\(\d+\)\s*(Feed|Inbox|Home)|^(Feed|Home|LinkedIn|Inbox)/i.test(job_title.trim())) {
+    const h1 = document.querySelector("h1");
+    job_title = h1 ? h1.innerText.trim() : document.title;
+  }
+
+  if (!job_description) {
+    const mainEl = document.querySelector("main") || document.querySelector("article") || document.body;
+    job_description = mainEl ? mainEl.innerText.slice(0, 4000).trim() : "";
+  }
+
+  if (
+    (!job_title || /^\(\d+\)\s*(Feed|Inbox|Home)|^(Feed|Home|LinkedIn|Inbox)/i.test(job_title.trim())) &&
+    job_description.length >= 30
+  ) {
+    const roleMatch = job_description.match(/(?:role|position|job title|profile)\s*[:\-–—]\s*([^\n\r,•!]{3,40})/i);
+    const isHiringMatch = job_description.match(/(?:is|are)\s+hiring\s*[–\-\|:]?\s*([^\n\r!]{3,40})/i);
+    if (roleMatch && roleMatch[1]) {
+      job_title = roleMatch[1].trim();
+    } else if (isHiringMatch && isHiringMatch[1]) {
+      job_title = isHiringMatch[1].trim();
+    } else {
+      job_title = company_name ? `${company_name} Job Posting` : "Job Posting";
+    }
+  }
 
   return {
     job_title,
-    company_name: window.location.hostname.replace("www.", "").split(".")[0],
+    company_name,
     job_url: window.location.href,
     job_description,
-    source_site: "General",
+    source_site: isLinkedIn ? "LinkedIn" : "General",
     detected: Boolean(job_title && job_description.length >= 30),
   };
 }

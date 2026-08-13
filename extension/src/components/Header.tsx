@@ -1,4 +1,4 @@
-import { Rocket, LogOut } from "lucide-react";
+import { Rocket, LogOut, ExternalLink } from "lucide-react";
 
 interface HeaderProps {
   userEmail?: string | null;
@@ -18,22 +18,34 @@ export default function Header({ userEmail, onLogout }: HeaderProps) {
         </div>
       </div>
 
-      {userEmail && (
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] text-slate-400 truncate max-w-[110px]" title={userEmail}>
-            {userEmail}
-          </span>
-          {onLogout && (
-            <button
-              onClick={onLogout}
-              className="text-slate-500 hover:text-rose-400 p-1"
-              title="Log out"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
-      )}
+      <div className="flex items-center gap-2">
+        <a
+          href="http://localhost:3000/dashboard"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 rounded-lg bg-indigo-500/10 px-2 py-1 text-[10px] font-semibold text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition"
+          title="Open ApplyPilot Web App"
+        >
+          Website <ExternalLink className="h-2.5 w-2.5" />
+        </a>
+
+        {userEmail && (
+          <div className="flex items-center gap-1.5 pl-1 border-l border-slate-800">
+            <span className="text-[10px] text-slate-400 truncate max-w-[90px]" title={userEmail}>
+              {userEmail}
+            </span>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="text-slate-500 hover:text-rose-400 p-1"
+                title="Log out"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

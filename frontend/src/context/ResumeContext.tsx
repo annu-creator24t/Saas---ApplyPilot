@@ -85,7 +85,9 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
 
       return loadedResumes;
     } catch (err: any) {
-      console.error("Failed to load user resumes:", err);
+      if (err?.response?.status !== 401) {
+        console.error("Failed to load user resumes:", err);
+      }
       setError(err?.response?.data?.message || "Failed to load resumes");
       return [];
     } finally {

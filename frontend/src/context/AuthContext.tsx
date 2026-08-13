@@ -39,17 +39,22 @@ export function AuthProvider({
     const initAuth = async () => {
       const storedToken = localStorage.getItem("access_token");
       if (storedToken) {
-        setToken(storedToken);
+        document.cookie = `access_token=${storedToken}; path=/; max-age=604800; SameSite=Lax`;
         try {
           const profileRes = await AuthService.getProfile();
           if (profileRes?.data) {
+            setToken(storedToken);
             setUser(profileRes.data);
             localStorage.setItem("user", JSON.stringify(profileRes.data));
+          } else {
+            throw new Error("Invalid profile response");
           }
         } catch (e) {
           // Token expired or invalid
           localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
           localStorage.removeItem("user");
+          document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
           setToken(null);
           setUser(null);
         }
@@ -67,7 +72,10 @@ export function AuthProvider({
     });
 
     const accessToken = response.data.access_token;
+    const refreshToken = response.data.refresh_token;
     localStorage.setItem("access_token", accessToken);
+    if (refreshToken) localStorage.setItem("refresh_token", refreshToken);
+    document.cookie = `access_token=${accessToken}; path=/; max-age=604800; SameSite=Lax`;
     setToken(accessToken);
 
     try {
@@ -87,7 +95,9 @@ export function AuthProvider({
 
   const logout = () => {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
+    document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
     setToken(null);
     setUser(null);
@@ -101,7 +111,7 @@ export function AuthProvider({
         loading,
         login,
         logout,
-        isAuthenticated: !!token,
+        isAuthenticated: !!token && !!user,
       }}
     >
       {children}

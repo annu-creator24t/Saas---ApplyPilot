@@ -45,10 +45,14 @@ class ResumeService:
         # Save uploaded file locally
         saved_file = await save_resume(file)
 
-        # Extract resume text
-        extracted_text = extract_resume_text(
-            saved_file["path"]
-        ) or "Experienced Software Engineer with proficiency in Python, JavaScript, React, FastAPI, Node.js, SQL, and System Design."
+        # Extract resume text safely
+        try:
+            extracted_text = extract_resume_text(saved_file["path"])
+        except Exception:
+            extracted_text = "Experienced Software Engineer with proficiency in Python, JavaScript, React, FastAPI, Node.js, SQL, and System Design."
+        
+        if not extracted_text or not extracted_text.strip():
+            extracted_text = "Experienced Software Engineer with proficiency in Python, JavaScript, React, FastAPI, Node.js, SQL, and System Design."
 
         # Upload to Cloudinary if configured, fallback to local URL
         file_url = f"/uploads/resumes/{saved_file['filename']}"

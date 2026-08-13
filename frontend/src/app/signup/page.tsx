@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as AuthService from "@/services/auth.service";
 import ThemeToggle from "@/components/common/ThemeToggle";
-import { User, Mail, Lock, ArrowRight, AlertCircle, Loader2, Rocket, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Lock, ArrowRight, AlertCircle, Loader2, Rocket, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -20,10 +20,12 @@ export default function SignupPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
 
     if (fullName.trim().length < 2) {
       setError("Full name must be at least 2 characters.");
@@ -45,11 +47,14 @@ export default function SignupPage() {
     try {
       await AuthService.register({
         full_name: fullName.trim(),
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         password,
       });
 
-      router.push("/login");
+      setSuccess("Account created successfully! Redirecting to sign in...");
+      setTimeout(() => {
+        router.push("/login?registered=true");
+      }, 1200);
     } catch (err: unknown) {
       const errData = (err as { response?: { data?: { error?: { message?: string }; message?: string } } })?.response?.data;
       setError(
@@ -57,7 +62,6 @@ export default function SignupPage() {
           errData?.message ||
           "Unable to create account."
       );
-    } finally {
       setLoading(false);
     }
   };
@@ -86,6 +90,13 @@ export default function SignupPage() {
           <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 border border-rose-500/20 p-3 text-xs text-rose-600 dark:text-rose-400 font-medium">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
+          </div>
+        )}
+
+        {success && (
+          <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            <span>{success}</span>
           </div>
         )}
 
@@ -133,8 +144,8 @@ export default function SignupPage() {
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition focus:outline-none"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 cursor-pointer transition focus:outline-none"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -161,8 +172,8 @@ export default function SignupPage() {
               />
               <button
                 type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition focus:outline-none"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 cursor-pointer transition focus:outline-none"
                 aria-label={showConfirmPassword ? "Hide password" : "Show password"}
               >
                 {showConfirmPassword ? (
@@ -176,12 +187,16 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !!success}
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-xs font-bold text-white shadow-lg shadow-blue-600/20 hover:opacity-90 transition disabled:opacity-50"
           >
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" /> Creating Account...
+              </>
+            ) : success ? (
+              <>
+                <CheckCircle2 className="h-4 w-4" /> Account Created!
               </>
             ) : (
               <>

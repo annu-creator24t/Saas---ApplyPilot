@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await AuthService.requestPasswordReset(email.trim());
+      const res = await AuthService.requestPasswordReset(email.trim().toLowerCase());
       setSuccessMessage(
         res?.message || "Password reset code sent to your email."
       );
@@ -97,7 +97,7 @@ export default function ForgotPasswordPage() {
 
     try {
       const res = await AuthService.resetPassword({
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         reset_code: resetCode.trim(),
         new_password: newPassword,
       });
@@ -252,8 +252,8 @@ export default function ForgotPasswordPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition focus:outline-none"
+                  onClick={() => setShowNewPassword((prev) => !prev)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 cursor-pointer transition focus:outline-none"
                   aria-label={showNewPassword ? "Hide password" : "Show password"}
                 >
                   {showNewPassword ? (
@@ -280,8 +280,8 @@ export default function ForgotPasswordPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition focus:outline-none"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 cursor-pointer transition focus:outline-none"
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   {showConfirmPassword ? (

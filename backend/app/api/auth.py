@@ -62,6 +62,23 @@ async def login(request: Request):
     return await service.login_user(str(email), str(password))
 
 
+from pydantic import BaseModel
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+
+@router.post(
+    "/refresh",
+    response_model=APIResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Refresh Access Token",
+    description="Exchange a refresh token for a new access token.",
+)
+async def refresh(request: RefreshTokenRequest):
+    return await service.refresh_access_token(request.refresh_token)
+
+
 # =====================================================
 # Forgot Password Request
 # =====================================================

@@ -1,6 +1,10 @@
 from datetime import datetime
 
-from app.auth.jwt import create_access_token, create_refresh_token
+from app.auth.jwt import (
+    create_access_token,
+    create_refresh_token,
+    verify_refresh_token,
+)
 from app.auth.password import hash_password, verify_password
 from app.handlers.exceptions import (
     AuthenticationException,
@@ -88,6 +92,40 @@ class UserService:
                 "token_type": "bearer",
             },
         )
+
+    # =====================================================
+    # Refresh Token
+    # =====================================================
+
+    async def refresh_access_token(
+        self,
+        refresh_token: str,
+    ):
+        try:
+            payload = verify_refresh_token(refresh_token)
+            user_id = payload.get("sub")
+            if not user_id:
+                raise AuthenticationException("Invalid refresh token.")
+
+            user = await self.repository.get_user_by_id(user_id)
+            if not user:
+                raise AuthenticationException("User not found.")
+
+            new_payload = {
+                "sub": str(user["_id"]),
+                "email": user["email"],
+            }
+
+            return APIResponse(
+                message="Token refreshed successfully.",
+                data={
+                    "access_token": create_access_token(new_payload),
+                    "refresh_token": create_refresh_token(new_payload),
+                    "token_type": "bearer",
+                },
+            )
+        except Exception:
+            raise AuthenticationException("Invalid or expired refresh token.")
 
     # =====================================================
     # Get Profile
