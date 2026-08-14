@@ -46,9 +46,6 @@ class InterviewPracticeService:
         user: dict,
         request: InterviewPracticeRequest,
     ):
-        user_id = str(user["_id"])
-        await self.subscription_service.check_ai_permission(user_id)
-
         resume = await self.resume_repository.get_resume(
             request.resume_id
         )
@@ -82,8 +79,6 @@ class InterviewPracticeService:
         questions = parse_interview_questions(
             response
         )
-
-        await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         all_questions = (
             questions["technical"]
@@ -119,9 +114,6 @@ class InterviewPracticeService:
         answer: str,
         user_id: str = None,
     ):
-        if user_id:
-            await self.subscription_service.check_ai_permission(user_id)
-
         prompt = build_interview_evaluation_prompt(
             question,
             answer,
@@ -132,8 +124,5 @@ class InterviewPracticeService:
         result = parse_interview_evaluation(
             response
         )
-
-        if user_id:
-            await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         return result

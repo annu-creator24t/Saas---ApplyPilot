@@ -7477,3 +7477,1813 @@ pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-00.gksahli.mongo
 2026-08-14 19:30:49,674 | INFO | applypilot | Connecting to MongoDB...
 2026-08-14 19:30:50,526 | INFO | applypilot | MongoDB connected successfully.
 2026-08-14 19:30:50,534 | INFO | applypilot | Application started.
+2026-08-14 19:34:17,680 | INFO | applypilot | Validating application configuration...
+2026-08-14 19:34:17,680 | INFO | applypilot | Environment validation completed successfully.
+2026-08-14 19:34:17,680 | INFO | applypilot | Connecting to MongoDB...
+2026-08-14 19:34:18,904 | INFO | applypilot | MongoDB connected successfully.
+2026-08-14 19:34:18,904 | INFO | applypilot | Application started.
+2026-08-14 20:23:24,435 | INFO | applypilot | Validating application configuration...
+2026-08-14 20:23:24,437 | INFO | applypilot | Environment validation completed successfully.
+2026-08-14 20:23:24,437 | INFO | applypilot | Connecting to MongoDB...
+2026-08-14 20:23:25,073 | INFO | applypilot | MongoDB connected successfully.
+2026-08-14 20:23:25,073 | INFO | applypilot | Application started.
+2026-08-14 20:26:24,633 | WARNING | applypilot | POST /auth/login | AUTHENTICATION_ERROR | Invalid credentials.
+2026-08-14 20:26:24,635 | INFO | applypilot | POST /auth/login | 401 | 934.83 ms
+2026-08-14 20:26:39,934 | INFO | applypilot | POST /auth/login | 200 | 882.70 ms
+2026-08-14 20:26:44,071 | INFO | applypilot | POST /job/analyze | 200 | 4077.68 ms
+2026-08-14 20:27:45,151 | INFO | applypilot | POST /auth/login | 500 | 30683.32 ms
+2026-08-14 20:27:45,151 | ERROR | applypilot | Unhandled exception during POST /auth/login: ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: connection closed (configured timeouts: connectTimeoutMS: 20000.0ms)
+Traceback (most recent call last):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\pool.py", line 456, in receive_message
+    return receive_message(self, request_id, self.max_message_size)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\network_layer.py", line 759, in receive_message
+    length, _, response_to, op_code = _UNPACK_HEADER(receive_data(conn, 16, deadline))
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\network_layer.py", line 379, in receive_data
+    raise OSError("connection closed")
+OSError: connection closed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    response = await f(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    return await service.login_user(str(email), str(password))
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    user = await self.repository.get_user_by_email(clean_email)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    return await self.collection.find_one(
+  File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    for result in cursor.limit(-1):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    return self.next()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    if len(self._data) or self._refresh():
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    self._send_message(q)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    response = client._run_operation(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    return self._retryable_read(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    return self._retry_internal(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    ).run()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2822, in run
+    self._check_last_error()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2968, in _check_last_error
+    raise self._last_error
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    res = self._read() if self._is_read else self._write()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3043, in _read
+    return self._func(self._session, self._server, conn, read_pref)  # type: ignore
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1947, in _cmd
+    return server.run_operation(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\helpers.py", line 53, in inner
+    return func(*args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\server.py", line 208, in run_operation
+    reply = conn.receive_message(request_id)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\pool.py", line 459, in receive_message
+    self._raise_connection_failure(error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\pool.py", line 633, in _raise_connection_failure
+    _raise_connection_failure(self.address, error, timeout_details=details)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\pool_shared.py", line 148, in _raise_connection_failure
+    raise AutoReconnect(msg) from error
+pymongo.errors.AutoReconnect: ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: connection closed (configured timeouts: connectTimeoutMS: 20000.0ms)
+2026-08-14 20:28:24,001 | INFO | applypilot | POST /auth/login | 500 | 30151.73 ms
+2026-08-14 20:28:24,001 | ERROR | applypilot | Unhandled exception during POST /auth/login: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_utils.py", line 85, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\anyio\_backends\_asyncio.py", line 815, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    |     await app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    |     response = await f(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    |     return await service.login_user(str(email), str(password))
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    |     user = await self.repository.get_user_by_email(clean_email)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    |     return await self.collection.find_one(
+    |   File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    |     result = self.fn(*self.args, **self.kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    |     for result in cursor.limit(-1):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    |     return self.next()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    |     if len(self._data) or self._refresh():
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    |     self._send_message(q)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    |     response = client._run_operation(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    |     return self._retryable_read(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    |     return self._retry_internal(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    |     ).run()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    |     res = self._read() if self._is_read else self._write()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    |     self._server = self._get_server()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    |     return self._client._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    |     server = topology.select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    |     server = self._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    |     servers = self.select_servers(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    |     server_descriptions = self._select_servers_loop(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    |     raise ServerSelectionTimeoutError(
+    | pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    response = await f(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    return await service.login_user(str(email), str(password))
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    user = await self.repository.get_user_by_email(clean_email)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    return await self.collection.find_one(
+  File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    for result in cursor.limit(-1):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    return self.next()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    if len(self._data) or self._refresh():
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    self._send_message(q)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    response = client._run_operation(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    return self._retryable_read(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    return self._retry_internal(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    ).run()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    res = self._read() if self._is_read else self._write()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    self._server = self._get_server()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    return self._client._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    server = topology.select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    server = self._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    servers = self.select_servers(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    server_descriptions = self._select_servers_loop(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    raise ServerSelectionTimeoutError(
+pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-08-14 20:29:18,917 | INFO | applypilot | POST /auth/login | 500 | 30140.10 ms
+2026-08-14 20:29:18,917 | ERROR | applypilot | Unhandled exception during POST /auth/login: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_utils.py", line 85, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\anyio\_backends\_asyncio.py", line 815, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    |     await app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    |     response = await f(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    |     return await service.login_user(str(email), str(password))
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    |     user = await self.repository.get_user_by_email(clean_email)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    |     return await self.collection.find_one(
+    |   File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    |     result = self.fn(*self.args, **self.kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    |     for result in cursor.limit(-1):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    |     return self.next()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    |     if len(self._data) or self._refresh():
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    |     self._send_message(q)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    |     response = client._run_operation(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    |     return self._retryable_read(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    |     return self._retry_internal(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    |     ).run()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    |     res = self._read() if self._is_read else self._write()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    |     self._server = self._get_server()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    |     return self._client._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    |     server = topology.select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    |     server = self._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    |     servers = self.select_servers(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    |     server_descriptions = self._select_servers_loop(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    |     raise ServerSelectionTimeoutError(
+    | pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    response = await f(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    return await service.login_user(str(email), str(password))
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    user = await self.repository.get_user_by_email(clean_email)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    return await self.collection.find_one(
+  File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    for result in cursor.limit(-1):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    return self.next()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    if len(self._data) or self._refresh():
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    self._send_message(q)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    response = client._run_operation(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    return self._retryable_read(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    return self._retry_internal(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    ).run()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    res = self._read() if self._is_read else self._write()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    self._server = self._get_server()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    return self._client._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    server = topology.select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    server = self._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    servers = self.select_servers(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    server_descriptions = self._select_servers_loop(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    raise ServerSelectionTimeoutError(
+pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11002] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-08-14 20:29:51,380 | INFO | applypilot | POST /auth/login | 500 | 30068.93 ms
+2026-08-14 20:29:51,380 | ERROR | applypilot | Unhandled exception during POST /auth/login: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_utils.py", line 85, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\anyio\_backends\_asyncio.py", line 815, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    |     await app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    |     response = await f(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    |     return await service.login_user(str(email), str(password))
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    |     user = await self.repository.get_user_by_email(clean_email)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    |     return await self.collection.find_one(
+    |   File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    |     result = self.fn(*self.args, **self.kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    |     for result in cursor.limit(-1):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    |     return self.next()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    |     if len(self._data) or self._refresh():
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    |     self._send_message(q)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    |     response = client._run_operation(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    |     return self._retryable_read(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    |     return self._retry_internal(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    |     ).run()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    |     res = self._read() if self._is_read else self._write()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    |     self._server = self._get_server()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    |     return self._client._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    |     server = topology.select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    |     server = self._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    |     servers = self.select_servers(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    |     server_descriptions = self._select_servers_loop(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    |     raise ServerSelectionTimeoutError(
+    | pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    response = await f(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    return await service.login_user(str(email), str(password))
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    user = await self.repository.get_user_by_email(clean_email)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    return await self.collection.find_one(
+  File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    for result in cursor.limit(-1):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    return self.next()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    if len(self._data) or self._refresh():
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    self._send_message(q)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    response = client._run_operation(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    return self._retryable_read(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    return self._retry_internal(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    ).run()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    res = self._read() if self._is_read else self._write()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    self._server = self._get_server()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    return self._client._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    server = topology.select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    server = self._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    servers = self.select_servers(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    server_descriptions = self._select_servers_loop(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    raise ServerSelectionTimeoutError(
+pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [Errno 11001] getaddrinfo failed (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-08-14 20:31:23,954 | INFO | applypilot | POST /auth/login | 500 | 30146.75 ms
+2026-08-14 20:31:23,954 | ERROR | applypilot | Unhandled exception during POST /auth/login: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_utils.py", line 85, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\anyio\_backends\_asyncio.py", line 815, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    |     await app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    |     response = await f(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    |     return await service.login_user(str(email), str(password))
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    |     user = await self.repository.get_user_by_email(clean_email)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    |     return await self.collection.find_one(
+    |   File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    |     result = self.fn(*self.args, **self.kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    |     for result in cursor.limit(-1):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    |     return self.next()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    |     if len(self._data) or self._refresh():
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    |     self._send_message(q)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    |     response = client._run_operation(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    |     return self._retryable_read(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    |     return self._retry_internal(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    |     ).run()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    |     res = self._read() if self._is_read else self._write()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    |     self._server = self._get_server()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    |     return self._client._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    |     server = topology.select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    |     server = self._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    |     servers = self.select_servers(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    |     server_descriptions = self._select_servers_loop(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    |     raise ServerSelectionTimeoutError(
+    | pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    response = await f(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    return await service.login_user(str(email), str(password))
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    user = await self.repository.get_user_by_email(clean_email)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    return await self.collection.find_one(
+  File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    for result in cursor.limit(-1):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    return self.next()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    if len(self._data) or self._refresh():
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    self._send_message(q)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    response = client._run_operation(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    return self._retryable_read(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    return self._retry_internal(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    ).run()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    res = self._read() if self._is_read else self._write()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    self._server = self._get_server()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    return self._client._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    server = topology.select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    server = self._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    servers = self.select_servers(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    server_descriptions = self._select_servers_loop(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    raise ServerSelectionTimeoutError(
+pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-08-14 20:32:06,419 | INFO | applypilot | POST /auth/login | 500 | 30465.76 ms
+2026-08-14 20:32:06,419 | ERROR | applypilot | Unhandled exception during POST /auth/login: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_utils.py", line 85, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\anyio\_backends\_asyncio.py", line 815, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    |     await app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    |     response = await f(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    |     return await service.login_user(str(email), str(password))
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    |     user = await self.repository.get_user_by_email(clean_email)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    |     return await self.collection.find_one(
+    |   File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    |     result = self.fn(*self.args, **self.kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    |     for result in cursor.limit(-1):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    |     return self.next()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    |     if len(self._data) or self._refresh():
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    |     self._send_message(q)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    |     response = client._run_operation(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    |     return self._retryable_read(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    |     return self._retry_internal(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    |     ).run()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    |     res = self._read() if self._is_read else self._write()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    |     self._server = self._get_server()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    |     return self._client._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    |     server = topology.select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    |     server = self._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    |     servers = self.select_servers(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    |     server_descriptions = self._select_servers_loop(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    |     raise ServerSelectionTimeoutError(
+    | pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    response = await f(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    return await service.login_user(str(email), str(password))
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    user = await self.repository.get_user_by_email(clean_email)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    return await self.collection.find_one(
+  File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    for result in cursor.limit(-1):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    return self.next()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    if len(self._data) or self._refresh():
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    self._send_message(q)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    response = client._run_operation(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    return self._retryable_read(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    return self._retry_internal(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    ).run()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    res = self._read() if self._is_read else self._write()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    self._server = self._get_server()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    return self._client._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    server = topology.select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    server = self._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    servers = self.select_servers(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    server_descriptions = self._select_servers_loop(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    raise ServerSelectionTimeoutError(
+pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-08-14 20:33:09,953 | INFO | applypilot | POST /auth/login | 500 | 30123.84 ms
+2026-08-14 20:33:09,961 | ERROR | applypilot | Unhandled exception during POST /auth/login: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_utils.py", line 85, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\anyio\_backends\_asyncio.py", line 815, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    |     response = await call_next(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    |     await app(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    |     response = await f(request)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    |     return await service.login_user(str(email), str(password))
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    |     user = await self.repository.get_user_by_email(clean_email)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    |     return await self.collection.find_one(
+    |   File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    |     result = self.fn(*self.args, **self.kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    |     for result in cursor.limit(-1):
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    |     return self.next()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    |     if len(self._data) or self._refresh():
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    |     self._send_message(q)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    |     response = client._run_operation(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    |     return self._retryable_read(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    |     return self._retry_internal(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    |     return func(self, *args, **kwargs)
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    |     ).run()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    |     res = self._read() if self._is_read else self._write()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    |     self._server = self._get_server()
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    |     return self._client._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    |     server = topology.select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    |     server = self._select_server(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    |     servers = self.select_servers(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    |     server_descriptions = self._select_servers_loop(
+    |   File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    |     raise ServerSelectionTimeoutError(
+    | pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\logging.py", line 23, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\security.py", line 17, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\middleware\request_id.py", line 20, in dispatch
+    response = await call_next(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 136, in app
+    response = await f(request)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\api\auth.py", line 72, in login
+    return await service.login_user(str(email), str(password))
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\services\user_service.py", line 70, in login_user
+    user = await self.repository.get_user_by_email(clean_email)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\app\repositories\user_repository.py", line 30, in get_user_by_email
+    return await self.collection.find_one(
+  File "C:\Program Files\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one
+    for result in cursor.limit(-1):
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__
+    return self.next()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next
+    if len(self._data) or self._refresh():
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh
+    self._send_message(q)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message
+    response = client._run_operation(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation
+    return self._retryable_read(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read
+    return self._retry_internal(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal
+    ).run()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run
+    res = self._read() if self._is_read else self._write()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 3027, in _read
+    self._server = self._get_server()
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 2975, in _get_server
+    return self._client._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\mongo_client.py", line 1851, in _select_server
+    server = topology.select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 428, in select_server
+    server = self._select_server(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 402, in _select_server
+    servers = self.select_servers(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 298, in select_servers
+    server_descriptions = self._select_servers_loop(
+  File "C:\Users\ANNU TIWARI\Desktop\ApplyPilot\backend\venv\lib\site-packages\pymongo\synchronous\topology.py", line 359, in _select_servers_loop
+    raise ServerSelectionTimeoutError(
+pymongo.errors.ServerSelectionTimeoutError: ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms),ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6a7f2be4a471cce3d3745585, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-agudt6x-shard-00-00.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-00.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-01.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-01.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>, <ServerDescription ('ac-agudt6x-shard-00-02.gksahli.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('ac-agudt6x-shard-00-02.gksahli.mongodb.net:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-08-14 20:34:22,318 | INFO | applypilot | Validating application configuration...
+2026-08-14 20:34:22,318 | INFO | applypilot | Environment validation completed successfully.
+2026-08-14 20:34:22,318 | INFO | applypilot | Connecting to MongoDB...
+2026-08-14 20:54:35,732 | INFO | applypilot | Validating application configuration...
+2026-08-14 20:54:35,732 | INFO | applypilot | Environment validation completed successfully.
+2026-08-14 20:54:35,732 | INFO | applypilot | Connecting to MongoDB...
+2026-08-14 20:54:36,584 | INFO | applypilot | MongoDB connected successfully.
+2026-08-14 20:54:36,584 | INFO | applypilot | Application started.
+2026-08-14 20:54:42,154 | INFO | applypilot | Closing MongoDB...
+2026-08-14 20:54:42,217 | INFO | applypilot | MongoDB connection closed.
+2026-08-14 20:54:42,217 | INFO | applypilot | Application shutdown.
+2026-08-14 20:58:30,376 | INFO | applypilot | Validating application configuration...
+2026-08-14 20:58:30,376 | INFO | applypilot | Environment validation completed successfully.
+2026-08-14 20:58:30,376 | INFO | applypilot | Connecting to MongoDB...
+2026-08-14 20:58:32,593 | INFO | applypilot | MongoDB connected successfully.
+2026-08-14 20:58:32,593 | INFO | applypilot | Application started.
+2026-08-14 21:06:27,564 | INFO | applypilot | Validating application configuration...
+2026-08-14 21:06:27,564 | INFO | applypilot | Environment validation completed successfully.
+2026-08-14 21:06:27,564 | INFO | applypilot | Connecting to MongoDB...
+2026-08-14 21:06:28,620 | INFO | applypilot | MongoDB connected successfully.
+2026-08-14 21:06:28,631 | INFO | applypilot | Application started.
+2026-08-14 21:09:01,116 | INFO | applypilot | POST /auth/register | 201 | 905.70 ms
+2026-08-14 21:09:16,549 | INFO | applypilot | POST /auth/login | 200 | 798.73 ms
+2026-08-14 21:09:16,725 | INFO | applypilot | GET /users/me | 200 | 164.39 ms
+2026-08-14 21:09:16,941 | INFO | applypilot | GET /resume | 200 | 186.77 ms
+2026-08-14 21:09:17,416 | INFO | applypilot | GET /subscription/status | 200 | 138.27 ms
+2026-08-14 21:09:17,517 | INFO | applypilot | GET /subscription/status | 200 | 106.59 ms
+2026-08-14 21:09:17,831 | INFO | applypilot | GET /dashboard | 200 | 552.58 ms
+2026-08-14 21:09:18,330 | INFO | applypilot | GET /dashboard | 200 | 492.17 ms
+2026-08-14 21:12:30,931 | INFO | applypilot | POST /auth/login | 200 | 774.57 ms
+2026-08-14 21:12:31,169 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:31,171 | INFO | applypilot | POST /job/analyze | 404 | 205.06 ms
+2026-08-14 21:12:31,359 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:31,359 | INFO | applypilot | POST /job/analyze | 404 | 175.89 ms
+2026-08-14 21:12:31,576 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:31,576 | INFO | applypilot | POST /job/analyze | 404 | 210.79 ms
+2026-08-14 21:12:31,781 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:31,784 | INFO | applypilot | POST /job/analyze | 404 | 194.33 ms
+2026-08-14 21:12:32,002 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:32,004 | INFO | applypilot | POST /job/analyze | 404 | 201.94 ms
+2026-08-14 21:12:32,227 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:32,227 | INFO | applypilot | POST /job/analyze | 404 | 215.08 ms
+2026-08-14 21:12:32,436 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:32,436 | INFO | applypilot | POST /job/analyze | 404 | 200.24 ms
+2026-08-14 21:12:32,644 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:32,644 | INFO | applypilot | POST /job/analyze | 404 | 193.47 ms
+2026-08-14 21:12:32,881 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:32,884 | INFO | applypilot | POST /job/analyze | 404 | 227.78 ms
+2026-08-14 21:12:33,087 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:33,089 | INFO | applypilot | POST /job/analyze | 404 | 192.75 ms
+2026-08-14 21:12:33,293 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:33,296 | INFO | applypilot | POST /job/analyze | 404 | 194.89 ms
+2026-08-14 21:12:33,493 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:33,494 | INFO | applypilot | POST /job/analyze | 404 | 189.55 ms
+2026-08-14 21:12:33,710 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:33,710 | INFO | applypilot | POST /job/analyze | 404 | 205.46 ms
+2026-08-14 21:12:33,911 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:33,911 | INFO | applypilot | POST /job/analyze | 404 | 189.63 ms
+2026-08-14 21:12:34,104 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:34,106 | INFO | applypilot | POST /job/analyze | 404 | 183.10 ms
+2026-08-14 21:12:34,302 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:34,302 | INFO | applypilot | POST /job/analyze | 404 | 187.18 ms
+2026-08-14 21:12:34,503 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:34,506 | INFO | applypilot | POST /job/analyze | 404 | 190.00 ms
+2026-08-14 21:12:34,710 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:34,710 | INFO | applypilot | POST /job/analyze | 404 | 197.47 ms
+2026-08-14 21:12:34,919 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:34,923 | INFO | applypilot | POST /job/analyze | 404 | 198.08 ms
+2026-08-14 21:12:35,144 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:35,146 | INFO | applypilot | POST /job/analyze | 404 | 213.19 ms
+2026-08-14 21:12:35,429 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:35,429 | INFO | applypilot | POST /job/analyze | 404 | 277.04 ms
+2026-08-14 21:12:35,623 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:35,626 | INFO | applypilot | POST /job/analyze | 404 | 179.53 ms
+2026-08-14 21:12:35,818 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:35,818 | INFO | applypilot | POST /job/analyze | 404 | 184.22 ms
+2026-08-14 21:12:36,022 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:36,026 | INFO | applypilot | POST /job/analyze | 404 | 192.15 ms
+2026-08-14 21:12:36,239 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:36,239 | INFO | applypilot | POST /job/analyze | 404 | 205.86 ms
+2026-08-14 21:12:36,451 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:36,459 | INFO | applypilot | POST /job/analyze | 404 | 205.98 ms
+2026-08-14 21:12:36,659 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:36,661 | INFO | applypilot | POST /job/analyze | 404 | 191.29 ms
+2026-08-14 21:12:36,850 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:36,850 | INFO | applypilot | POST /job/analyze | 404 | 181.11 ms
+2026-08-14 21:12:37,060 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:37,060 | INFO | applypilot | POST /job/analyze | 404 | 196.96 ms
+2026-08-14 21:12:37,276 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:37,276 | INFO | applypilot | POST /job/analyze | 404 | 207.56 ms
+2026-08-14 21:12:37,477 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:37,487 | INFO | applypilot | POST /job/analyze | 404 | 194.30 ms
+2026-08-14 21:12:37,700 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:37,700 | INFO | applypilot | POST /job/analyze | 404 | 201.37 ms
+2026-08-14 21:12:37,893 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:37,902 | INFO | applypilot | POST /job/analyze | 404 | 187.87 ms
+2026-08-14 21:12:38,085 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:38,093 | INFO | applypilot | POST /job/analyze | 404 | 178.19 ms
+2026-08-14 21:12:38,305 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:38,311 | INFO | applypilot | POST /job/analyze | 404 | 205.81 ms
+2026-08-14 21:12:38,510 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:38,510 | INFO | applypilot | POST /job/analyze | 404 | 193.00 ms
+2026-08-14 21:12:38,719 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:38,719 | INFO | applypilot | POST /job/analyze | 404 | 199.22 ms
+2026-08-14 21:12:38,917 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:38,917 | INFO | applypilot | POST /job/analyze | 404 | 186.21 ms
+2026-08-14 21:12:39,117 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:39,117 | INFO | applypilot | POST /job/analyze | 404 | 188.27 ms
+2026-08-14 21:12:39,320 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:39,320 | INFO | applypilot | POST /job/analyze | 404 | 187.01 ms
+2026-08-14 21:12:39,527 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:39,538 | INFO | applypilot | POST /job/analyze | 404 | 200.74 ms
+2026-08-14 21:12:39,734 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:39,742 | INFO | applypilot | POST /job/analyze | 404 | 190.95 ms
+2026-08-14 21:12:39,952 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:39,954 | INFO | applypilot | POST /job/analyze | 404 | 201.75 ms
+2026-08-14 21:12:40,137 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:40,142 | INFO | applypilot | POST /job/analyze | 404 | 173.41 ms
+2026-08-14 21:12:40,335 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:40,338 | INFO | applypilot | POST /job/analyze | 404 | 186.55 ms
+2026-08-14 21:12:40,519 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:40,519 | INFO | applypilot | POST /job/analyze | 404 | 175.25 ms
+2026-08-14 21:12:40,730 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:40,734 | INFO | applypilot | POST /job/analyze | 404 | 196.49 ms
+2026-08-14 21:12:40,934 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:40,934 | INFO | applypilot | POST /job/analyze | 404 | 183.12 ms
+2026-08-14 21:12:41,128 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:41,128 | INFO | applypilot | POST /job/analyze | 404 | 186.75 ms
+2026-08-14 21:12:41,336 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:41,339 | INFO | applypilot | POST /job/analyze | 404 | 196.53 ms
+2026-08-14 21:12:41,539 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:41,539 | INFO | applypilot | POST /job/analyze | 404 | 190.91 ms
+2026-08-14 21:12:41,734 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:41,734 | INFO | applypilot | POST /job/analyze | 404 | 187.34 ms
+2026-08-14 21:12:41,939 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:41,941 | INFO | applypilot | POST /job/analyze | 404 | 189.05 ms
+2026-08-14 21:12:42,133 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:42,141 | INFO | applypilot | POST /job/analyze | 404 | 187.59 ms
+2026-08-14 21:12:42,348 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:42,348 | INFO | applypilot | POST /job/analyze | 404 | 196.24 ms
+2026-08-14 21:12:42,558 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:42,562 | INFO | applypilot | POST /job/analyze | 404 | 192.90 ms
+2026-08-14 21:12:42,770 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:42,772 | INFO | applypilot | POST /job/analyze | 404 | 194.46 ms
+2026-08-14 21:12:43,017 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:43,017 | INFO | applypilot | POST /job/analyze | 404 | 170.49 ms
+2026-08-14 21:12:43,200 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:43,202 | INFO | applypilot | POST /job/analyze | 404 | 170.87 ms
+2026-08-14 21:12:43,387 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:43,387 | INFO | applypilot | POST /job/analyze | 404 | 186.18 ms
+2026-08-14 21:12:43,597 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:43,597 | INFO | applypilot | POST /job/analyze | 404 | 195.10 ms
+2026-08-14 21:12:43,802 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:43,802 | INFO | applypilot | POST /job/analyze | 404 | 191.38 ms
+2026-08-14 21:12:43,984 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:43,985 | INFO | applypilot | POST /job/analyze | 404 | 170.99 ms
+2026-08-14 21:12:44,181 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:44,181 | INFO | applypilot | POST /job/analyze | 404 | 185.25 ms
+2026-08-14 21:12:44,377 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:44,377 | INFO | applypilot | POST /job/analyze | 404 | 189.35 ms
+2026-08-14 21:12:44,583 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:44,591 | INFO | applypilot | POST /job/analyze | 404 | 195.49 ms
+2026-08-14 21:12:44,774 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:44,774 | INFO | applypilot | POST /job/analyze | 404 | 179.82 ms
+2026-08-14 21:12:44,968 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:44,968 | INFO | applypilot | POST /job/analyze | 404 | 182.47 ms
+2026-08-14 21:12:45,167 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:45,169 | INFO | applypilot | POST /job/analyze | 404 | 183.93 ms
+2026-08-14 21:12:45,374 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:45,377 | INFO | applypilot | POST /job/analyze | 404 | 197.74 ms
+2026-08-14 21:12:45,562 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:45,562 | INFO | applypilot | POST /job/analyze | 404 | 177.88 ms
+2026-08-14 21:12:45,761 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:45,761 | INFO | applypilot | POST /job/analyze | 404 | 188.49 ms
+2026-08-14 21:12:45,946 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:45,954 | INFO | applypilot | POST /job/analyze | 404 | 182.47 ms
+2026-08-14 21:12:46,140 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:46,140 | INFO | applypilot | POST /job/analyze | 404 | 177.48 ms
+2026-08-14 21:12:46,343 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:46,349 | INFO | applypilot | POST /job/analyze | 404 | 198.33 ms
+2026-08-14 21:12:46,548 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:46,551 | INFO | applypilot | POST /job/analyze | 404 | 193.25 ms
+2026-08-14 21:12:46,761 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:46,761 | INFO | applypilot | POST /job/analyze | 404 | 202.18 ms
+2026-08-14 21:12:46,958 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:46,960 | INFO | applypilot | POST /job/analyze | 404 | 191.09 ms
+2026-08-14 21:12:47,159 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:47,160 | INFO | applypilot | POST /job/analyze | 404 | 190.25 ms
+2026-08-14 21:12:47,358 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:47,361 | INFO | applypilot | POST /job/analyze | 404 | 190.32 ms
+2026-08-14 21:12:47,560 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:47,560 | INFO | applypilot | POST /job/analyze | 404 | 192.37 ms
+2026-08-14 21:12:47,762 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:47,762 | INFO | applypilot | POST /job/analyze | 404 | 189.19 ms
+2026-08-14 21:12:47,963 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:47,963 | INFO | applypilot | POST /job/analyze | 404 | 192.15 ms
+2026-08-14 21:12:48,158 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:48,170 | INFO | applypilot | POST /job/analyze | 404 | 190.08 ms
+2026-08-14 21:12:48,371 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:48,371 | INFO | applypilot | POST /job/analyze | 404 | 190.02 ms
+2026-08-14 21:12:48,568 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:48,571 | INFO | applypilot | POST /job/analyze | 404 | 186.29 ms
+2026-08-14 21:12:48,781 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:48,783 | INFO | applypilot | POST /job/analyze | 404 | 201.70 ms
+2026-08-14 21:12:48,992 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:48,992 | INFO | applypilot | POST /job/analyze | 404 | 202.45 ms
+2026-08-14 21:12:49,200 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:49,200 | INFO | applypilot | POST /job/analyze | 404 | 199.34 ms
+2026-08-14 21:12:49,403 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:49,403 | INFO | applypilot | POST /job/analyze | 404 | 188.73 ms
+2026-08-14 21:12:49,595 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:49,595 | INFO | applypilot | POST /job/analyze | 404 | 189.66 ms
+2026-08-14 21:12:49,797 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:49,797 | INFO | applypilot | POST /job/analyze | 404 | 199.77 ms
+2026-08-14 21:12:50,010 | WARNING | applypilot | POST /job/analyze | NOT_FOUND | No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs.
+2026-08-14 21:12:50,010 | INFO | applypilot | POST /job/analyze | 404 | 192.06 ms
+2026-08-14 21:12:50,042 | INFO | applypilot | Closing MongoDB...
+2026-08-14 21:12:50,095 | INFO | applypilot | MongoDB connection closed.
+2026-08-14 21:12:50,095 | INFO | applypilot | Application shutdown.

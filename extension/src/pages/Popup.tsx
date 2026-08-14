@@ -75,6 +75,8 @@ export default function Popup() {
 
   const [error, setError] =
     useState<string | null>(null);
+  const [analysisAttempted, setAnalysisAttempted] =
+    useState(false);
 
   const currentJD =
     jobData?.job_description?.trim() || "";
@@ -116,7 +118,9 @@ export default function Popup() {
       currentJD.length < 30 ||
       extracting ||
       analyzing ||
-      analysisResult
+      analysisResult ||
+      error ||
+      analysisAttempted
     ) {
       return;
     }
@@ -129,6 +133,8 @@ export default function Popup() {
     extracting,
     analyzing,
     analysisResult,
+    error,
+    analysisAttempted,
   ]);
 
   // =========================================================
@@ -383,6 +389,9 @@ export default function Popup() {
     job: JobData
   ) => {
     setJobData(job);
+    setAnalysisAttempted(false);
+    setError(null);
+    setAnalysisResult(null);
 
     if (job?.job_description) {
       chrome.storage.local.set({
@@ -509,6 +518,7 @@ export default function Popup() {
 
     setAnalysisResult(null);
     setError(null);
+    setAnalysisAttempted(false);
 
     setShowResumePicker(false);
 
@@ -633,6 +643,7 @@ export default function Popup() {
 
             setShowResumePicker(false);
             setAnalysisResult(null);
+            setAnalysisAttempted(false);
 
             // Analyze against the newly selected resume.
             if (
@@ -700,6 +711,11 @@ export default function Popup() {
       return;
     }
 
+    if (analyzing) {
+      return;
+    }
+
+    setAnalysisAttempted(true);
     setAnalyzing(true);
     setError(null);
 
@@ -1209,13 +1225,46 @@ export default function Popup() {
           </div>
         )}
 
-        {/* ERROR */}
+        {/* ERROR & NO RESUME HELPER */}
         {error && (
-          <div className="rounded-lg border border-rose-500/20 bg-rose-500/5 px-3 py-2 text-center">
-            <p className="text-[10px] text-rose-400">
-              {error}
-            </p>
-          </div>
+          error.toLowerCase().includes("resume") ? (
+            <div className="rounded-xl border border-indigo-500/30 bg-slate-900/90 p-4 text-center space-y-3">
+              <div className="mx-auto w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-white">No Resume Found</p>
+                <p className="text-[10px] text-slate-400">
+                  Please upload your resume to calculate ATS match scores and AI suggestions.
+                </p>
+              </div>
+              <div className="flex gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingResume}
+                  className="flex-1 rounded-lg bg-indigo-600 py-2 text-[11px] font-semibold text-white hover:bg-indigo-500 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  {uploadingResume ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+                  {uploadingResume ? "Uploading..." : "Upload Resume"}
+                </button>
+                <a
+                  href={`${WEBSITE_URL}/dashboard`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 rounded-lg border border-slate-700 bg-slate-800 py-2 text-[11px] font-semibold text-slate-200 hover:bg-slate-700 transition flex items-center justify-center gap-1"
+                >
+                  Dashboard <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-lg border border-rose-500/20 bg-rose-500/5 px-3 py-2 text-center">
+              <p className="text-[10px] text-rose-400">
+                {error}
+              </p>
+            </div>
+          )
         )}
       </div>
     </div>

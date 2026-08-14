@@ -49,14 +49,6 @@ class JobService:
         request: JobMatchRequest,
     ) -> APIResponse:
 
-        # =================================================
-        # 1. Check AI permission
-        # =================================================
-
-        await self.subscription_service.check_ai_permission(
-            user_id
-        )
-
         resume = None
 
         # =================================================
@@ -239,14 +231,7 @@ class JobService:
                 ),
             )
 
-            # =================================================
-            # 12. Deduct credit ONLY after successful AI
-            #     execution and valid response.
-            # =================================================
 
-            await self.subscription_service.deduct_ai_credit_on_success(
-                user_id
-            )
 
             # =================================================
             # 13. Build response

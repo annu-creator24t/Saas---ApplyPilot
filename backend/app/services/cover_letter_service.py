@@ -28,9 +28,6 @@ class CoverLetterService:
         user_id: str,
         request: CoverLetterRequest,
     ):
-        # 1. Check AI usage permission
-        await self.subscription_service.check_ai_permission(user_id)
-
         # Fetch Resume
         resume = await self.resume_repository.get_resume(
             request.resume_id
@@ -61,9 +58,6 @@ class CoverLetterService:
 
         # Generate Cover Letter
         cover_letter = generate(prompt).strip()
-
-        # Deduct credit on successful AI execution
-        await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         # Save Cover Letter
         await self.cover_letter_repository.create_cover_letter(

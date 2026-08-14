@@ -20,9 +20,6 @@ class AnalysisService:
         resume_id: str,
         user_id: str,
     ):
-        # 1. Check AI usage permission
-        await self.subscription_service.check_ai_permission(user_id)
-
         # Fetch resume
         resume = await self.repository.get_resume(
             resume_id
@@ -43,9 +40,6 @@ class AnalysisService:
         analysis = self.ats.analyze(
             resume["extracted_text"]
         )
-
-        # Deduct credit on successful AI execution
-        await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         # Save analysis
         await self.repository.update_analysis(

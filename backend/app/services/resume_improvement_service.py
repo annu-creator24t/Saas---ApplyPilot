@@ -30,8 +30,6 @@ class ResumeImprovementService:
         job_description: str,
         user_id: str,
     ):
-        await self.subscription_service.check_ai_permission(user_id)
-
         resume = await self.resume_repository.get_resume(resume_id)
 
         if not resume:
@@ -59,8 +57,6 @@ class ResumeImprovementService:
             parsed = parse_resume_improvement(response)
         except Exception as e:
             raise AIException(str(e))
-
-        await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         improvement_data = {
             "user_id": user_id,
