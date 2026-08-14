@@ -1,89 +1,369 @@
 import json
-from typing import Optional
+
 from app.ai.groq_client import generate
 from app.ai.response_parser import _clean_json_response
-from app.handlers.exceptions import AIException, NotFoundException, ValidationException
-from app.prompts.job_match_prompt import build_job_match_prompt
-from app.repositories.resume_repository import ResumeRepository
-from app.schemas.application import JobMatchRequest, JobMatchResponse
-from app.schemas.common import APIResponse
-from app.services.subscription_service import SubscriptionService
+
+from app.handlers.exceptions import (
+    AIException,
+    AuthorizationException,
+    NotFoundException,
+)
+
+from app.prompts.job_match_prompt import (
+    build_job_match_prompt,
+)
+
+from app.repositories.resume_repository import (
+    ResumeRepository,
+)
+
+from app.schemas.application import (
+    JobMatchRequest,
+    JobMatchResponse,
+)
+
+from app.schemas.common import (
+    APIResponse,
+)
+
+from app.services.subscription_service import (
+    SubscriptionService,
+)
 
 
 class JobService:
 
     def __init__(self):
         self.resume_repo = ResumeRepository()
-        self.subscription_service = SubscriptionService()
+        self.subscription_service = (
+            SubscriptionService()
+        )
+
+    # =====================================================
+    # ANALYZE JOB MATCH
+    # =====================================================
 
     async def analyze_job_match(
         self,
         user_id: str,
         request: JobMatchRequest,
     ) -> APIResponse:
-        # Check AI usage permission
-        await self.subscription_service.check_ai_permission(user_id)
 
-        resume_text = ""
+        # =================================================
+        # 1. Check AI permission
+        # =================================================
 
-        # Fetch resume
+        await self.subscription_service.check_ai_permission(
+            user_id
+        )
+
+        resume = None
+
+        # =================================================
+        # 2. If extension explicitly selected a resume,
+        #    use that resume.
+        # =================================================
+
         if request.resume_id:
-            resume = await self.resume_repo.get_resume(request.resume_id)
-            if resume and str(resume.get("user_id")) == str(user_id):
-                resume_text = resume.get("extracted_text", "")
-        
-        # If no resume_id passed, pick user's latest uploaded resume
-        if not resume_text:
-            resumes = await self.resume_repo.get_user_resumes(user_id)
-            if resumes:
-                resume_text = resumes[0].get("extracted_text", "")
+
+            resume = (
+                await self.resume_repo.get_resume(
+                    request.resume_id
+                )
+            )
+
+            if not resume:
+                raise NotFoundException(
+                    "Selected resume was not found."
+                )
+
+            # Security check:
+            # the selected resume MUST belong to
+            # the authenticated user.
+            if str(
+                resume.get("user_id")
+            ) != str(user_id):
+
+                raise AuthorizationException(
+                    "You are not authorized to use this resume."
+                )
+
+        # =================================================
+        # 3. Normal extension flow
+        #
+        #    If no resume_id was provided:
+        #
+        #    default resume
+        #          ↓
+        #    latest resume
+        # =================================================
+
+        if not resume:
+
+            resume = (
+                await self.resume_repo.get_default_resume(
+                    user_id
+                )
+            )
+
+        # =================================================
+        # 4. Backward compatibility
+        #
+        #    Existing resumes may not yet have
+        #    is_default=True.
+        #
+        #    Therefore fall back to latest resume.
+        # =================================================
+
+        if not resume:
+
+            resume = (
+                await self.resume_repo.get_latest_resume(
+                    user_id
+                )
+            )
+
+        # =================================================
+        # 5. Resume is REQUIRED for match score
+        #
+        #    NEVER send fake resume text to AI.
+        # =================================================
+
+        if not resume:
+
+            raise NotFoundException(
+                "No resume found. Please upload a resume to your ApplyPilot account before analyzing jobs."
+            )
+
+        # =================================================
+        # 6. Extract stored resume text
+        # =================================================
+
+        resume_text = (
+            resume.get(
+                "extracted_text"
+            )
+            or ""
+        ).strip()
 
         if not resume_text:
-            resume_text = "No resume uploaded by user. Analyze job description requirements, skills, and key keywords."
+
+            raise NotFoundException(
+                "The selected resume does not contain extracted text. Please upload the resume again from ApplyPilot."
+            )
+
+        # =================================================
+        # 7. Build AI prompt
+        # =================================================
 
         try:
+
             prompt = build_job_match_prompt(
                 resume_text=resume_text,
                 job_description=request.job_description,
-                job_title=request.job_title or "",
-                company_name=request.company_name or "",
+                job_title=(
+                    request.job_title
+                    or ""
+                ),
+                company_name=(
+                    request.company_name
+                    or ""
+                ),
             )
 
-            raw_response = generate(prompt)
-            cleaned = _clean_json_response(raw_response)
-            parsed_data = json.loads(cleaned)
+            # =================================================
+            # 8. Generate AI analysis
+            # =================================================
 
-            # Deduct credit on successful AI execution
-            await self.subscription_service.deduct_ai_credit_on_success(user_id)
+            raw_response = generate(
+                prompt
+            )
+
+            # =================================================
+            # 9. Clean AI JSON
+            # =================================================
+
+            cleaned = _clean_json_response(
+                raw_response
+            )
+
+            # =================================================
+            # 10. Parse AI response
+            # =================================================
+
+            parsed_data = json.loads(
+                cleaned
+            )
+
+            # =================================================
+            # 11. Validate match score
+            # =================================================
+
+            match_score = parsed_data.get(
+                "match_score"
+            )
+
+            if match_score is None:
+                raise AIException(
+                    message=(
+                        "AI response did not contain a match score."
+                    ),
+                    error_code=(
+                        "AI_INVALID_RESPONSE"
+                    ),
+                )
+
+            try:
+                match_score = int(
+                    match_score
+                )
+            except (
+                TypeError,
+                ValueError,
+            ):
+                raise AIException(
+                    message=(
+                        "AI returned an invalid match score."
+                    ),
+                    error_code=(
+                        "AI_INVALID_SCORE"
+                    ),
+                )
+
+            # Keep score within schema range.
+            match_score = max(
+                0,
+                min(
+                    100,
+                    match_score,
+                ),
+            )
+
+            # =================================================
+            # 12. Deduct credit ONLY after successful AI
+            #     execution and valid response.
+            # =================================================
+
+            await self.subscription_service.deduct_ai_credit_on_success(
+                user_id
+            )
+
+            # =================================================
+            # 13. Build response
+            # =================================================
 
             response = JobMatchResponse(
-                match_score=parsed_data.get("match_score", 75),
-                matched_skills=parsed_data.get("matched_skills", []),
-                missing_skills=parsed_data.get("missing_skills", []),
-                key_keywords=parsed_data.get("key_keywords", []),
-                strengths=parsed_data.get("strengths", []),
-                weaknesses=parsed_data.get("weaknesses", []),
-                recommendations=parsed_data.get("recommendations", []),
-                summary=parsed_data.get("summary", ""),
+                match_score=match_score,
+
+                matched_skills=(
+                    parsed_data.get(
+                        "matched_skills",
+                        [],
+                    )
+                    or []
+                ),
+
+                missing_skills=(
+                    parsed_data.get(
+                        "missing_skills",
+                        [],
+                    )
+                    or []
+                ),
+
+                key_keywords=(
+                    parsed_data.get(
+                        "key_keywords",
+                        [],
+                    )
+                    or []
+                ),
+
+                strengths=(
+                    parsed_data.get(
+                        "strengths",
+                        [],
+                    )
+                    or []
+                ),
+
+                weaknesses=(
+                    parsed_data.get(
+                        "weaknesses",
+                        [],
+                    )
+                    or []
+                ),
+
+                recommendations=(
+                    parsed_data.get(
+                        "recommendations",
+                        [],
+                    )
+                    or []
+                ),
+
+                summary=(
+                    parsed_data.get(
+                        "summary",
+                        "",
+                    )
+                    or ""
+                ),
+
                 job_title=request.job_title,
-                company_name=request.company_name,
+
+                company_name=(
+                    request.company_name
+                ),
+
                 location=request.location,
             )
 
+            # =================================================
+            # 14. Return API response
+            # =================================================
+
             return APIResponse(
-                message="Job analyzed successfully.",
+                message=(
+                    "Job analyzed successfully."
+                ),
                 data=response.model_dump(),
             )
 
+        # =====================================================
+        # JSON parsing failure
+        # =====================================================
+
         except json.JSONDecodeError:
+
             raise AIException(
-                message="Failed to parse AI job analysis response.",
-                error_code="AI_PARSE_ERROR",
+                message=(
+                    "Failed to parse AI job analysis response."
+                ),
+                error_code=(
+                    "AI_PARSE_ERROR"
+                ),
             )
+
+        # =====================================================
+        # Preserve explicit AI exceptions
+        # =====================================================
+
         except AIException:
             raise
+
+        # =====================================================
+        # Unexpected failure
+        # =====================================================
+
         except Exception as e:
+
             raise AIException(
-                message=f"Error analyzing job match: {str(e)}",
-                error_code="JOB_MATCH_ERROR",
+                message=(
+                    f"Error analyzing job match: {str(e)}"
+                ),
+                error_code=(
+                    "JOB_MATCH_ERROR"
+                ),
             )

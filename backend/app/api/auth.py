@@ -45,16 +45,26 @@ async def register(user: UserCreate):
     description="Authenticate a user using JSON payload or form data, returning access & refresh tokens.",
 )
 async def login(request: Request):
-    content_type = request.headers.get("content-type", "")
+    content_type = request.headers.get("content-type", "").lower()
+    email = None
+    password = None
 
     if "application/json" in content_type:
-        body = await request.json()
-        email = body.get("email") or body.get("username")
-        password = body.get("password")
-    else:
-        form = await request.form()
-        email = form.get("username") or form.get("email")
-        password = form.get("password")
+        try:
+            body = await request.json()
+            if isinstance(body, dict):
+                email = body.get("email") or body.get("username")
+                password = body.get("password")
+        except Exception:
+            pass
+
+    if not email or not password:
+        try:
+            form = await request.form()
+            email = email or form.get("username") or form.get("email")
+            password = password or form.get("password")
+        except Exception:
+            pass
 
     if not email or not password:
         raise ValidationException("Email and password are required.")

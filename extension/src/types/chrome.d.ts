@@ -1,1 +1,1 @@
-declare var chrome: any;
+/// <reference types="chrome" />
