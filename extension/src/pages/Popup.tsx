@@ -103,7 +103,8 @@ export default function Popup() {
 
     if (typeof chrome !== "undefined" && chrome.runtime) {
       chrome.runtime.sendMessage({ action: "VERIFY_TOKEN" }, (verifyRes: any) => {
-        if (verifyRes && verifyRes.success && verifyRes.data?.access_token) {
+        const err = chrome.runtime.lastError;
+        if (!err && verifyRes && verifyRes.success && verifyRes.data?.access_token) {
           const activeToken = verifyRes.data.access_token;
           setToken(activeToken);
           setUserEmail(verifyRes.data?.email || "Logged In");
@@ -165,8 +166,9 @@ export default function Popup() {
     if (typeof chrome === "undefined" || !chrome.runtime) return;
     setLoadingResumes(true);
     chrome.runtime.sendMessage({ action: "FETCH_RESUMES" }, (res: any) => {
+      const err = chrome.runtime.lastError;
       setLoadingResumes(false);
-      if (res && res.success && Array.isArray(res.data)) {
+      if (!err && res && res.success && Array.isArray(res.data)) {
         setResumes(res.data);
         if (res.data.length > 0) {
           const firstResume = res.data[0];
@@ -231,10 +233,11 @@ export default function Popup() {
           },
         },
         (res: any) => {
+          const err = chrome.runtime.lastError;
           setUploadingResume(false);
           if (fileInputRef.current) fileInputRef.current.value = "";
 
-          if (res && res.success) {
+          if (!err && res && res.success) {
             const newResume = res.data;
             const newId = newResume.resume_id || newResume.id || newResume._id || "";
 
@@ -291,7 +294,8 @@ export default function Popup() {
       };
 
       chrome.tabs.sendMessage(activeTab.id, { action: "EXTRACT_JOB" }, (response: any) => {
-        if (chrome.runtime.lastError || !response || !response.success) {
+        const err = chrome.runtime.lastError;
+        if (err || !response || !response.success) {
           // Infallible DOM script execution fallback
           chrome.scripting.executeScript(
             {
@@ -299,7 +303,8 @@ export default function Popup() {
               func: fallbackDOMExtractor,
             },
             (results: any[]) => {
-              if (results && results[0] && results[0].result) {
+              const scriptErr = chrome.runtime.lastError;
+              if (!scriptErr && results && results[0] && results[0].result) {
                 saveJobToStorage(results[0].result);
               }
               setExtracting(false);
@@ -323,8 +328,9 @@ export default function Popup() {
         return;
       }
       chrome.tabs.sendMessage(tab.id, { action: "EXTRACT_PAGE_CONTENT" }, (res: any) => {
+        const err = chrome.runtime.lastError;
         setExtracting(false);
-        if (res && res.success && res.content) {
+        if (!err && res && res.success && res.content) {
           const newDesc = res.content;
           let inferredTitle = jobData?.job_title || tab.title || "Job Posting";
           const isGeneric = !inferredTitle || /^\(\d+\)\s*(Feed|Inbox|Home)|^(Feed|Home|LinkedIn|Inbox|Notifications)/i.test(inferredTitle.trim());
@@ -397,8 +403,9 @@ export default function Popup() {
         payload: { email: loginEmail, password: loginPassword },
       },
       (res: any) => {
+        const err = chrome.runtime.lastError;
         setAuthLoading(false);
-        if (res && res.success) {
+        if (!err && res && res.success) {
           setToken(res.data.access_token);
           setUserEmail(loginEmail);
           fetchResumes();
@@ -452,8 +459,9 @@ export default function Popup() {
         },
       },
       (res: any) => {
+        const err = chrome.runtime.lastError;
         setAnalyzing(false);
-        if (res && res.success) {
+        if (!err && res && res.success) {
           setAnalysisResult(res.data);
           setActiveTab("analysis");
         } else {
@@ -498,8 +506,9 @@ export default function Popup() {
         },
       },
       (res: any) => {
+        const err = chrome.runtime.lastError;
         setGeneratingCoverLetter(false);
-        if (res && res.success && res.data) {
+        if (!err && res && res.success && res.data) {
           setCoverLetterText(res.data.cover_letter || res.data);
         } else {
           if (res?.error === "NOT_AUTHENTICATED") {
@@ -535,8 +544,9 @@ export default function Popup() {
         },
       },
       (res: any) => {
+        const err = chrome.runtime.lastError;
         setGeneratingOptimizer(false);
-        if (res && res.success && res.data) {
+        if (!err && res && res.success && res.data) {
           setOptimizerResult(res.data);
         } else {
           if (res?.error === "NOT_AUTHENTICATED") {
@@ -572,8 +582,9 @@ export default function Popup() {
         },
       },
       (res: any) => {
+        const err = chrome.runtime.lastError;
         setGeneratingInterview(false);
-        if (res && res.success && res.data) {
+        if (!err && res && res.success && res.data) {
           setInterviewResult(res.data);
         } else {
           if (res?.error === "NOT_AUTHENTICATED") {
@@ -608,8 +619,9 @@ export default function Popup() {
         },
       },
       (res: any) => {
+        const err = chrome.runtime.lastError;
         setTracking(false);
-        if (res && res.success) {
+        if (!err && res && res.success) {
           setTrackedSuccess(true);
         } else {
           if (res?.error === "NOT_AUTHENTICATED") {

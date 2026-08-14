@@ -70,6 +70,8 @@ chrome.runtime.onMessage.addListener(
         .catch((err) => sendResponse({ success: false, error: err.message }));
       return true;
     }
+
+    return false;
   }
 );
 

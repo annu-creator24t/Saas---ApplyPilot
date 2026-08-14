@@ -23,7 +23,7 @@ import Link from "next/link";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const { user } = useAuthContext();
+  const { isAuthenticated, loading: authLoading, user } = useAuthContext();
   const [stats, setStats] = useState<AdminStatsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +41,9 @@ export default function AdminDashboardPage() {
         setStats(res.data);
       }
     } catch (err: any) {
-      console.error("Admin stats authorization failure:", err);
+      if (err?.response?.status !== 401) {
+        console.error("Admin stats authorization failure:", err);
+      }
       setError(err?.response?.data?.message || "Unauthorized access. Admin authorization required.");
     } finally {
       setLoading(false);
@@ -49,8 +51,9 @@ export default function AdminDashboardPage() {
   };
 
   useEffect(() => {
+    if (authLoading || !isAuthenticated) return;
     fetchStats();
-  }, []);
+  }, [isAuthenticated, authLoading]);
 
   const handlePromoteUser = async (e: React.FormEvent) => {
     e.preventDefault();

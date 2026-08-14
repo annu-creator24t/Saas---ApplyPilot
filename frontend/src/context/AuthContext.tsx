@@ -43,7 +43,8 @@ export function AuthProvider({
         try {
           const profileRes = await AuthService.getProfile();
           if (profileRes?.data) {
-            setToken(storedToken);
+            const activeToken = localStorage.getItem("access_token") || storedToken;
+            setToken(activeToken);
             setUser(profileRes.data);
             localStorage.setItem("user", JSON.stringify(profileRes.data));
           } else {

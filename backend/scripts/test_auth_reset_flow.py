@@ -143,7 +143,7 @@ async def test_auth_and_password_reset():
         print("  [OK] Test user removed from database")
 
     print("\n" + "=" * 60)
-    print("ALL AUTHENTICATION & PASSWORD RESET TESTS PASSED SUCCESSFULLY! 🎉")
+    print("ALL AUTHENTICATION & PASSWORD RESET TESTS PASSED SUCCESSFULLY!")
     print("=" * 60)
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import api from "@/lib/axios";
 import { useResume } from "@/context/ResumeContext";
+import { useAuthContext } from "@/context/AuthContext";
 import {
   Briefcase,
   Calendar,
@@ -43,26 +44,31 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
+  const { isAuthenticated, loading: authLoading } = useAuthContext();
   const { resumes, selectedResume, downloadResume } = useResume();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading || !isAuthenticated) return;
+
     const fetchDashboard = async () => {
       try {
         const res = await api.get("/dashboard");
         if (res.data?.data) {
           setData(res.data.data);
         }
-      } catch (err) {
-        console.error("Failed to load dashboard data", err);
+      } catch (err: any) {
+        if (err?.response?.status !== 401) {
+          console.error("Failed to load dashboard data", err);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchDashboard();
-  }, []);
+  }, [isAuthenticated, authLoading]);
 
   const stats = data?.applications_stats || {
     TOTAL: 0,

@@ -22,8 +22,13 @@ class UserRepository:
         self,
         email: str,
     ) -> Optional[dict]:
+        if not email:
+            return None
+        clean_email = email.strip().lower()
+        import re
+        pattern = re.compile(f"^{re.escape(clean_email)}$", re.IGNORECASE)
         return await self.collection.find_one(
-            {"email": email}
+            {"$or": [{"email": clean_email}, {"email": email}, {"email": pattern}]}
         )
 
     async def get_user_by_id(

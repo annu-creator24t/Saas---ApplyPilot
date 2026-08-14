@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useAuthContext } from "@/context/AuthContext";
 import {
   getApplications,
   createApplication,
@@ -24,6 +25,7 @@ import {
 } from "lucide-react";
 
 export default function ApplicationsPage() {
+  const { isAuthenticated, loading: authLoading } = useAuthContext();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -43,16 +45,19 @@ export default function ApplicationsPage() {
   });
 
   const fetchApps = useCallback(async () => {
+    if (authLoading || !isAuthenticated) return;
     try {
       setLoading(true);
       const data = await getApplications(statusFilter === "ALL" ? undefined : statusFilter);
       setApplications(data);
-    } catch (err) {
-      console.error("Failed to load applications", err);
+    } catch (err: any) {
+      if (err?.response?.status !== 401) {
+        console.error("Failed to load applications", err);
+      }
     } finally {
       setLoading(false);
     }
-  }, [statusFilter]);
+  }, [statusFilter, isAuthenticated, authLoading]);
 
   useEffect(() => {
     fetchApps();

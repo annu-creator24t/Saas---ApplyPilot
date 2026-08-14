@@ -25,15 +25,15 @@ class UserService:
     # =====================================================
 
     async def register_user(self, user):
-
-        existing = await self.repository.get_user_by_email(user.email)
+        clean_email = user.email.strip().lower()
+        existing = await self.repository.get_user_by_email(clean_email)
 
         if existing:
             raise ValidationException("Email already exists.")
 
         payload = {
-            "full_name": user.full_name,
-            "email": user.email,
+            "full_name": user.full_name.strip() if user.full_name else "",
+            "email": clean_email,
             "password": hash_password(user.password),
             "profile_picture": None,
             "is_verified": False,
@@ -66,7 +66,8 @@ class UserService:
         email: str,
         password: str,
     ):
-        user = await self.repository.get_user_by_email(email)
+        clean_email = email.strip().lower() if email else ""
+        user = await self.repository.get_user_by_email(clean_email)
 
         if not user:
             raise AuthenticationException("Invalid credentials.")

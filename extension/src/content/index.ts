@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener(
       } catch (err: any) {
         sendResponse({ success: false, error: err.message });
       }
-      return true;
+      return false;
     }
 
     if (request.action === "EXTRACT_PAGE_CONTENT") {
@@ -25,9 +25,9 @@ chrome.runtime.onMessage.addListener(
       } catch (err: any) {
         sendResponse({ success: false, error: err.message });
       }
-      return true;
+      return false;
     }
 
-    return true;
+    return false;
   }
 );

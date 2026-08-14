@@ -2,27 +2,33 @@
 
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
+import { useAuthContext } from "@/context/AuthContext";
 import { History as HistoryIcon, FileText, Calendar } from "lucide-react";
 
 export default function HistoryPage() {
+  const { isAuthenticated, loading: authLoading } = useAuthContext();
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading || !isAuthenticated) return;
+
     const fetchHistory = async () => {
       try {
         const res = await api.get("/analysis-history");
         if (res.data?.data) {
           setHistory(res.data.data);
         }
-      } catch (err) {
-        console.error("Failed to load history", err);
+      } catch (err: any) {
+        if (err?.response?.status !== 401) {
+          console.error("Failed to load history", err);
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchHistory();
-  }, []);
+  }, [isAuthenticated, authLoading]);
 
   return (
     <div className="space-y-6 pb-12">
