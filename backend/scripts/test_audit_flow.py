@@ -4,6 +4,11 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from dotenv import load_dotenv
+
+env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
+load_dotenv(env_path)
+
 import httpx
 from app.main import app
 from app.db.connection import connect_to_mongodb, close_mongodb_connection, get_database

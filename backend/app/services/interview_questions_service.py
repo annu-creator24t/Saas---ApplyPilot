@@ -33,6 +33,9 @@ class InterviewQuestionsService:
         user: dict,
         request: InterviewQuestionsRequest,
     ):
+        user_id = str(user["_id"])
+        await self.subscription_service.check_ai_permission(user_id)
+
         # =====================================================
         # Get Resume
         # =====================================================
@@ -80,6 +83,8 @@ class InterviewQuestionsService:
         # =====================================================
 
         response = generate(prompt)
+
+        await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         # =====================================================
         # Parse AI Response
