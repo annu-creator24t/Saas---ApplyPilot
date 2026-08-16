@@ -392,9 +392,14 @@ async function authenticatedFetch(
         headers,
       }
     );
-  } catch {
+  } catch (err: any) {
+    const detail =
+      err instanceof Error
+        ? err.message
+        : String(err);
+
     throw new Error(
-      "SERVER_UNREACHABLE"
+      `SERVER_UNREACHABLE (${url}): ${detail}`
     );
   }
 
@@ -424,9 +429,14 @@ async function authenticatedFetch(
               headers,
             }
           );
-      } catch {
+      } catch (err: any) {
+        const detail =
+          err instanceof Error
+            ? err.message
+            : String(err);
+
         throw new Error(
-          "SERVER_UNREACHABLE"
+          `SERVER_UNREACHABLE (${url}): ${detail}`
         );
       }
     }
@@ -527,9 +537,19 @@ async function handleLogin(
         ),
       }
     );
-  } catch {
+  } catch (err: any) {
+    const detail =
+      err instanceof Error
+        ? err.message
+        : String(err);
+
+    console.error(
+      `[ApplyPilot Background Worker] Failed to connect to ${API_BASE_URL}/auth/login:`,
+      detail
+    );
+
     throw new Error(
-      "SERVER_UNREACHABLE"
+      `SERVER_UNREACHABLE (${API_BASE_URL}): ${detail}`
     );
   }
 
