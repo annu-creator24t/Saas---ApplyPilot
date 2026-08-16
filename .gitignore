@@ -47,3 +47,15 @@ Thumbs.db
 !extension/public/*.png
 .vscode/
 .idea/
+
+# Backend environment
+backend/.env
+
+# Backend runtime logs
+backend/logs/
+
+# Local Chrome Web Store release packages
+extension/*.zip
+
+# Chrome Web Store release packages
+extension/*.zip
