@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as AuthService from "@/services/auth.service";
+import { trackSignupCompleted } from "@/lib/posthog";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import {
   User,
@@ -55,11 +56,16 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      await AuthService.register({
+      const response = await AuthService.register({
         full_name: fullName.trim(),
         email: email.trim().toLowerCase(),
         password,
       });
+
+      const userId = response?.data?.user_id || response?.user_id;
+      if (userId) {
+        trackSignupCompleted(userId);
+      }
 
       setShowSuccessModal(true);
       setTimeout(() => {

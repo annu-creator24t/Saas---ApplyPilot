@@ -5,6 +5,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ResumeProvider } from "@/context/ResumeContext";
 import { JobDescriptionProvider } from "@/context/JobDescriptionContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { PostHogProvider } from "@/components/providers/PostHogProvider";
 
 export const metadata: Metadata = {
   title: "ApplyPilot AI - Smart Career & ATS Copilot",
@@ -35,15 +36,17 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased transition-colors duration-200">
-        <ThemeProvider>
-          <AuthProvider>
-            <ResumeProvider>
-              <JobDescriptionProvider>
-                {children}
-              </JobDescriptionProvider>
-            </ResumeProvider>
-          </AuthProvider>
-        </ThemeProvider>
+        <PostHogProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <ResumeProvider>
+                <JobDescriptionProvider>
+                  {children}
+                </JobDescriptionProvider>
+              </ResumeProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

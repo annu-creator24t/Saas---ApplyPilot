@@ -64,10 +64,53 @@ cd frontend
 # Install dependencies
 npm install
 
+# Configure environment variables
+cp .env.example .env.local
+# Set NEXT_PUBLIC_API_URL, NEXT_PUBLIC_POSTHOG_KEY, and NEXT_PUBLIC_POSTHOG_HOST in .env.local
+
 # Run development server
 npm run dev
 ```
 Frontend will start at `http://localhost:3000`.
+
+---
+
+## Analytics (PostHog Integration)
+
+ApplyPilot uses a privacy-first, minimal PostHog integration solely to measure successful account creations. All automatic data capture (pageviews, session recordings, click autocapture) is disabled.
+
+### Required Environment Variables
+
+Add the following environment variables to `frontend/.env.local` (local) and your Vercel Project Settings (production):
+
+| Variable | Description | Example |
+|---|---|---|
+| `NEXT_PUBLIC_POSTHOG_KEY` | PostHog project API key | `phc_xxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
+| `NEXT_PUBLIC_POSTHOG_HOST` | PostHog host / ingestion URL | `https://us.i.posthog.com` or `https://eu.i.posthog.com` |
+
+### Tracked Event
+
+- **Event Name**: `signup_completed`
+- **Trigger**: Emitted strictly after a user's registration request succeeds and receives a valid user ID from the backend.
+- **Distinct ID**: The user's stable internal `user_id`.
+- **Payload Properties**:
+  ```json
+  {
+    "user_id": "<internal_user_id>"
+  }
+  ```
+- **Privacy & Safety Guarantees**:
+  - No passwords, JWT tokens, refresh tokens, resumes, emails, or sensitive data are transmitted.
+  - Analytics failures are caught non-blockingly, ensuring signup and user authentication never fail due to PostHog.
+
+### Vercel Deployment Configuration
+
+1. In the Vercel Dashboard, go to your ApplyPilot frontend project.
+2. Navigate to **Settings** > **Environment Variables**.
+3. Add:
+   - `NEXT_PUBLIC_POSTHOG_KEY` with your PostHog Project API Key.
+   - `NEXT_PUBLIC_POSTHOG_HOST` with your PostHog instance host (e.g., `https://us.i.posthog.com`).
+4. Trigger a new deployment or push to your repository to apply the changes.
 
 ---
 
