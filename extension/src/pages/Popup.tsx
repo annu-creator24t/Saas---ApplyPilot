@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Header from "../components/Header";
+import { FRONTEND_URL } from "../config";
 import {
   CheckCircle2,
   ExternalLink,
@@ -37,8 +38,6 @@ interface AnalysisResult {
   company_name?: string;
   location?: string;
 }
-
-const WEBSITE_URL = "http://localhost:3000";
 
 export default function Popup() {
   const [token, setToken] = useState<string | null>(null);
@@ -871,7 +870,7 @@ export default function Popup() {
 
         chrome.tabs.create({
           url:
-            `${WEBSITE_URL}/dashboard/resume-optimizer?${params.toString()}`,
+            `${FRONTEND_URL}/dashboard/resume-optimizer?${params.toString()}`,
         });
       }
     );
@@ -972,7 +971,7 @@ export default function Popup() {
 
           <div className="pt-2 border-t border-slate-800 text-center space-y-1.5">
             <a
-              href={`${WEBSITE_URL}/register`}
+              href={`${FRONTEND_URL}/register`}
               target="_blank"
               rel="noreferrer"
               className="text-[10px] text-indigo-400 hover:underline inline-flex items-center gap-1"
@@ -984,7 +983,7 @@ export default function Popup() {
             <br />
 
             <a
-              href={`${WEBSITE_URL}/login`}
+              href={`${FRONTEND_URL}/login`}
               target="_blank"
               rel="noreferrer"
               className="text-[10px] text-slate-500 hover:text-slate-300 inline-flex items-center gap-1"
@@ -1249,7 +1248,7 @@ export default function Popup() {
                   {uploadingResume ? "Uploading..." : "Upload Resume"}
                 </button>
                 <a
-                  href={`${WEBSITE_URL}/dashboard`}
+                  href={`${FRONTEND_URL}/dashboard`}
                   target="_blank"
                   rel="noreferrer"
                   className="flex-1 rounded-lg border border-slate-700 bg-slate-800 py-2 text-[11px] font-semibold text-slate-200 hover:bg-slate-700 transition flex items-center justify-center gap-1"

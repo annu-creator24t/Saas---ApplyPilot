@@ -5,7 +5,13 @@
   "description": "AI-powered job analysis, ATS scoring, and application tracking directly on job sites.",
   "action": {
     "default_popup": "index.html",
-    "default_title": "ApplyPilot AI Copilot"
+    "default_title": "ApplyPilot AI Copilot",
+    "default_icon": "favicon.svg"
+  },
+  "icons": {
+    "16": "favicon.svg",
+    "48": "favicon.svg",
+    "128": "favicon.svg"
   },
   "background": {
     "service_worker": "background.js",
