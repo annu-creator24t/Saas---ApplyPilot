@@ -6,12 +6,16 @@
   "action": {
     "default_popup": "index.html",
     "default_title": "ApplyPilot AI Copilot",
-    "default_icon": "favicon.svg"
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
   "icons": {
-    "16": "favicon.svg",
-    "48": "favicon.svg",
-    "128": "favicon.svg"
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
   "background": {
     "service_worker": "background.js",

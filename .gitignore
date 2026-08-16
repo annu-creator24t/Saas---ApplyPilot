@@ -44,5 +44,6 @@ backend/logs/*
 .DS_Store
 Thumbs.db
 *.png
+!extension/public/*.png
 .vscode/
 .idea/

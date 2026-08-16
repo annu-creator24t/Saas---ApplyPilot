@@ -89,12 +89,11 @@ export default function Popup() {
     "Company";
 
   const isDetected = Boolean(
-    jobData?.detected ||
-      (
-        jobData?.job_title &&
-        jobData?.job_description &&
-        jobData.job_description.trim().length >= 30
-      )
+    jobData?.detected === true &&
+      jobData?.job_title &&
+      jobData.job_title.trim().length > 0 &&
+      jobData?.job_description &&
+      jobData.job_description.trim().length >= 30
   );
 
   // =========================================================
@@ -392,10 +391,12 @@ export default function Popup() {
     setError(null);
     setAnalysisResult(null);
 
-    if (job?.job_description) {
+    if (job?.detected && job?.job_description) {
       chrome.storage.local.set({
         pending_extracted_job: job,
       });
+    } else {
+      chrome.storage.local.remove(["pending_extracted_job"]);
     }
   };
 
@@ -1275,132 +1276,82 @@ export default function Popup() {
 // =========================================================
 
 function fallbackDOMExtractor() {
-  const hostname =
-    window.location.hostname.toLowerCase();
+  const url = window.location.href;
+  const hostname = window.location.hostname.toLowerCase();
+  const pathname = window.location.pathname.toLowerCase();
 
   let job_title = "";
   let company_name = "";
   let location = "";
   let job_description = "";
 
-  if (
-    hostname.includes("linkedin.com")
-  ) {
-    const titleElement =
-      document.querySelector(
-        ".job-details-jobs-unified-top-card__job-title"
-      ) ||
-      document.querySelector(
-        ".jobs-unified-top-card__job-title"
-      ) ||
-      document.querySelector(
-        "h1"
+  if (hostname.includes("linkedin.com")) {
+    const isJobDetailsPage =
+      pathname.includes("/jobs/view") ||
+      pathname.includes("/jobs/search") ||
+      url.includes("currentJobId=");
+
+    if (isJobDetailsPage) {
+      const titleEl = document.querySelector(
+        ".job-details-jobs-unified-top-card__job-title, .jobs-unified-top-card__job-title, .jobs-search__job-details--container h2, h1.t-24, .top-card-layout__title"
+      );
+      const companyEl = document.querySelector(
+        ".job-details-jobs-unified-top-card__company-name a, .jobs-unified-top-card__company-name a, .job-details-jobs-unified-top-card__company-name, .jobs-unified-top-card__company-name, .topcard__org-name-link"
+      );
+      const locEl = document.querySelector(
+        ".job-details-jobs-unified-top-card__bullet, .jobs-unified-top-card__bullet, .topcard__flavor--bullet"
+      );
+      const descEl = document.querySelector(
+        "#job-details, .jobs-description__content, .jobs-description-content__text, .jobs-description__container, article.jobs-description__container"
       );
 
-    const companyElement =
-      document.querySelector(
-        ".job-details-jobs-unified-top-card__company-name"
-      ) ||
-      document.querySelector(
-        ".jobs-unified-top-card__company-name"
-      );
+      job_title = (titleEl as HTMLElement)?.innerText?.trim() || "";
+      company_name = (companyEl as HTMLElement)?.innerText?.trim() || "";
+      location = (locEl as HTMLElement)?.innerText?.trim() || "";
+      job_description = (descEl as HTMLElement)?.innerText?.trim() || "";
+    } else {
+      // Feed or direct update post: check active modal or visible post
+      const modal = document.querySelector<HTMLElement>(".artdeco-modal[role='dialog'], div.feed-shared-update-v2__modal");
+      const targetPost = modal || document.querySelector<HTMLElement>(".feed-shared-update-v2, div[data-urn*='activity']");
+      if (targetPost) {
+        const text = (targetPost.innerText || "").trim();
+        const roleMatch = text.match(/(?:Role|Position|Job Title|Profile|Designation)\s*[:\-–—]\s*([^\n\r,•!|–—]{3,50})/i);
+        const compMatch = text.match(/(?:Company|Employer|Organization)\s*[:\-–—]\s*([^\n\r,•!|–—]{2,40})/i) ||
+                          text.match(/([A-Z][A-Za-z0-9\s&]{1,30})\s+(?:is|are)\s+hiring/i);
+        const locMatch = text.match(/(?:Location|Loc|Workplace|City)\s*[:\-–—]\s*([^\n\r•!|–—]{2,50})/i);
 
-    const descriptionElement =
-      document.querySelector(
-        "#job-details"
-      ) ||
-      document.querySelector(
-        ".jobs-description__content"
-      ) ||
-      document.querySelector(
-        ".jobs-description__container"
-      );
+        if (roleMatch && roleMatch[1]) job_title = roleMatch[1].trim();
+        if (compMatch && compMatch[1] && !/^(we|they|team)$/i.test(compMatch[1])) company_name = compMatch[1].trim();
+        if (locMatch && locMatch[1]) location = locMatch[1].trim();
 
-    const locationElement =
-      document.querySelector(
-        ".job-details-jobs-unified-top-card__primary-description"
-      ) ||
-      document.querySelector(
-        ".jobs-unified-top-card__primary-description"
-      );
-
-    job_title =
-      (
-        titleElement as HTMLElement
-      )?.innerText?.trim() || "";
-
-    company_name =
-      (
-        companyElement as HTMLElement
-      )?.innerText?.trim() || "";
-
-    location =
-      (
-        locationElement as HTMLElement
-      )?.innerText?.trim() || "";
-
-    job_description =
-      (
-        descriptionElement as HTMLElement
-      )?.innerText?.trim() || "";
+        if (job_title && (company_name || location)) {
+          job_description = text;
+        }
+      }
+    }
+  } else {
+    // Try standard job selectors
+    const titleEl = document.querySelector("h1.title, h1.jobsearch-JobInfoHeader-title, .app-title, .posting-header h2, [data-automation-id='jobTitle']");
+    if (titleEl) {
+      job_title = (titleEl as HTMLElement).innerText?.trim() || "";
+    }
+    const descEl = document.querySelector("#jobDescriptionText, #job-details, #content, [data-automation-id='jobDetails'], section.job-desc");
+    if (descEl) {
+      job_description = (descEl as HTMLElement).innerText?.trim() || "";
+    }
   }
 
-  if (!job_title) {
-    const h1 =
-      document.querySelector("h1");
-
-    job_title =
-      h1?.textContent?.trim() ||
-      document.title ||
-      "Job Posting";
-  }
-
-  if (!company_name) {
-    const companyMeta =
-      document.querySelector(
-        'meta[property="og:site_name"]'
-      );
-
-    company_name =
-      companyMeta?.getAttribute(
-        "content"
-      ) ||
-      hostname
-        .replace(/^www\./, "")
-        .split(".")[0];
-  }
-
-  if (!job_description) {
-    const main =
-      document.querySelector(
-        "main"
-      ) ||
-      document.querySelector(
-        "article"
-      ) ||
-      document.body;
-
-    job_description =
-      (
-        main as HTMLElement
-      )?.innerText
-        ?.slice(0, 12000)
-        ?.trim() || "";
-  }
+  // Validate non-generic fields
+  const invalidTitles = /^(Feed|Home|LinkedIn|Notifications|Post|Update|Careers|Jobs|Hiring|Opportunity|Details|Job|Dashboard|Messaging|Inbox|Sign In|Login|ApplyPilot)$/i;
+  const isInvalid = !job_title || invalidTitles.test(job_title) || !job_description || job_description.length < 30;
 
   return {
-    job_title,
-    company_name,
-    location,
-    job_description,
-    job_url:
-      window.location.href,
-    source_site:
-      hostname,
-    detected:
-      Boolean(
-        job_title &&
-          job_description.length >= 30
-      ),
+    job_title: isInvalid ? "" : job_title,
+    company_name: isInvalid ? "" : (company_name || "Company"),
+    location: isInvalid ? "" : location,
+    job_description: isInvalid ? "" : job_description,
+    job_url: window.location.href,
+    source_site: hostname,
+    detected: !isInvalid,
   };
 }
