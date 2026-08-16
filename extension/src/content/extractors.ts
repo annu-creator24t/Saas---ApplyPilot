@@ -538,7 +538,10 @@ function extractIndeedJob(url: string): ExtractedJobData {
 function extractNaukriJob(url: string): ExtractedJobData {
   const job_title = getText([
     "h1.styles_jd-header-title__r2Aud",
+    "h1[class*='jd-header-title']",
     "[class*='jd-header-title']",
+    "h1.styles_header-title",
+    "h1[title]",
     "h1.title",
     "h1",
   ]);
@@ -546,22 +549,31 @@ function extractNaukriJob(url: string): ExtractedJobData {
   const company_name = getText([
     ".styles_jd-header-comp-name__a21Yh a",
     ".styles_jd-header-comp-name__a21Yh",
+    "[class*='comp-name'] a",
     "a.comp-name",
     "[class*='comp-name']",
+    ".styles_jhc__comp-name a",
+    ".styles_jhc__comp-name",
+    "a[href*='naukri.com/companies/']",
     ".company-name",
   ]);
 
   const location = getText([
+    "[class*='styles_jhc__location']",
+    "[class*='styles_loc']",
     "[class*='location']",
     ".loc",
     "[class*='loc']",
   ]);
 
   const job_description = getText([
-    "[class*='job-desc']",
     ".styles_Jd-left-wrapper",
+    "[class*='job-desc']",
+    "[class*='jobDescription']",
+    "[class*='styles_job-desc-container']",
     ".danger-markup",
     "section.job-desc",
+    "section.styles_job-desc-container",
   ]);
 
   return validateCandidate({

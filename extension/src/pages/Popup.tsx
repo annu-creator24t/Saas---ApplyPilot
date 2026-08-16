@@ -287,21 +287,37 @@ export default function Popup() {
   // =========================================================
 
   const loadPendingJob = () => {
-    chrome.storage.local.get(
-      ["pending_extracted_job"],
-      (result: Record<string, any>) => {
-        const pending =
-          result.pending_extracted_job;
+    setExtracting(true);
+    chrome.tabs.query(
+      {
+        active: true,
+        currentWindow: true,
+      },
+      (tabs: chrome.tabs.Tab[]) => {
+        const activeTab = tabs[0];
+        const activeUrl = activeTab?.url;
 
-        if (
-          pending?.job_description
-        ) {
-          setJobData(pending);
-          setExtracting(false);
-          return;
-        }
+        chrome.storage.local.get(
+          ["pending_extracted_job"],
+          (result: Record<string, any>) => {
+            const pending = result.pending_extracted_job;
 
-        extractActiveTabJob();
+            // Only use cached job if it was extracted from the EXACT same page URL
+            if (
+              pending?.detected &&
+              pending?.job_description &&
+              activeUrl &&
+              pending?.job_url === activeUrl
+            ) {
+              setJobData(pending);
+              setExtracting(false);
+              return;
+            }
+
+            // Otherwise, perform fresh live extraction on the active tab
+            extractActiveTabJob();
+          }
+        );
       }
     );
   };
@@ -1329,6 +1345,42 @@ function fallbackDOMExtractor() {
         }
       }
     }
+  } else if (hostname.includes("naukri.com")) {
+    const titleEl = document.querySelector(
+      "h1.styles_jd-header-title__r2Aud, h1[class*='jd-header-title'], [class*='jd-header-title'], h1.styles_header-title, h1[title], h1.title, h1"
+    );
+    const companyEl = document.querySelector(
+      ".styles_jd-header-comp-name__a21Yh a, .styles_jd-header-comp-name__a21Yh, [class*='comp-name'] a, a.comp-name, [class*='comp-name'], .styles_jhc__comp-name a, a[href*='naukri.com/companies/'], .company-name"
+    );
+    const locEl = document.querySelector(
+      "[class*='styles_jhc__location'], [class*='styles_loc'], [class*='location'], .loc, [class*='loc']"
+    );
+    const descEl = document.querySelector(
+      ".styles_Jd-left-wrapper, [class*='job-desc'], [class*='jobDescription'], [class*='styles_job-desc-container'], .danger-markup, section.job-desc, section.styles_job-desc-container"
+    );
+
+    job_title = (titleEl as HTMLElement)?.innerText?.trim() || "";
+    company_name = (companyEl as HTMLElement)?.innerText?.trim() || "";
+    location = (locEl as HTMLElement)?.innerText?.trim() || "";
+    job_description = (descEl as HTMLElement)?.innerText?.trim() || "";
+  } else if (hostname.includes("indeed.com")) {
+    const titleEl = document.querySelector(
+      ".jobsearch-JobInfoHeader-title, h1.jobsearch-JobInfoHeader-title, h1.jobTitle, h1"
+    );
+    const companyEl = document.querySelector(
+      '[data-testid="inlineHeader-companyName"] a, [data-testid="inlineHeader-companyName"], .jobsearch-InlineCompanyHeader-companyHeader a, .jobsearch-InlineCompanyHeader-companyHeader, .jobsearch-CompanyReview--dataHeader'
+    );
+    const locEl = document.querySelector(
+      '[data-testid="inlineHeader-companyLocation"], .jobsearch-JobInfoHeader-subtitle, [data-testid="jobsearch-JobInfoHeader-companyLocation"]'
+    );
+    const descEl = document.querySelector(
+      "#jobDescriptionText, .jobsearch-jobDescriptionText, #jobDetailsSection"
+    );
+
+    job_title = (titleEl as HTMLElement)?.innerText?.trim() || "";
+    company_name = (companyEl as HTMLElement)?.innerText?.trim() || "";
+    location = (locEl as HTMLElement)?.innerText?.trim() || "";
+    job_description = (descEl as HTMLElement)?.innerText?.trim() || "";
   } else {
     // Try standard job selectors
     const titleEl = document.querySelector("h1.title, h1.jobsearch-JobInfoHeader-title, .app-title, .posting-header h2, [data-automation-id='jobTitle']");
