@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 class SubscriptionPayment(BaseModel):
     id: Optional[str] = Field(default=None, alias="_id")
     user_id: str
-    amount: float = 99.0
+    amount: float = 1.0
     currency: str = "INR"
     upi_reference: Optional[str] = None
     status: str = "pending"  # pending, approved, rejected

@@ -1,7 +1,7 @@
-const API_BASE_URL = "http://localhost:8000";
+import { API_BASE_URL } from "../config";
 
 console.log(
-  "[ApplyPilot Background Worker] Initialized."
+  `[ApplyPilot Background Worker] Initialized. Target API: ${API_BASE_URL}`
 );
 
 // =========================================================
@@ -268,81 +268,6 @@ async function getStoredToken(): Promise<
             result.access_token
           );
           return;
-        }
-
-        /*
-         * Fallback:
-         * Try to synchronize an active ApplyPilot
-         * web-app access_token cookie.
-         */
-
-        if (
-          typeof chrome !==
-            "undefined" &&
-          chrome.cookies
-        ) {
-          try {
-            const cookie3000 =
-              await chrome.cookies.get({
-                url:
-                  "http://localhost:3000",
-                name:
-                  "access_token",
-              });
-
-            const cookie127 =
-              await chrome.cookies.get({
-                url:
-                  "http://127.0.0.1:3000",
-                name:
-                  "access_token",
-              });
-
-            let webAppToken =
-              cookie3000?.value ||
-              cookie127?.value;
-
-            /*
-             * Additional localhost fallback.
-             */
-            if (!webAppToken) {
-              const allLocalhost =
-                await chrome.cookies.getAll(
-                  {
-                    domain:
-                      "localhost",
-                  }
-                );
-
-              const tokenCookie =
-                allLocalhost.find(
-                  (cookie: any) =>
-                    cookie.name ===
-                    "access_token"
-                );
-
-              if (tokenCookie) {
-                webAppToken =
-                  tokenCookie.value;
-              }
-            }
-
-            if (webAppToken) {
-              await chrome.storage.local.set(
-                {
-                  access_token:
-                    webAppToken,
-                }
-              );
-
-              resolve(
-                webAppToken
-              );
-              return;
-            }
-          } catch {
-            // Ignore cookie read failures.
-          }
         }
 
         resolve(null);

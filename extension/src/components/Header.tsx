@@ -1,4 +1,5 @@
 import { Rocket, LogOut, ExternalLink } from "lucide-react";
+import { FRONTEND_URL } from "../config";
 
 interface HeaderProps {
   userEmail?: string | null;
@@ -20,7 +21,7 @@ export default function Header({ userEmail, onLogout }: HeaderProps) {
 
       <div className="flex items-center gap-2">
         <a
-          href="http://localhost:3000/dashboard"
+          href={`${FRONTEND_URL}/dashboard`}
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center gap-1 rounded-lg bg-indigo-500/10 px-2 py-1 text-[10px] font-semibold text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition"
