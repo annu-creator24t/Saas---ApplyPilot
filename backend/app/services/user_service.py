@@ -157,9 +157,10 @@ class UserService:
         user.setdefault("is_admin", False)
         user.setdefault("role", "user")
 
-        # Dynamic trial calculation
+        # Dynamic trial calculation with auto-initialization for existing users
         now = datetime.utcnow()
         trial_ends = user.get("trial_ends_at")
+        trial_started = user.get("trial_started_at")
         trial_active = False
         trial_days_remaining = 0
 
@@ -169,12 +170,39 @@ class UserService:
                     trial_ends = datetime.fromisoformat(trial_ends.replace("Z", "+00:00")).replace(tzinfo=None)
                 except Exception:
                     trial_ends = None
-            if trial_ends and trial_ends > now:
-                trial_active = True
-                trial_days_remaining = max(1, int(math.ceil((trial_ends - now).total_seconds() / 86400)))
+        
+        if not trial_ends:
+            created_at = user.get("created_at")
+            if created_at and isinstance(created_at, str):
+                try:
+                    created_at = datetime.fromisoformat(created_at.replace("Z", "+00:00")).replace(tzinfo=None)
+                except Exception:
+                    created_at = None
+            start_ref = created_at or now
+            if (now - start_ref).total_seconds() > (10 * 86400):
+                start_ref = now
+            trial_started = start_ref
+            trial_ends = start_ref + timedelta(days=10)
+            try:
+                await self.repository.update_user(
+                    user_id,
+                    {
+                        "trial_started_at": trial_started,
+                        "trial_ends_at": trial_ends,
+                        "trial_active": True,
+                    },
+                )
+            except Exception:
+                pass
+
+        if trial_ends and trial_ends > now:
+            trial_active = True
+            trial_days_remaining = max(1, int(math.ceil((trial_ends - now).total_seconds() / 86400)))
 
         user["trial_active"] = trial_active
         user["trial_days_remaining"] = trial_days_remaining
+        user["trial_started_at"] = trial_started
+        user["trial_ends_at"] = trial_ends
 
         return APIResponse(
             message="Profile fetched successfully.",

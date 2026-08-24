@@ -34,6 +34,7 @@ class SubscriptionService:
     ) -> Tuple[bool, int, Optional[datetime], Optional[datetime]]:
         """
         Evaluates whether user has an active 10-day free trial and calculates remaining days.
+        Auto-initializes trial for legacy users if trial timestamps are missing.
         """
         now = datetime.utcnow()
         trial_started_at = user.get("trial_started_at")
@@ -54,6 +55,24 @@ class SubscriptionService:
                 ).replace(tzinfo=None)
             except Exception:
                 trial_ends_at = None
+
+        # Auto-initialize 10-day trial if missing on existing user
+        if not trial_ends_at:
+            created_at = user.get("created_at")
+            if created_at and isinstance(created_at, str):
+                try:
+                    created_at = datetime.fromisoformat(
+                        created_at.replace("Z", "+00:00")
+                    ).replace(tzinfo=None)
+                except Exception:
+                    created_at = None
+
+            # Start trial from created_at if created within 10 days, otherwise give full 10-day trial from now
+            start_ref = created_at or now
+            if (now - start_ref).total_seconds() > (10 * 86400):
+                start_ref = now
+            trial_started_at = start_ref
+            trial_ends_at = start_ref + timedelta(days=10)
 
         if trial_ends_at:
             if trial_ends_at > now:
@@ -92,8 +111,21 @@ class SubscriptionService:
         # Check trial status
         trial_active, trial_days_remaining, trial_start, trial_end = self._check_trial_status(user)
 
+        # If user record was missing trial info, initialize in DB
+        if user.get("trial_ends_at") is None and trial_end is not None:
+            await db["users"].update_one(
+                {"_id": user["_id"]},
+                {
+                    "$set": {
+                        "trial_active": trial_active,
+                        "trial_started_at": trial_start,
+                        "trial_ends_at": trial_end,
+                        "updated_at": now,
+                    }
+                },
+            )
         # If trial expired in DB state, mark inactive
-        if user.get("trial_active") and not trial_active:
+        elif user.get("trial_active") and not trial_active:
             await db["users"].update_one(
                 {"_id": user["_id"]},
                 {
