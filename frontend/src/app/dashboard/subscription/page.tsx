@@ -79,6 +79,9 @@ export default function SubscriptionPage() {
   }
 
   const isPro = subData?.is_pro;
+  const isTrial = Boolean(subData?.trial_active);
+  const trialDaysRemaining = subData?.trial_days_remaining || 0;
+  const trialExpired = Boolean(subData?.trial_ends_at && !subData?.trial_active && !isPro);
   const isPending = subData?.subscription_status === "pending" || subData?.payment_status === "pending";
   const creditsUsed = subData?.free_usage_count || 0;
   const creditsRemaining = subData ? subData.free_credits_remaining : Math.max(0, 3 - creditsUsed);
@@ -91,12 +94,63 @@ export default function SubscriptionPage() {
           <Sparkles className="h-3.5 w-3.5" /> ApplyPilot Pricing & Billing
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Upgrade to ApplyPilot Pro
+          {isTrial ? "Your 10-Day Free Trial" : "Upgrade to ApplyPilot Pro"}
         </h1>
         <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
-          Unlock unlimited AI resume checks, job match scoring, resume optimization, cover letters, and interview prep.
+          {isTrial
+            ? "You currently have unrestricted Pro access to all AI resume checks, job match scoring, resume optimizer, cover letters, and interview prep."
+            : "Unlock unlimited AI resume checks, job match scoring, resume optimization, cover letters, and interview prep."}
         </p>
       </div>
+
+      {/* Trial Active Hero Banner */}
+      {isTrial && (
+        <div className="rounded-2xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 p-5 md:p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-md">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-extrabold text-sm md:text-base text-slate-900 dark:text-white">
+                    🎉 10-Day Free Trial Active
+                  </h3>
+                  <span className="rounded-full bg-gradient-to-r from-cyan-600 to-blue-600 px-2.5 py-0.5 text-[10px] font-extrabold text-white">
+                    {trialDaysRemaining} {trialDaysRemaining === 1 ? "DAY" : "DAYS"} LEFT
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                  Enjoy full access to ApplyPilot Pro for 10 days. All premium features, interview prep, and AI tools are fully unlocked without credit deduction.
+                </p>
+              </div>
+            </div>
+            <div className="shrink-0 text-right">
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">
+                Free Trial Status
+              </span>
+              <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400">
+                {trialDaysRemaining} {trialDaysRemaining === 1 ? "day remaining" : "days remaining"}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Trial Expired Alert Banner */}
+      {trialExpired && (
+        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 shadow-sm">
+          <div className="flex items-center gap-3 text-amber-800 dark:text-amber-200">
+            <Clock className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+            <div>
+              <h3 className="font-bold text-xs md:text-sm">Your 10-Day Free Trial has Ended</h3>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
+                Upgrade to ApplyPilot Pro (₹99/mo) below to restore unlimited AI resume optimization, cover letters, and interview prep.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Current Plan & Credits Summary Bar */}
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
@@ -104,29 +158,45 @@ export default function SubscriptionPage() {
           <div className="sm:pr-4">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Current Plan</span>
             <div className="mt-1.5 flex items-center justify-center sm:justify-start gap-2">
-              <span className={`text-xl font-extrabold ${isPro ? "text-emerald-600 dark:text-emerald-400" : "text-slate-900 dark:text-white"}`}>
-                {isPro ? "APPLYPILOT PRO" : "FREE PLAN"}
+              <span
+                className={`text-xl font-extrabold ${
+                  isPro
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : isTrial
+                    ? "text-cyan-600 dark:text-cyan-400"
+                    : "text-slate-900 dark:text-white"
+                }`}
+              >
+                {isPro ? "APPLYPILOT PRO" : isTrial ? "10-DAY FREE TRIAL" : "FREE PLAN"}
               </span>
-              {isPro && (
+              {isPro ? (
                 <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                   ACTIVE
                 </span>
-              )}
+              ) : isTrial ? (
+                <span className="rounded-full bg-cyan-500/10 px-2.5 py-0.5 text-[10px] font-bold text-cyan-600 dark:text-cyan-400 border border-cyan-500/30">
+                  TRIAL ACTIVE
+                </span>
+              ) : null}
             </div>
           </div>
 
           <div className="pt-4 sm:pt-0 sm:px-6">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">AI Credits Status</span>
             <div className="mt-1.5 flex items-center justify-center sm:justify-start gap-2">
-              <Zap className={`h-5 w-5 ${isPro ? "text-emerald-500" : "text-indigo-500"}`} />
+              <Zap
+                className={`h-5 w-5 ${
+                  isPro ? "text-emerald-500" : isTrial ? "text-cyan-500" : "text-indigo-500"
+                }`}
+              />
               <span className="text-xl font-extrabold text-slate-900 dark:text-white">
-                {isPro ? "Unlimited AI" : `${creditsRemaining} / 3 remaining`}
+                {isPro || isTrial ? "Unlimited AI" : `${creditsRemaining} / 3 remaining`}
               </span>
             </div>
           </div>
 
           <div className="pt-4 sm:pt-0 sm:pl-6">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Payment Status</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Status</span>
             <div className="mt-1.5 flex items-center justify-center sm:justify-start gap-2">
               {isPending ? (
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/30">
@@ -135,6 +205,10 @@ export default function SubscriptionPage() {
               ) : isPro ? (
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/30">
                   <ShieldCheck className="h-3.5 w-3.5" /> Verified & Active
+                </span>
+              ) : isTrial ? (
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-full border border-cyan-500/30">
+                  <Sparkles className="h-3.5 w-3.5" /> {trialDaysRemaining} Days Left
                 </span>
               ) : (
                 <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">

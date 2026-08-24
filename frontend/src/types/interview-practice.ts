@@ -34,6 +34,7 @@ export interface InterviewPracticeResponse {
 
 export interface EvaluateAnswerRequest {
   question: string;
-
   answer: string;
+  session_id?: string;
+  question_index?: number;
 }

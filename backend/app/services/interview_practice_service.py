@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any, Optional
 
 from app.ai.groq_client import generate
 from app.ai.response_parser import (
@@ -79,25 +80,65 @@ class InterviewPracticeService:
 
         response = generate(prompt)
 
-        await self.subscription_service.deduct_ai_credit_on_success(user_id)
-
-        questions = parse_interview_questions(
+        raw_questions = parse_interview_questions(
             response
         )
 
-        all_questions = (
-            questions["technical"]
-            + questions["behavioral"]
-            + questions["hr"]
+        # Safely extract questions from possible dictionary structures
+        raw_tech = (
+            raw_questions.get("technical")
+            or raw_questions.get("technical_questions")
+            or []
         )
+        raw_beh = (
+            raw_questions.get("behavioral")
+            or raw_questions.get("behavioral_questions")
+            or []
+        )
+        raw_hr = (
+            raw_questions.get("hr")
+            or raw_questions.get("hr_questions")
+            or []
+        )
+
+        formatted_questions = []
+
+        def _format_item(item: Any, default_cat: str) -> dict:
+            if isinstance(item, dict):
+                return {
+                    "question": str(item.get("question", "")).strip() or "Interview question",
+                    "category": item.get("category", default_cat),
+                    "difficulty": item.get("difficulty", "Medium"),
+                }
+            return {
+                "question": str(item).strip(),
+                "category": default_cat,
+                "difficulty": "Medium",
+            }
+
+        for item in raw_tech:
+            formatted_questions.append(_format_item(item, "Technical"))
+        for item in raw_beh:
+            formatted_questions.append(_format_item(item, "Behavioral"))
+        for item in raw_hr:
+            formatted_questions.append(_format_item(item, "HR"))
+
+        if not formatted_questions:
+            formatted_questions = [
+                {
+                    "question": "Can you walk me through your background and relevant technical experience?",
+                    "category": "Technical",
+                    "difficulty": "Medium",
+                }
+            ]
 
         session_id = (
             await self.practice_repository.create_session(
                 {
-                    "user_id": resume["user_id"],
+                    "user_id": str(user["_id"]),
                     "resume_id": request.resume_id,
                     "job_description": request.job_description,
-                    "questions": all_questions,
+                    "questions": formatted_questions,
                     "average_score": 0,
                     "status": "in_progress",
                     "created_at": datetime.utcnow(),
@@ -105,11 +146,14 @@ class InterviewPracticeService:
             )
         )
 
+        # Deduct credit ONLY after successful generation, parsing, and persistence
+        await self.subscription_service.deduct_ai_credit_on_success(user_id)
+
         return APIResponse(
             message="Interview practice started successfully.",
             data=InterviewPracticeResponse(
                 session_id=session_id,
-                questions=all_questions,
+                questions=formatted_questions,
             ),
         )
 
@@ -118,6 +162,8 @@ class InterviewPracticeService:
         question: str,
         answer: str,
         user_id: str = None,
+        session_id: str = None,
+        question_index: int = None,
     ):
         if user_id:
             await self.subscription_service.check_ai_permission(user_id)
@@ -129,11 +175,49 @@ class InterviewPracticeService:
 
         response = generate(prompt)
 
-        if user_id:
-            await self.subscription_service.deduct_ai_credit_on_success(user_id)
-
         result = parse_interview_evaluation(
             response
         )
+
+        # Update session persistence if session_id provided
+        if session_id:
+            try:
+                session = await self.practice_repository.get_session(session_id)
+                if session:
+                    questions = session.get("questions", [])
+                    idx = question_index if (question_index is not None and 0 <= question_index < len(questions)) else None
+
+                    if idx is None:
+                        # Find matching question by text
+                        for i, q in enumerate(questions):
+                            q_text = q.get("question") if isinstance(q, dict) else str(q)
+                            if q_text == question:
+                                idx = i
+                                break
+
+                    if idx is not None and idx < len(questions):
+                        if isinstance(questions[idx], dict):
+                            questions[idx]["user_answer"] = answer
+                            questions[idx]["evaluation"] = result
+
+                        # Recalculate average score
+                        evaluated_scores = [
+                            q.get("evaluation", {}).get("score", 0)
+                            for q in questions
+                            if isinstance(q, dict) and q.get("evaluation") and isinstance(q.get("evaluation"), dict)
+                        ]
+                        avg_score = (sum(evaluated_scores) / len(evaluated_scores)) if evaluated_scores else 0
+
+                        await self.practice_repository.update_session(
+                            session_id,
+                            {
+                                "questions": questions,
+                                "average_score": avg_score,
+                                "updated_at": datetime.utcnow(),
+                            },
+                        )
+            except Exception:
+                # Non-fatal session update error
+                pass
 
         return result

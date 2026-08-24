@@ -82,9 +82,15 @@ def parse_interview_evaluation(response: str) -> dict:
         cleaned = _clean_json_response(response)
         return json.loads(cleaned)
 
+    except json.JSONDecodeError:
+        raise AIException(
+            "Invalid JSON returned by AI evaluation.",
+            error_code="AI_INVALID_JSON",
+        )
     except Exception as e:
-        raise ValueError(
-            f"Failed to parse interview evaluation: {e}"
+        raise AIException(
+            f"Failed to parse interview evaluation: {str(e)}",
+            error_code="AI_PARSE_ERROR",
         )
     
 def parse_resume_improvement(

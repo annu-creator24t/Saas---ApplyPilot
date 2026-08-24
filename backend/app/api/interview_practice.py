@@ -50,6 +50,8 @@ async def evaluate_answer(
         question=request.question,
         answer=request.answer,
         user_id=str(current_user["_id"]),
+        session_id=request.session_id,
+        question_index=request.question_index,
     )
 
     return APIResponse(

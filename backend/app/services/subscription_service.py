@@ -1,5 +1,6 @@
+import math
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 from bson import ObjectId
 from bson.errors import InvalidId
 
@@ -28,6 +29,41 @@ class SubscriptionService:
             raise NotFoundException("User not found.")
         return user
 
+    def _check_trial_status(
+        self, user: Dict[str, Any]
+    ) -> Tuple[bool, int, Optional[datetime], Optional[datetime]]:
+        """
+        Evaluates whether user has an active 10-day free trial and calculates remaining days.
+        """
+        now = datetime.utcnow()
+        trial_started_at = user.get("trial_started_at")
+        trial_ends_at = user.get("trial_ends_at")
+
+        if trial_started_at and isinstance(trial_started_at, str):
+            try:
+                trial_started_at = datetime.fromisoformat(
+                    trial_started_at.replace("Z", "+00:00")
+                ).replace(tzinfo=None)
+            except Exception:
+                trial_started_at = None
+
+        if trial_ends_at and isinstance(trial_ends_at, str):
+            try:
+                trial_ends_at = datetime.fromisoformat(
+                    trial_ends_at.replace("Z", "+00:00")
+                ).replace(tzinfo=None)
+            except Exception:
+                trial_ends_at = None
+
+        if trial_ends_at:
+            if trial_ends_at > now:
+                remaining_seconds = (trial_ends_at - now).total_seconds()
+                days_remaining = max(1, int(math.ceil(remaining_seconds / 86400)))
+                return True, days_remaining, trial_started_at, trial_ends_at
+            return False, 0, trial_started_at, trial_ends_at
+
+        return False, 0, trial_started_at, None
+
     async def get_subscription_status(self, user_id: str) -> APIResponse:
         user = await self._get_user_doc(user_id)
         db = get_database()
@@ -38,7 +74,7 @@ class SubscriptionService:
         sub_end = user.get("subscription_end")
         free_usage_count = user.get("free_usage_count", 0)
 
-        # Check expiration
+        # Check subscription expiration
         if sub_status == "active" and sub_end and sub_end < now:
             sub_status = "expired"
             sub_plan = "free"
@@ -53,8 +89,28 @@ class SubscriptionService:
                 },
             )
 
+        # Check trial status
+        trial_active, trial_days_remaining, trial_start, trial_end = self._check_trial_status(user)
+
+        # If trial expired in DB state, mark inactive
+        if user.get("trial_active") and not trial_active:
+            await db["users"].update_one(
+                {"_id": user["_id"]},
+                {
+                    "$set": {
+                        "trial_active": False,
+                        "updated_at": now,
+                    }
+                },
+            )
+
         is_pro = sub_plan == "pro" and sub_status == "active"
-        free_remaining = max(0, FREE_CREDITS_LIMIT - free_usage_count) if not is_pro else 999999
+        has_unlimited_access = is_pro or trial_active
+        free_remaining = (
+            "Unlimited"
+            if has_unlimited_access
+            else max(0, FREE_CREDITS_LIMIT - free_usage_count)
+        )
 
         return APIResponse(
             message="Subscription status retrieved.",
@@ -63,8 +119,12 @@ class SubscriptionService:
                 "subscription_plan": sub_plan,
                 "free_usage_count": free_usage_count,
                 "free_credits_limit": FREE_CREDITS_LIMIT,
-                "free_credits_remaining": free_remaining if not is_pro else "Unlimited",
+                "free_credits_remaining": free_remaining,
                 "is_pro": is_pro,
+                "trial_active": trial_active,
+                "trial_started_at": trial_start,
+                "trial_ends_at": trial_end,
+                "trial_days_remaining": trial_days_remaining,
                 "subscription_start": user.get("subscription_start"),
                 "subscription_end": sub_end,
                 "payment_status": user.get("payment_status", "none"),
@@ -75,7 +135,8 @@ class SubscriptionService:
     async def check_ai_permission(self, user_id: str) -> bool:
         """
         Validates whether the user is authorized to execute an AI feature.
-        Pro users receive unlimited access. Free tier users are capped at FREE_CREDITS_LIMIT (3).
+        Pro users and active 10-day trial users receive unlimited access.
+        Free tier users with expired/no trial are capped at FREE_CREDITS_LIMIT (3).
         """
         user = await self._get_user_doc(user_id)
         db = get_database()
@@ -86,7 +147,7 @@ class SubscriptionService:
         sub_end = user.get("subscription_end")
         free_usage_count = user.get("free_usage_count", 0)
 
-        # Pro plan validation
+        # 1. Pro plan validation
         if sub_plan == "pro" and sub_status == "active":
             if sub_end and sub_end < now:
                 # Subscription expired -> downgrade to free
@@ -105,7 +166,12 @@ class SubscriptionService:
             else:
                 return True
 
-        # Free tier limit check
+        # 2. 10-Day Free Trial validation
+        trial_active, _, _, _ = self._check_trial_status(user)
+        if trial_active:
+            return True
+
+        # 3. Free tier limit check
         if free_usage_count >= FREE_CREDITS_LIMIT:
             raise AIUsageLimitException(
                 "You have used all 3 free AI uses. Upgrade to Premium for unlimited access."
@@ -115,7 +181,7 @@ class SubscriptionService:
 
     async def deduct_ai_credit_on_success(self, user_id: str) -> None:
         """
-        Increments free_usage_count only for free users AFTER successful AI generation.
+        Increments free_usage_count only for free users without an active trial AFTER successful AI generation.
         """
         user = await self._get_user_doc(user_id)
         sub_status = user.get("subscription_status", "free")
@@ -123,6 +189,11 @@ class SubscriptionService:
 
         # Pro users do not consume free credits
         if sub_plan == "pro" and sub_status == "active":
+            return
+
+        # Active trial users do not consume free credits
+        trial_active, _, _, _ = self._check_trial_status(user)
+        if trial_active:
             return
 
         db = get_database()

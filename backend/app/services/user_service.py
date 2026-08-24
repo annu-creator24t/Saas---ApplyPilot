@@ -1,4 +1,5 @@
-from datetime import datetime
+import math
+from datetime import datetime, timedelta
 
 from app.auth.jwt import (
     create_access_token,
@@ -31,6 +32,9 @@ class UserService:
         if existing:
             raise ValidationException("Email already exists.")
 
+        now = datetime.utcnow()
+        trial_end = now + timedelta(days=10)
+
         payload = {
             "full_name": user.full_name.strip() if user.full_name else "",
             "email": clean_email,
@@ -44,8 +48,11 @@ class UserService:
             "subscription_plan": "free",
             "free_usage_count": 0,
             "payment_status": "none",
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow(),
+            "trial_active": True,
+            "trial_started_at": now,
+            "trial_ends_at": trial_end,
+            "created_at": now,
+            "updated_at": now,
         }
 
         user_id = await self.repository.create_user(payload)
@@ -149,6 +156,25 @@ class UserService:
         user.setdefault("payment_status", "none")
         user.setdefault("is_admin", False)
         user.setdefault("role", "user")
+
+        # Dynamic trial calculation
+        now = datetime.utcnow()
+        trial_ends = user.get("trial_ends_at")
+        trial_active = False
+        trial_days_remaining = 0
+
+        if trial_ends:
+            if isinstance(trial_ends, str):
+                try:
+                    trial_ends = datetime.fromisoformat(trial_ends.replace("Z", "+00:00")).replace(tzinfo=None)
+                except Exception:
+                    trial_ends = None
+            if trial_ends and trial_ends > now:
+                trial_active = True
+                trial_days_remaining = max(1, int(math.ceil((trial_ends - now).total_seconds() / 86400)))
+
+        user["trial_active"] = trial_active
+        user["trial_days_remaining"] = trial_days_remaining
 
         return APIResponse(
             message="Profile fetched successfully.",

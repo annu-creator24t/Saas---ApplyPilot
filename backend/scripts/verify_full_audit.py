@@ -1,8 +1,14 @@
 import asyncio
 import os
 import sys
+from datetime import datetime, timedelta
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from dotenv import load_dotenv
+
+env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
+load_dotenv(env_path)
 
 import httpx
 from app.main import app
@@ -71,54 +77,76 @@ async def run_full_audit():
         print(f"[STEP 6] List Resumes for User A -> Count: {len(list_resumes.json()['data'])}")
         assert len(list_resumes.json()["data"]) >= 1
 
-        # 7. Initial Free Quota Check (0/3 used)
+        # 7. Initial 10-Day Free Trial Check
         sub_init = await client.get("/subscription/status", headers=headers_a)
-        print(f"[STEP 7] Initial Quota Check -> Usage Count: {sub_init.json()['data']['free_usage_count']}, Remaining: {sub_init.json()['data']['free_credits_remaining']}")
-        assert sub_init.json()["data"]["free_usage_count"] == 0
-        assert sub_init.json()["data"]["free_credits_remaining"] == 3
+        print(f"[STEP 7] Initial Quota Check -> Trial Active: {sub_init.json()['data']['trial_active']}, Days: {sub_init.json()['data']['trial_days_remaining']}, Remaining: {sub_init.json()['data']['free_credits_remaining']}")
+        assert sub_init.json()["data"]["trial_active"] is True
+        assert sub_init.json()["data"]["trial_days_remaining"] == 10
+        assert sub_init.json()["data"]["free_credits_remaining"] == "Unlimited"
 
-        # 8. AI Generation 1: ATS Analysis
+        # 8. AI Generation 1 during Active Trial: ATS Analysis
         ats_resp = await client.post(f"/analysis/resume/{resume_id}", headers=headers_a)
         print(f"[STEP 8] AI Feature 1 (ATS Analysis) -> Status: {ats_resp.status_code}")
         assert ats_resp.status_code == 200
 
+        # Credits are untouched during active trial
         sub_1 = await client.get("/subscription/status", headers=headers_a)
-        print(f"         Quota after Use 1 -> Usage: {sub_1.json()['data']['free_usage_count']}, Remaining: {sub_1.json()['data']['free_credits_remaining']}")
-        assert sub_1.json()["data"]["free_usage_count"] == 1
+        print(f"         Trial status after ATS -> Usage: {sub_1.json()['data']['free_usage_count']}, Remaining: {sub_1.json()['data']['free_credits_remaining']}")
+        assert sub_1.json()["data"]["free_usage_count"] == 0
 
-        # 9. AI Generation 2: Resume Optimizer
+        # 9. Now simulate Trial Expiration to test standard 3 free credits limit
+        print("\n[STEP 9] Simulating Trial Expiration to audit standard freemium rules...")
+        await db["users"].update_one(
+            {"email": email_a},
+            {"$set": {"trial_ends_at": datetime.utcnow() - timedelta(days=1), "trial_active": False}}
+        )
+
+        sub_expired = await client.get("/subscription/status", headers=headers_a)
+        assert sub_expired.json()["data"]["trial_active"] is False
+        assert sub_expired.json()["data"]["free_credits_remaining"] == 3
+
+        # 10. AI Generation (Resume Optimizer) on Expired Trial -> deducts 1 credit
         opt_resp = await client.post("/resume-improvement/generate", headers=headers_a, json={
             "resume_id": resume_id,
             "job_description": "Senior Software Engineer with Python and FastAPI expertise."
         })
-        print(f"[STEP 9] AI Feature 2 (Resume Optimizer) -> Status: {opt_resp.status_code}")
+        print(f"[STEP 10] AI Feature (Resume Optimizer) on expired trial -> Status: {opt_resp.status_code}")
         assert opt_resp.status_code == 200
 
         sub_2 = await client.get("/subscription/status", headers=headers_a)
-        print(f"         Quota after Use 2 -> Usage: {sub_2.json()['data']['free_usage_count']}, Remaining: {sub_2.json()['data']['free_credits_remaining']}")
-        assert sub_2.json()["data"]["free_usage_count"] == 2
+        print(f"          Quota after Use 1 on expired trial -> Usage: {sub_2.json()['data']['free_usage_count']}, Remaining: {sub_2.json()['data']['free_credits_remaining']}")
+        assert sub_2.json()["data"]["free_usage_count"] == 1
+        assert sub_2.json()["data"]["free_credits_remaining"] == 2
 
-        # 10. AI Generation 3: Cover Letter Generator
+        # 10b. AI Generation 2 (Cover Letter Generator) -> deducts 2nd credit
         cl_resp = await client.post("/cover-letter/generate", headers=headers_a, json={
             "resume_id": resume_id,
             "job_description": "Senior Software Engineer with Python and FastAPI expertise."
         })
-        print(f"[STEP 10] AI Feature 3 (Cover Letter Generator) -> Status: {cl_resp.status_code}")
+        print(f"[STEP 10b] AI Feature (Cover Letter Generator) -> Status: {cl_resp.status_code}")
         assert cl_resp.status_code == 200
+
+        # 10c. AI Generation 3 (Interview Questions) -> deducts 3rd credit
+        iq_gen = await client.post("/interview/questions/generate", headers=headers_a, json={
+            "resume_id": resume_id,
+            "job_description": "Senior Software Engineer with Python and FastAPI expertise."
+        })
+        print(f"[STEP 10c] AI Feature (Interview Questions) -> Status: {iq_gen.status_code}")
+        assert iq_gen.status_code == 200
 
         sub_3 = await client.get("/subscription/status", headers=headers_a)
         print(f"          Quota after Use 3 -> Usage: {sub_3.json()['data']['free_usage_count']}, Remaining: {sub_3.json()['data']['free_credits_remaining']}")
         assert sub_3.json()["data"]["free_usage_count"] == 3
         assert sub_3.json()["data"]["free_credits_remaining"] == 0
 
-        # 11. AI Generation 4: Blocked Quota Check (Attempting 4th use on Free Plan)
+        # 11. AI Generation 4: Blocked Quota Check (Attempting 4th use on Free Plan with 0 credits)
         iq_resp = await client.post("/interview/questions/generate", headers=headers_a, json={
             "resume_id": resume_id,
             "job_description": "Senior Software Engineer with Python and FastAPI expertise."
         })
         err_dict = iq_resp.json().get("error", {})
         msg_text = err_dict.get("message") if isinstance(err_dict, dict) else (iq_resp.json().get("detail") or iq_resp.json().get("message") or "")
-        print(f"          Response Message: {msg_text}")
+        print(f"          4th Use Response Message: {msg_text}")
         assert iq_resp.status_code == 403, f"Quota breach! Request 4 should be 403 Forbidden. Got {iq_resp.status_code}"
         assert "used all 3 free AI uses" in msg_text
 

@@ -65,6 +65,8 @@ export default function Sidebar() {
   ];
 
   const isPro = subData?.is_pro || (user as any)?.subscription_plan === "pro";
+  const isTrial = Boolean(subData?.trial_active || (user as any)?.trial_active);
+  const trialDaysRemaining = subData?.trial_days_remaining ?? (user as any)?.trial_days_remaining ?? 10;
   const rawRemaining = subData ? subData.free_credits_remaining : Math.max(0, 3 - ((user as any)?.free_usage_count || 0));
   const freeCreditsNum = typeof rawRemaining === "number" ? rawRemaining : 0;
 
@@ -90,13 +92,15 @@ export default function Sidebar() {
           <ThemeToggle />
         </div>
 
-        {/* AI Usage Credit Banner */}
+        {/* AI Usage Credit / Free Trial Banner */}
         <div className="mt-4">
           <Link
             href="/dashboard/subscription"
             className={`block rounded-xl border p-3 transition-all ${
               isPro
                 ? "bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border-emerald-500/30 hover:border-emerald-500/50"
+                : isTrial
+                ? "bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 border-cyan-500/30 hover:border-cyan-500/50"
                 : freeCreditsNum > 0
                 ? "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-indigo-500/40"
                 : "bg-rose-500/10 border-rose-500/30 hover:border-rose-500/50"
@@ -104,20 +108,50 @@ export default function Sidebar() {
           >
             <div className="flex items-center justify-between text-xs font-semibold">
               <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-                <Zap className={`h-3.5 w-3.5 ${isPro ? "text-emerald-500" : freeCreditsNum > 0 ? "text-indigo-500" : "text-rose-500"}`} />
-                AI Credits
+                <Zap
+                  className={`h-3.5 w-3.5 ${
+                    isPro
+                      ? "text-emerald-500"
+                      : isTrial
+                      ? "text-cyan-500"
+                      : freeCreditsNum > 0
+                      ? "text-indigo-500"
+                      : "text-rose-500"
+                  }`}
+                />
+                {isTrial ? "10-Day Free Trial" : "AI Credits"}
               </span>
-              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold text-white ${isPro ? "bg-emerald-600" : freeCreditsNum > 0 ? "bg-indigo-600" : "bg-rose-600"}`}>
-                {isPro ? "PRO ACTIVE" : `${freeCreditsNum} / 3 LEFT`}
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] font-bold text-white ${
+                  isPro
+                    ? "bg-emerald-600"
+                    : isTrial
+                    ? "bg-gradient-to-r from-cyan-600 to-blue-600"
+                    : freeCreditsNum > 0
+                    ? "bg-indigo-600"
+                    : "bg-rose-600"
+                }`}
+              >
+                {isPro
+                  ? "PRO ACTIVE"
+                  : isTrial
+                  ? `${trialDaysRemaining} ${trialDaysRemaining === 1 ? "DAY" : "DAYS"} LEFT`
+                  : `${freeCreditsNum} / 3 LEFT`}
               </span>
             </div>
 
             <div className="mt-2 flex items-center justify-between text-[11px]">
               <span className="text-slate-500 dark:text-slate-400 truncate">
-                {isPro ? "Unlimited AI access enabled" : freeCreditsNum > 0 ? `${freeCreditsNum} free AI generations left` : "Limit reached (0/3 remaining)"}
+                {isPro
+                  ? "Unlimited AI access enabled"
+                  : isTrial
+                  ? `Full Pro access (${trialDaysRemaining} days remaining)`
+                  : freeCreditsNum > 0
+                  ? `${freeCreditsNum} free AI generations left`
+                  : "Limit reached (0/3 remaining)"}
               </span>
               <span className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline shrink-0 ml-1">
-                {isPro ? "Pro Status" : "Upgrade →"}
+                {isPro ? "Pro Status" : isTrial ? "Details →" : "Upgrade →"}
               </span>
             </div>
           </Link>

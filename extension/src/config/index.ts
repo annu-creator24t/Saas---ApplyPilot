@@ -8,11 +8,11 @@
 
 export const API_BASE_URL: string =
   (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/+$/, "") ||
-  "http://localhost:8000";
+  "https://applypilot-backend-aar3.onrender.com";
 
 export const FRONTEND_URL: string =
   (import.meta.env.VITE_FRONTEND_URL as string | undefined)?.replace(/\/+$/, "") ||
-  "http://localhost:3000";
+  "https://applypilot-jet.vercel.app";
 
 /**
  * Returns active API base URL, checking chrome.storage.local for runtime overrides if set.

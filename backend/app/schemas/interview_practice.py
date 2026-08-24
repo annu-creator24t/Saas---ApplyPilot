@@ -12,6 +12,8 @@ class InterviewPracticeRequest(BaseModel):
 class EvaluateAnswerRequest(BaseModel):
     question: str
     answer: str
+    session_id: Optional[str] = None
+    question_index: Optional[int] = None
 
 
 class Evaluation(BaseModel):

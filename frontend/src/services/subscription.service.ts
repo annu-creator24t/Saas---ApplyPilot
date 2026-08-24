@@ -7,6 +7,10 @@ export interface SubscriptionStatusData {
   free_credits_limit: number;
   free_credits_remaining: number | string;
   is_pro: boolean;
+  trial_active: boolean;
+  trial_started_at?: string;
+  trial_ends_at?: string;
+  trial_days_remaining: number;
   subscription_start?: string;
   subscription_end?: string;
   payment_status: "none" | "pending" | "approved" | "rejected";

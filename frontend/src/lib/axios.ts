@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const rawUrl = process.env.NEXT_PUBLIC_API_URL || "https://applypilot-backend-aar3.onrender.com";
 const API_BASE_URL = rawUrl.replace(/\/+$/, "");
 
 const api = axios.create({

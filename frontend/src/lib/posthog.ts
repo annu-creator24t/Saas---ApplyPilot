@@ -56,4 +56,47 @@ export const trackSignupCompleted = (userId: string): void => {
   }
 };
 
+/**
+ * Tracks start of 10-day free trial in PostHog.
+ */
+export const trackTrialStarted = (userId: string, durationDays: number = 10): void => {
+  try {
+    if (!isInitialized) {
+      initPostHog();
+    }
+
+    if (!userId) {
+      return;
+    }
+
+    posthog.capture("trial_started", {
+      user_id: userId,
+      duration_days: durationDays,
+    });
+  } catch (error) {
+    console.warn("Failed to capture trial_started event in PostHog:", error);
+  }
+};
+
+/**
+ * Tracks trial expiration in PostHog.
+ */
+export const trackTrialExpired = (userId: string): void => {
+  try {
+    if (!isInitialized) {
+      initPostHog();
+    }
+
+    if (!userId) {
+      return;
+    }
+
+    posthog.capture("trial_expired", {
+      user_id: userId,
+    });
+  } catch (error) {
+    console.warn("Failed to capture trial_expired event in PostHog:", error);
+  }
+};
+
 export default posthog;

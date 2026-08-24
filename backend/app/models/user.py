@@ -31,6 +31,10 @@ class User(BaseModel):
     payment_submitted_at: Optional[datetime] = None
     payment_reference: Optional[str] = None
 
+    trial_active: bool = False
+    trial_started_at: Optional[datetime] = None
+    trial_ends_at: Optional[datetime] = None
+
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     updated_at: datetime = Field(default_factory=datetime.utcnow)

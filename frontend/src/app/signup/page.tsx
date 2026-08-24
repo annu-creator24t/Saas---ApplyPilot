@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as AuthService from "@/services/auth.service";
-import { trackSignupCompleted } from "@/lib/posthog";
+import { trackSignupCompleted, trackTrialStarted } from "@/lib/posthog";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import {
   User,
@@ -65,6 +65,7 @@ export default function SignupPage() {
       const userId = response?.data?.user_id || response?.user_id;
       if (userId) {
         trackSignupCompleted(userId);
+        trackTrialStarted(userId, 10);
       }
 
       setShowSuccessModal(true);

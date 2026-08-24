@@ -58,9 +58,12 @@ class AdminService:
             }
         ).sort("created_at", -1).limit(20)
         
+        now = datetime.utcnow()
         raw_users = await users_cursor.to_list(length=20)
         recent_users = []
         for u in raw_users:
+            t_end = u.get("trial_ends_at")
+            t_active = bool(t_end and t_end > now)
             recent_users.append(
                 {
                     "user_id": str(u.get("_id")),
@@ -71,6 +74,8 @@ class AdminService:
                     "subscription_plan": u.get("subscription_plan", "free"),
                     "subscription_status": u.get("subscription_status", "free"),
                     "free_usage_count": u.get("free_usage_count", 0),
+                    "trial_active": t_active,
+                    "trial_ends_at": t_end.isoformat() if t_end else None,
                     "created_at": u.get("created_at").isoformat() if u.get("created_at") else None,
                 }
             )

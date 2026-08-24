@@ -94,6 +94,8 @@ export default function InterviewPracticePage() {
       const response = await evaluateAnswer({
         question: currentQuestionText,
         answer: userAnswer,
+        session_id: session?.session_id,
+        question_index: currentIndex,
       });
 
       setFeedback(response.data);
@@ -110,6 +112,22 @@ export default function InterviewPracticePage() {
     setCurrentIndex((prev) => prev + 1);
   };
 
+  const handlePreviousQuestion = () => {
+    if (currentIndex > 0) {
+      setUserAnswer("");
+      setFeedback(null);
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+
+  const displayScore = (scoreVal: any) => {
+    if (scoreVal === undefined || scoreVal === null) return "8/10";
+    const num = Number(scoreVal);
+    if (isNaN(num)) return String(scoreVal);
+    if (num <= 10) return `${num}/10`;
+    return `${num}/100`;
+  };
+
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-12">
       {/* Header */}
@@ -119,7 +137,7 @@ export default function InterviewPracticePage() {
         </div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Interview Simulator</h1>
         <p className="text-xs text-slate-600 dark:text-slate-400">
-          Simulate a real-time AI interview session tailored to your active resume and target role. Type or speak your response for instant feedback.
+          Simulate a real-time AI interview session tailored to your active resume and target role. Type your response for instant feedback and scoring.
         </p>
       </div>
 
@@ -196,9 +214,20 @@ export default function InterviewPracticePage() {
                 <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
                   Interviewer Prompt {currentIndex + 1} of {questionsList.length}
                 </span>
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Question {currentIndex + 1}/{questionsList.length}
-                </span>
+                <div className="flex items-center gap-3">
+                  {currentIndex > 0 && (
+                    <button
+                      type="button"
+                      onClick={handlePreviousQuestion}
+                      className="text-xs font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition"
+                    >
+                      ← Previous Question
+                    </button>
+                  )}
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    Question {currentIndex + 1}/{questionsList.length}
+                  </span>
+                </div>
               </div>
               <h2 className="text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug">
                 &quot;{currentQuestionText}&quot;
@@ -235,26 +264,58 @@ export default function InterviewPracticePage() {
 
             {/* Feedback Output */}
             {feedback && (
-              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4 animate-in fade-in">
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-5 animate-in fade-in">
                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Award className="h-4 w-4 text-indigo-500" /> AI Feedback & Evaluation
                   </h3>
-                  <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                    Score: {feedback.score ?? feedback.overall_score ?? 85}/100
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-3.5 py-1 rounded-full border border-indigo-500/20">
+                    Score: {displayScore(feedback.score ?? feedback.overall_score)}
                   </span>
                 </div>
 
-                <div className="space-y-3 text-xs text-slate-700 dark:text-slate-300">
-                  <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 leading-relaxed">
-                    <span className="font-bold text-slate-900 dark:text-white block mb-1">Strengths & Feedback:</span>
-                    {typeof feedback.feedback === "string" ? feedback.feedback : (feedback.strengths ? feedback.strengths.join(", ") : JSON.stringify(feedback))}
-                  </div>
+                <div className="space-y-4 text-xs">
+                  {/* Strengths */}
+                  {(feedback.strengths || typeof feedback.feedback === "string") && (
+                    <div className="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800/60 space-y-2">
+                      <span className="font-bold text-emerald-800 dark:text-emerald-300 block">
+                        ✓ Key Strengths & Evaluation
+                      </span>
+                      {Array.isArray(feedback.strengths) ? (
+                        <ul className="space-y-1 text-slate-700 dark:text-slate-300 list-disc list-inside">
+                          {feedback.strengths.map((str: string, i: number) => (
+                            <li key={i}>{str}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                          {typeof feedback.feedback === "string" ? feedback.feedback : JSON.stringify(feedback.strengths || feedback)}
+                        </p>
+                      )}
+                    </div>
+                  )}
 
-                  {(feedback.improved_answer || feedback.ideal_answer) && (
-                    <div className="bg-cyan-500/10 dark:bg-cyan-500/10 p-4 rounded-xl border border-cyan-500/20 leading-relaxed text-slate-900 dark:text-slate-100">
-                      <span className="font-bold text-cyan-600 dark:text-cyan-400 block mb-1">Model / Improved Response:</span>
-                      {feedback.improved_answer || feedback.ideal_answer}
+                  {/* Improvements */}
+                  {feedback.improvements && Array.isArray(feedback.improvements) && feedback.improvements.length > 0 && (
+                    <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-xl border border-amber-200 dark:border-amber-800/60 space-y-2">
+                      <span className="font-bold text-amber-800 dark:text-amber-300 block">
+                        ⚠ Recommended Improvements
+                      </span>
+                      <ul className="space-y-1 text-slate-700 dark:text-slate-300 list-disc list-inside">
+                        {feedback.improvements.map((imp: string, i: number) => (
+                          <li key={i}>{imp}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Ideal Answer */}
+                  {(feedback.ideal_answer || feedback.improved_answer) && (
+                    <div className="bg-cyan-50 dark:bg-cyan-950/30 p-4 rounded-xl border border-cyan-200 dark:border-cyan-800/60 space-y-1.5 leading-relaxed text-slate-800 dark:text-slate-200">
+                      <span className="font-bold text-cyan-700 dark:text-cyan-300 block">
+                        💡 Suggested Ideal Response:
+                      </span>
+                      <p className="whitespace-pre-wrap">{feedback.ideal_answer || feedback.improved_answer}</p>
                     </div>
                   )}
                 </div>
@@ -281,7 +342,7 @@ export default function InterviewPracticePage() {
               Mock Interview Session Completed!
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
-              You answered all role-specific interview questions for this practice session. You can review your feedback or start another practice set anytime.
+              You answered all role-specific interview questions for this practice session. You can start another practice set anytime.
             </p>
             <button
               type="button"

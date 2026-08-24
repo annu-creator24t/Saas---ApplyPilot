@@ -50,6 +50,8 @@ export default function ProfilePage() {
   };
 
   const isPro = (user as any)?.subscription_plan === "pro";
+  const isTrial = Boolean((user as any)?.trial_active);
+  const trialDaysRemaining = (user as any)?.trial_days_remaining || 0;
 
   return (
     <div className="space-y-6 pb-12 max-w-3xl">
@@ -83,7 +85,11 @@ export default function ProfilePage() {
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Subscription</span>
             <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              {isPro ? "ApplyPilot Pro Plan (₹99/mo)" : "Free Plan (3 AI Credits Limit)"}
+              {isPro
+                ? "ApplyPilot Pro Plan (₹99/mo) · Active"
+                : isTrial
+                ? `10-Day Free Trial (${trialDaysRemaining} days remaining)`
+                : "Free Plan (3 AI Credits Limit)"}
             </h3>
           </div>
         </div>

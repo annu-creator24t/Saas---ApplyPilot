@@ -15,6 +15,8 @@ export interface AdminStatsData {
     subscription_plan: string;
     subscription_status: string;
     free_usage_count: number;
+    trial_active?: boolean;
+    trial_ends_at?: string | null;
     created_at: string | null;
   }>;
   recent_payments: Array<{
