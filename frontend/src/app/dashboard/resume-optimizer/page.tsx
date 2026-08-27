@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useResume } from "@/context/ResumeContext";
 import { useJobDescription } from "@/context/JobDescriptionContext";
@@ -33,9 +33,9 @@ export default function ResumeOptimizerPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [quotaReached, setQuotaReached] = useState(false);
 
-  const handleJDChange = (jdText: string) => {
+  const handleJDChange = useCallback((jdText: string) => {
     setJobDescription(jdText);
-  };
+  }, []);
 
   const handleAnalyzeMatch = async () => {
     if (!selectedResume?.resume_id) {
@@ -75,7 +75,7 @@ export default function ResumeOptimizerPage() {
     }
   };
 
-  const formatReportText = () => {
+  const formatReportText = useCallback(() => {
     if (!matchData) return "";
     const matchedSkills = matchData.matching_skills || matchData.matched_skills || [];
     const missingSkills = matchData.missing_skills || [];
@@ -96,22 +96,22 @@ ${missingSkills.map((s: string) => `- ${s}`).join("\n")}
 ACTIONABLE TAILORING RECOMMENDATIONS:
 ${matchData.recommendations?.map((r: string) => `- ${r}`).join("\n")}
 `;
-  };
+  }, [matchData, selectedResume, selectedJobDescription]);
 
-  const handleExportDocx = () => {
+  const handleExportDocx = useCallback(() => {
     if (!matchData) return;
     exportAsDocx(`Job_Match_Report_${selectedJobDescription?.company_name || "Target"}.doc`, "Job Match & Resume Optimization Report", formatReportText());
-  };
+  }, [matchData, selectedJobDescription, formatReportText]);
 
-  const handleExportTxt = () => {
+  const handleExportTxt = useCallback(() => {
     if (!matchData) return;
     exportAsTxt(`Job_Match_Report_${selectedJobDescription?.company_name || "Target"}.txt`, formatReportText());
-  };
+  }, [matchData, selectedJobDescription, formatReportText]);
 
-  const handleExportPdf = () => {
+  const handleExportPdf = useCallback(() => {
     if (!matchData) return;
     exportAsPdf(`Job_Match_Report_${selectedJobDescription?.company_name || "Target"}.pdf`, "Job Match & Resume Optimization Report", formatReportText());
-  };
+  }, [matchData, selectedJobDescription, formatReportText]);
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-12">
