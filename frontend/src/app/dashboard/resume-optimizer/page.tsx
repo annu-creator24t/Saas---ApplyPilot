@@ -192,7 +192,7 @@ ${matchData.recommendations?.map((r: string) => `- ${r}`).join("\n")}
 
       {/* Optimization Results */}
       {matchData && (
-        <div className="space-y-6 animate-in fade-in duration-300">
+        <div className="space-y-6 animate-slide-up">
           {/* Match Score Card */}
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 md:p-8 shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
