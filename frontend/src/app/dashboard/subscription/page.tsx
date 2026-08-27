@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { getSubscriptionStatus, submitPayment, SubscriptionStatusData } from "@/services/subscription.service";
 import {
   CreditCard,
@@ -289,9 +290,11 @@ export default function SubscriptionPage() {
                 <Sparkles className="h-3.5 w-3.5" /> ApplyPilot Official UPI QR
               </div>
               <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-inner">
-                <img
+                <Image
                   src="/clean-qr.png"
                   alt="ApplyPilot Official UPI QR Code"
+                  width={192}
+                  height={192}
                   className="w-48 h-48 rounded-lg object-contain"
                 />
               </div>
