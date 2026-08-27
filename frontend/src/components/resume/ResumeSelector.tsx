@@ -198,7 +198,7 @@ function ResumeSelectorComponent({
 
       {/* Changing / Select Dropdown Box */}
       {isChanging && (
-        <div className="space-y-3 pt-1 animate-in fade-in duration-200">
+        <div className="space-y-3 pt-1 animate-slide-down">
           <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
             Select an existing uploaded resume:
           </label>
