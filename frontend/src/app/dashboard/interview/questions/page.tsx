@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useResume } from "@/context/ResumeContext";
 import { useJobDescription } from "@/context/JobDescriptionContext";
@@ -32,9 +32,9 @@ export default function InterviewQuestionsPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [quotaReached, setQuotaReached] = useState(false);
 
-  const handleJDChange = (jdText: string) => {
+  const handleJDChange = useCallback((jdText: string) => {
     setJobDescription(jdText);
-  };
+  }, []);
 
   const handleGenerate = async () => {
     if (!selectedResume?.resume_id) {
@@ -74,7 +74,7 @@ export default function InterviewQuestionsPage() {
     }
   };
 
-  const formatQuestionsText = () => {
+  const formatQuestionsText = useCallback(() => {
     if (!questionsData) return "";
     const tech = questionsData.technical || questionsData.technical_questions || [];
     const beh = questionsData.behavioral || questionsData.behavioral_questions || [];
@@ -97,22 +97,22 @@ export default function InterviewQuestionsPage() {
     }
 
     return text;
-  };
+  }, [questionsData, selectedJobDescription]);
 
-  const handleExportDocx = () => {
+  const handleExportDocx = useCallback(() => {
     if (!questionsData) return;
     exportAsDocx(`Interview_Questions_${selectedJobDescription?.company_name || "Target"}.doc`, "ApplyPilot Interview Preparation Questions", formatQuestionsText());
-  };
+  }, [questionsData, selectedJobDescription, formatQuestionsText]);
 
-  const handleExportTxt = () => {
+  const handleExportTxt = useCallback(() => {
     if (!questionsData) return;
     exportAsTxt(`Interview_Questions_${selectedJobDescription?.company_name || "Target"}.txt`, formatQuestionsText());
-  };
+  }, [questionsData, selectedJobDescription, formatQuestionsText]);
 
-  const handleExportPdf = () => {
+  const handleExportPdf = useCallback(() => {
     if (!questionsData) return;
     exportAsPdf(`Interview_Questions_${selectedJobDescription?.company_name || "Target"}.pdf`, "ApplyPilot Interview Preparation Questions", formatQuestionsText());
-  };
+  }, [questionsData, selectedJobDescription, formatQuestionsText]);
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-12">
