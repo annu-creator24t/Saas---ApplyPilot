@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo, memo } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import {
   getApplications,
@@ -23,6 +23,110 @@ import {
   Calendar,
   DollarSign,
 } from "lucide-react";
+
+function getStatusBadge(status: ApplicationStatus) {
+  switch (status) {
+    case "OFFER":
+      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30";
+    case "INTERVIEWING":
+      return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30";
+    case "APPLIED":
+      return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30";
+    case "REJECTED":
+      return "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30";
+    default:
+      return "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30";
+  }
+}
+
+interface ApplicationCardProps {
+  app: JobApplication;
+  onEdit: (app: JobApplication) => void;
+  onDelete: (id: string) => void;
+}
+
+const ApplicationCard = memo(function ApplicationCard({ app, onEdit, onDelete }: ApplicationCardProps) {
+  return (
+    <div className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 hover:border-indigo-500/40 transition shadow-sm">
+      <div>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
+              {app.job_title}
+            </h3>
+            <p className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+              <Building className="h-3.5 w-3.5 text-slate-400" /> {app.company_name}
+            </p>
+          </div>
+          <span
+            className={`inline-flex shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${getStatusBadge(
+              app.status
+            )}`}
+          >
+            {app.status}
+          </span>
+        </div>
+
+        <div className="mt-4 space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+          {app.location && (
+            <p className="flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 text-slate-400" /> {app.location}
+            </p>
+          )}
+          {app.salary_range && (
+            <p className="flex items-center gap-1.5">
+              <DollarSign className="h-3.5 w-3.5 text-slate-400" /> {app.salary_range}
+            </p>
+          )}
+          {app.applied_date && (
+            <p className="flex items-center gap-1.5">
+              <Calendar className="h-3.5 w-3.5 text-slate-400" /> Applied:{" "}
+              {new Date(app.applied_date).toLocaleDateString()}
+            </p>
+          )}
+        </div>
+
+        {app.ats_score && (
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-indigo-500/10 px-2.5 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+            ATS Match: {app.ats_score}%
+          </div>
+        )}
+      </div>
+
+      {/* Actions Footer */}
+      <div className="mt-5 flex items-center justify-between border-t border-slate-200 dark:border-slate-800/80 pt-3">
+        {app.job_url ? (
+          <a
+            href={app.job_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-indigo-400 hover:underline"
+          >
+            Job Link <ExternalLink className="h-3 w-3" />
+          </a>
+        ) : (
+          <span className="text-xs text-slate-400">No URL</span>
+        )}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onEdit(app)}
+            className="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition"
+            title="Edit"
+          >
+            <Edit2 className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={() => onDelete(app.id)}
+            className="p-1.5 text-slate-400 hover:text-rose-500 transition"
+            title="Delete"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
 
 export default function ApplicationsPage() {
   const { isAuthenticated, loading: authLoading } = useAuthContext();
@@ -82,7 +186,7 @@ export default function ApplicationsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (!confirm("Are you sure you want to delete this job application?")) return;
     try {
       await deleteApplication(id);
@@ -90,9 +194,9 @@ export default function ApplicationsPage() {
     } catch (err) {
       console.error("Failed to delete application", err);
     }
-  };
+  }, [fetchApps]);
 
-  const openEdit = (app: JobApplication) => {
+  const openEdit = useCallback((app: JobApplication) => {
     setEditingApp(app);
     setFormData({
       job_title: app.job_title,
@@ -104,7 +208,7 @@ export default function ApplicationsPage() {
       notes: app.notes || "",
     });
     setShowAddModal(true);
-  };
+  }, []);
 
   const resetForm = () => {
     setFormData({
@@ -118,29 +222,17 @@ export default function ApplicationsPage() {
     });
   };
 
-  const filteredApps = applications.filter((app) => {
-    const matchesSearch =
-      app.job_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.company_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (app.location && app.location.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    return matchesSearch;
-  });
-
-  const getStatusBadge = (status: ApplicationStatus) => {
-    switch (status) {
-      case "OFFER":
-        return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30";
-      case "INTERVIEWING":
-        return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30";
-      case "APPLIED":
-        return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30";
-      case "REJECTED":
-        return "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30";
-      default:
-        return "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30";
-    }
-  };
+  const filteredApps = useMemo(() => {
+    if (!searchQuery.trim()) return applications;
+    const query = searchQuery.toLowerCase();
+    return applications.filter((app) => {
+      return (
+        app.job_title.toLowerCase().includes(query) ||
+        app.company_name.toLowerCase().includes(query) ||
+        (app.location && app.location.toLowerCase().includes(query))
+      );
+    });
+  }, [applications, searchQuery]);
 
   return (
     <div className="space-y-6 pb-12">
@@ -208,87 +300,12 @@ export default function ApplicationsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredApps.map((app) => (
-            <div
+            <ApplicationCard
               key={app.id}
-              className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 hover:border-indigo-500/40 transition shadow-sm"
-            >
-              <div>
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
-                      {app.job_title}
-                    </h3>
-                    <p className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                      <Building className="h-3.5 w-3.5 text-slate-400" /> {app.company_name}
-                    </p>
-                  </div>
-                  <span
-                    className={`inline-flex shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${getStatusBadge(
-                      app.status
-                    )}`}
-                  >
-                    {app.status}
-                  </span>
-                </div>
-
-                <div className="mt-4 space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
-                  {app.location && (
-                    <p className="flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5 text-slate-400" /> {app.location}
-                    </p>
-                  )}
-                  {app.salary_range && (
-                    <p className="flex items-center gap-1.5">
-                      <DollarSign className="h-3.5 w-3.5 text-slate-400" /> {app.salary_range}
-                    </p>
-                  )}
-                  {app.applied_date && (
-                    <p className="flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5 text-slate-400" /> Applied:{" "}
-                      {new Date(app.applied_date).toLocaleDateString()}
-                    </p>
-                  )}
-                </div>
-
-                {app.ats_score && (
-                  <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-indigo-500/10 px-2.5 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-                    ATS Match: {app.ats_score}%
-                  </div>
-                )}
-              </div>
-
-              {/* Actions Footer */}
-              <div className="mt-5 flex items-center justify-between border-t border-slate-200 dark:border-slate-800/80 pt-3">
-                {app.job_url ? (
-                  <a
-                    href={app.job_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-indigo-400 hover:underline"
-                  >
-                    Job Link <ExternalLink className="h-3 w-3" />
-                  </a>
-                ) : (
-                  <span className="text-xs text-slate-400">No URL</span>
-                )}
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => openEdit(app)}
-                    className="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition"
-                    title="Edit"
-                  >
-                    <Edit2 className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(app.id)}
-                    className="p-1.5 text-slate-400 hover:text-rose-500 transition"
-                    title="Delete"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
+              app={app}
+              onEdit={openEdit}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       )}
