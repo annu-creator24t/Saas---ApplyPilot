@@ -47,7 +47,7 @@ interface ApplicationCardProps {
 
 const ApplicationCard = memo(function ApplicationCard({ app, onEdit, onDelete }: ApplicationCardProps) {
   return (
-    <div className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 hover:border-indigo-500/40 transition shadow-sm">
+    <div className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 hover:border-indigo-500/40 transition shadow-sm animate-slide-up">
       <div>
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -312,8 +312,8 @@ export default function ApplicationsPage() {
 
       {/* Add / Edit Application Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-lg rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl space-y-4 animate-slide-up">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <h2 className="text-base font-bold text-slate-900 dark:text-white">
                 {editingApp ? "Edit Application" : "Track New Application"}
