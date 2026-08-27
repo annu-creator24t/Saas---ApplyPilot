@@ -208,7 +208,7 @@ export default function InterviewPracticePage() {
       {/* Practice Interview Session */}
       {session && questionsList.length > 0 && (
         currentIndex < questionsList.length ? (
-          <div className="space-y-6 animate-in fade-in duration-300">
+          <div className="space-y-6 animate-slide-up">
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
@@ -264,7 +264,7 @@ export default function InterviewPracticePage() {
 
             {/* Feedback Output */}
             {feedback && (
-              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-5 animate-in fade-in">
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-5 animate-slide-up">
                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Award className="h-4 w-4 text-indigo-500" /> AI Feedback & Evaluation

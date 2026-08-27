@@ -214,7 +214,7 @@ export default function InterviewQuestionsPage() {
           };
 
           return (
-            <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="space-y-6 animate-slide-up">
               {/* Header & Export Bar */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
