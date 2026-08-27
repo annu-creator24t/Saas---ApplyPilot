@@ -108,7 +108,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 pb-12">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 p-8 text-white shadow-xl animate-slide-up">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md px-3.5 py-1 text-xs font-semibold text-cyan-200 border border-white/15 mb-3">
@@ -141,7 +141,7 @@ export default function DashboardPage() {
       {/* Metrics Row */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* Total Applications */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm animate-slide-up stagger-1">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Applications</span>
             <div className="rounded-xl bg-blue-500/10 p-2.5 text-blue-600 dark:text-blue-400">
@@ -153,7 +153,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Interviews Scheduled */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm animate-slide-up stagger-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Interviews</span>
             <div className="rounded-xl bg-amber-500/10 p-2.5 text-amber-600 dark:text-amber-400">
@@ -165,7 +165,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Offers Received */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm animate-slide-up stagger-3">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Job Offers</span>
             <div className="rounded-xl bg-emerald-500/10 p-2.5 text-emerald-600 dark:text-emerald-400">
@@ -177,7 +177,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Average ATS Match Score */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm animate-slide-up stagger-4">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Avg ATS Score</span>
             <div className="rounded-xl bg-purple-500/10 p-2.5 text-purple-600 dark:text-purple-400">
@@ -196,7 +196,7 @@ export default function DashboardPage() {
       {/* Main Grid: Recent Applications & AI Suite Quick Launch */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Recent Applications Table */}
-        <div className="lg:col-span-2 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
+        <div className="lg:col-span-2 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm animate-slide-up stagger-2">
           <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white">Recent Applications</h2>
@@ -265,7 +265,7 @@ export default function DashboardPage() {
         {/* Right Sidebar: Active Resume & Quick Tools */}
         <div className="space-y-6">
           {/* Active Resume Card */}
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm animate-slide-up stagger-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
                 <FileText className="h-5 w-5" />
@@ -310,7 +310,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick AI Tools Suite */}
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm animate-slide-up stagger-4">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">AI Suite Quick Launch</h3>
             <div className="space-y-2.5">
               <Link
