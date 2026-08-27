@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useResume } from "@/context/ResumeContext";
 import { useJobDescription } from "@/context/JobDescriptionContext";
@@ -32,9 +32,9 @@ export default function CoverLetterPage() {
   const [quotaReached, setQuotaReached] = useState(false);
 
   // Sync active JD when selected from selector
-  const handleJDChange = (jdText: string) => {
+  const handleJDChange = useCallback((jdText: string) => {
     setJobDescription(jdText);
-  };
+  }, []);
 
   async function handleGenerate() {
     if (!selectedResume?.resume_id) {
@@ -74,22 +74,22 @@ export default function CoverLetterPage() {
     }
   }
 
-  const handleExportDocx = () => {
+  const handleExportDocx = useCallback(() => {
     if (!coverLetter) return;
     const title = `Cover Letter - ${selectedJobDescription?.job_title || "Target Role"}`;
     exportAsDocx(`Cover_Letter_${selectedJobDescription?.company_name || "Company"}.doc`, title, coverLetter);
-  };
+  }, [coverLetter, selectedJobDescription]);
 
-  const handleExportTxt = () => {
+  const handleExportTxt = useCallback(() => {
     if (!coverLetter) return;
     exportAsTxt(`Cover_Letter_${selectedJobDescription?.company_name || "Company"}.txt`, coverLetter);
-  };
+  }, [coverLetter, selectedJobDescription]);
 
-  const handleExportPdf = () => {
+  const handleExportPdf = useCallback(() => {
     if (!coverLetter) return;
     const title = `Cover Letter - ${selectedJobDescription?.job_title || "Target Role"}`;
     exportAsPdf(`Cover_Letter_${selectedJobDescription?.company_name || "Company"}.pdf`, title, coverLetter);
-  };
+  }, [coverLetter, selectedJobDescription]);
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-12">
