@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useResume } from "@/context/ResumeContext";
 import { useJobDescription } from "@/context/JobDescriptionContext";
@@ -24,6 +24,28 @@ import {
   FileSpreadsheet,
   Printer,
 } from "lucide-react";
+
+function getScoreBadge(score: number) {
+  if (score >= 80) {
+    return {
+      label: "Good ATS Compatibility",
+      color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+      ringColor: "border-emerald-500 text-emerald-500",
+    };
+  }
+  if (score >= 60) {
+    return {
+      label: "Moderate ATS Compatibility",
+      color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
+      ringColor: "border-amber-500 text-amber-500",
+    };
+  }
+  return {
+    label: "Needs Improvement",
+    color: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30",
+    ringColor: "border-rose-500 text-rose-500",
+  };
+}
 
 export default function StandaloneATSCheckerPage() {
   const { selectedResume } = useResume();
@@ -64,29 +86,7 @@ export default function StandaloneATSCheckerPage() {
     }
   };
 
-  const getScoreBadge = (score: number) => {
-    if (score >= 80) {
-      return {
-        label: "Good ATS Compatibility",
-        color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
-        ringColor: "border-emerald-500 text-emerald-500",
-      };
-    }
-    if (score >= 60) {
-      return {
-        label: "Moderate ATS Compatibility",
-        color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
-        ringColor: "border-amber-500 text-amber-500",
-      };
-    }
-    return {
-      label: "Needs Improvement",
-      color: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30",
-      ringColor: "border-rose-500 text-rose-500",
-    };
-  };
-
-  const formatReportText = () => {
+  const formatReportText = useCallback(() => {
     if (!result) return "";
     return `APPLYPILOT ATS AUDIT REPORT
 Resume: ${selectedResume?.original_filename || "Master Resume"}
@@ -110,22 +110,22 @@ ${result.grammar}
 RECOMMENDATIONS:
 ${result.recommendations?.map((r) => `- ${r}`).join("\n")}
 `;
-  };
+  }, [result, selectedResume]);
 
-  const handleExportDocx = () => {
+  const handleExportDocx = useCallback(() => {
     if (!result) return;
     exportAsDocx(`ATS_Audit_Report_${selectedResume?.title || "Resume"}.doc`, "ApplyPilot ATS Audit Report", formatReportText());
-  };
+  }, [result, selectedResume, formatReportText]);
 
-  const handleExportTxt = () => {
+  const handleExportTxt = useCallback(() => {
     if (!result) return;
     exportAsTxt(`ATS_Audit_Report_${selectedResume?.title || "Resume"}.txt`, formatReportText());
-  };
+  }, [result, selectedResume, formatReportText]);
 
-  const handleExportPdf = () => {
+  const handleExportPdf = useCallback(() => {
     if (!result) return;
     exportAsPdf(`ATS_Audit_Report_${selectedResume?.title || "Resume"}.pdf`, "ApplyPilot ATS Audit Report", formatReportText());
-  };
+  }, [result, selectedResume, formatReportText]);
 
   return (
     <div className="space-y-8 pb-12 max-w-5xl mx-auto">
