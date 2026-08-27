@@ -1,9 +1,10 @@
 "use client";
 
+import { memo } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { Sun, Moon } from "lucide-react";
 
-export default function ThemeToggle({ className = "" }: { className?: string }) {
+function ThemeToggleComponent({ className = "" }: { className?: string }) {
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -27,3 +28,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
     </button>
   );
 }
+
+const ThemeToggle = memo(ThemeToggleComponent);
+export default ThemeToggle;
+
