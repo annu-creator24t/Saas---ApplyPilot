@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useResume } from "@/context/ResumeContext";
 import {
   FileText,
@@ -21,7 +21,7 @@ interface ResumeSelectorProps {
   className?: string;
 }
 
-export default function ResumeSelector({
+function ResumeSelectorComponent({
   title = "Active Master Resume",
   subtitle = "Selected resume will be used for AI ATS scoring, matching & tailoring.",
   showDetails = true,
@@ -256,3 +256,6 @@ export default function ResumeSelector({
     </div>
   );
 }
+
+const ResumeSelector = memo(ResumeSelectorComponent);
+export default ResumeSelector;

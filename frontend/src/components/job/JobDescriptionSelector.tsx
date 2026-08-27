@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useJobDescription, SavedJobDescription } from "@/context/JobDescriptionContext";
 import {
   Briefcase,
@@ -23,7 +23,7 @@ interface JobDescriptionSelectorProps {
   className?: string;
 }
 
-export default function JobDescriptionSelector({
+function JobDescriptionSelectorComponent({
   title = "Target Job Description",
   subtitle = "Select a saved target role or paste a new job description.",
   onChangeJD,
@@ -309,3 +309,6 @@ export default function JobDescriptionSelector({
     </div>
   );
 }
+
+const JobDescriptionSelector = memo(JobDescriptionSelectorComponent);
+export default JobDescriptionSelector;
