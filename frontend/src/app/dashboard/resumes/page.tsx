@@ -134,7 +134,7 @@ export default function ResumesPage() {
             return (
               <div
                 key={res.resume_id}
-                className={`flex flex-col justify-between rounded-2xl border p-5 transition shadow-sm relative ${
+                className={`flex flex-col justify-between rounded-2xl border p-5 transition shadow-sm relative animate-slide-up ${
                   isSelected
                     ? "border-indigo-500 bg-gradient-to-b from-indigo-500/5 via-white to-white dark:from-indigo-950/20 dark:via-slate-900 dark:to-slate-900/60 ring-2 ring-indigo-500/20"
                     : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-indigo-500/40"
