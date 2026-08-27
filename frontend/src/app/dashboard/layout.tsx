@@ -40,7 +40,7 @@ export default function DashboardLayout({
       <Sidebar />
 
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-7xl p-6 md:p-8">
+        <div className="mx-auto max-w-7xl p-6 md:p-8 animate-slide-up">
           {children}
         </div>
       </main>
