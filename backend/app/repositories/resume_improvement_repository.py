@@ -22,9 +22,12 @@ class ResumeImprovementRepository:
         self,
         improvement_id: str,
     ) -> Optional[dict]:
-        return await self.collection.find_one(
-            {"_id": ObjectId(improvement_id)}
-        )
+        try:
+            return await self.collection.find_one(
+                {"_id": ObjectId(improvement_id)}
+            )
+        except Exception:
+            return None
 
     async def get_user_improvements(
         self,
@@ -43,8 +46,10 @@ class ResumeImprovementRepository:
         self,
         improvement_id: str,
     ) -> bool:
-        result = await self.collection.delete_one(
-            {"_id": ObjectId(improvement_id)}
-        )
-
-        return result.deleted_count > 0
+        try:
+            result = await self.collection.delete_one(
+                {"_id": ObjectId(improvement_id)}
+            )
+            return result.deleted_count > 0
+        except Exception:
+            return False

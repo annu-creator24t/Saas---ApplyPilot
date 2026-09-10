@@ -28,40 +28,45 @@ class InterviewPracticeRepository:
         self,
         session_id: str,
     ) -> Optional[dict]:
-
-        return await self.collection.find_one(
-            {
-                "_id": ObjectId(session_id)
-            }
-        )
+        try:
+            return await self.collection.find_one(
+                {
+                    "_id": ObjectId(session_id)
+                }
+            )
+        except Exception:
+            return None
 
     async def update_session(
         self,
         session_id: str,
         data: dict[str, Any],
     ):
-
-        await self.collection.update_one(
-            {
-                "_id": ObjectId(session_id)
-            },
-            {
-                "$set": data
-            },
-        )
+        try:
+            await self.collection.update_one(
+                {
+                    "_id": ObjectId(session_id)
+                },
+                {
+                    "$set": data
+                },
+            )
+        except Exception:
+            pass
 
     async def delete_session(
         self,
         session_id: str,
     ) -> bool:
-
-        result = await self.collection.delete_one(
-            {
-                "_id": ObjectId(session_id)
-            }
-        )
-
-        return result.deleted_count > 0
+        try:
+            result = await self.collection.delete_one(
+                {
+                    "_id": ObjectId(session_id)
+                }
+            )
+            return result.deleted_count > 0
+        except Exception:
+            return False
 
     async def get_user_sessions(
         self,

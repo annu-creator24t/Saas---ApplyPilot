@@ -57,7 +57,20 @@ def parse_interview_questions(
     """
     try:
         cleaned = _clean_json_response(response)
-        return json.loads(cleaned)
+        data = json.loads(cleaned)
+        
+        # Support both shorthand and alternative key naming
+        tech = data.get("technical") or data.get("technical_questions") or []
+        beh = data.get("behavioral") or data.get("behavioral_questions") or []
+        hr = data.get("hr") or data.get("hr_questions") or []
+        tips = data.get("tips") or data.get("interview_tips") or []
+
+        return {
+            "technical": tech,
+            "behavioral": beh,
+            "hr": hr,
+            "tips": tips,
+        }
 
     except json.JSONDecodeError:
         raise AIException(
@@ -80,7 +93,41 @@ def parse_interview_evaluation(response: str) -> dict:
     """
     try:
         cleaned = _clean_json_response(response)
-        return json.loads(cleaned)
+        data = json.loads(cleaned)
+
+        raw_score = data.get("score")
+        score = 8
+        if isinstance(raw_score, (int, float)):
+            score = int(round(raw_score))
+        elif isinstance(raw_score, str):
+            match = re.search(r"\d+", raw_score)
+            if match:
+                score = int(match.group(0))
+
+        # Clamp score between 0 and 10
+        score = max(0, min(10, score))
+
+        strengths = data.get("strengths") or data.get("strengths_list") or []
+        if isinstance(strengths, str):
+            strengths = [strengths]
+
+        improvements = data.get("improvements") or data.get("improvement_areas") or []
+        if isinstance(improvements, str):
+            improvements = [improvements]
+
+        ideal_answer = (
+            data.get("ideal_answer")
+            or data.get("improved_answer")
+            or data.get("sample_answer")
+            or ""
+        )
+
+        return {
+            "score": score,
+            "strengths": strengths,
+            "improvements": improvements,
+            "ideal_answer": ideal_answer,
+        }
 
     except json.JSONDecodeError:
         raise AIException(

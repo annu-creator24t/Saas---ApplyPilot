@@ -183,7 +183,7 @@ class InterviewPracticeService:
         if session_id:
             try:
                 session = await self.practice_repository.get_session(session_id)
-                if session:
+                if session and (not user_id or str(session.get("user_id")) == str(user_id)):
                     questions = session.get("questions", [])
                     idx = question_index if (question_index is not None and 0 <= question_index < len(questions)) else None
 

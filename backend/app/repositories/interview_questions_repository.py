@@ -28,12 +28,14 @@ class InterviewQuestionsRepository:
         self,
         interview_id: str,
     ) -> Optional[dict]:
-
-        return await self.collection.find_one(
-            {
-                "_id": ObjectId(interview_id)
-            }
-        )
+        try:
+            return await self.collection.find_one(
+                {
+                    "_id": ObjectId(interview_id)
+                }
+            )
+        except Exception:
+            return None
 
     async def get_user_questions(
         self,
@@ -60,11 +62,12 @@ class InterviewQuestionsRepository:
         self,
         interview_id: str,
     ) -> bool:
-
-        result = await self.collection.delete_one(
-            {
-                "_id": ObjectId(interview_id)
-            }
-        )
-
-        return result.deleted_count > 0
+        try:
+            result = await self.collection.delete_one(
+                {
+                    "_id": ObjectId(interview_id)
+                }
+            )
+            return result.deleted_count > 0
+        except Exception:
+            return False

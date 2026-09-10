@@ -84,8 +84,6 @@ class InterviewQuestionsService:
 
         response = generate(prompt)
 
-        await self.subscription_service.deduct_ai_credit_on_success(user_id)
-
         # =====================================================
         # Parse AI Response
         # =====================================================
@@ -94,6 +92,10 @@ class InterviewQuestionsService:
             response
         )
 
+        tech_list = questions.get("technical", [])
+        beh_list = questions.get("behavioral", [])
+        hr_list = questions.get("hr", [])
+
         # =====================================================
         # Store Questions
         # =====================================================
@@ -101,16 +103,19 @@ class InterviewQuestionsService:
         interview_id = (
             await self.questions_repository.create_questions(
                 {
-                    "user_id": resume["user_id"],
+                    "user_id": str(resume["user_id"]),
                     "resume_id": request.resume_id,
                     "job_description": request.job_description,
-                    "technical": questions["technical"],
-                    "behavioral": questions["behavioral"],
-                    "hr": questions["hr"],
+                    "technical": tech_list,
+                    "behavioral": beh_list,
+                    "hr": hr_list,
                     "created_at": datetime.utcnow(),
                 }
             )
         )
+
+        # Deduct credit ONLY after successful generation and persistence
+        await self.subscription_service.deduct_ai_credit_on_success(user_id)
 
         # =====================================================
         # Response
@@ -120,8 +125,8 @@ class InterviewQuestionsService:
             message="Interview questions generated successfully.",
             data=InterviewQuestionsResponse(
                 interview_id=interview_id,
-                technical=questions["technical"],
-                behavioral=questions["behavioral"],
-                hr=questions["hr"],
+                technical=tech_list,
+                behavioral=beh_list,
+                hr=hr_list,
             ),
         )

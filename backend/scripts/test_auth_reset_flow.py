@@ -7,9 +7,8 @@ import httpx
 # Add parent dir to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app.db.connection import connect_to_mongodb, get_database
-
-BASE_URL = "http://127.0.0.1:8000"
+from app.db.connection import connect_to_mongodb, get_database, close_mongodb_connection
+from app.main import app
 
 async def test_auth_and_password_reset():
     print("=" * 60)
@@ -24,7 +23,7 @@ async def test_auth_and_password_reset():
     old_password = "OldPassword123!"
     new_password = "NewPassword123!"
 
-    async with httpx.AsyncClient(base_url=BASE_URL, timeout=10.0) as client:
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test", timeout=10.0) as client:
         # Step 1: Register Test User
         print(f"\n[1] Registering test user: {test_email}")
         reg_res = await client.post(
@@ -142,6 +141,7 @@ async def test_auth_and_password_reset():
         await db["users"].delete_one({"email": test_email})
         print("  [OK] Test user removed from database")
 
+    await close_mongodb_connection()
     print("\n" + "=" * 60)
     print("ALL AUTHENTICATION & PASSWORD RESET TESTS PASSED SUCCESSFULLY!")
     print("=" * 60)
