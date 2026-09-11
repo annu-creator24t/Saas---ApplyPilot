@@ -1,6 +1,13 @@
-from typing import List
+from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+class ResumeAnalysisRequest(BaseModel):
+    job_description: Optional[str] = Field(
+        None,
+        description="Optional target job description to evaluate ATS match against",
+    )
 
 
 class ATSAnalysis(BaseModel):
@@ -19,4 +26,4 @@ class ATSAnalysis(BaseModel):
 
     formatting: str
 
-    recommendations: List[str]
+    recommendations: List[str]

@@ -48,7 +48,7 @@ function getScoreBadge(score: number) {
 }
 
 export default function StandaloneATSCheckerPage() {
-  const { selectedResume } = useResume();
+  const { selectedResume, setSelectedResume, setResumes } = useResume();
   const { selectedJobDescription } = useJobDescription();
 
   const [analyzing, setAnalyzing] = useState(false);
@@ -62,14 +62,24 @@ export default function StandaloneATSCheckerPage() {
       return;
     }
 
+    const targetJd = selectedJobDescription?.job_description || "";
+
     try {
       setAnalyzing(true);
       setErrorMsg(null);
       setQuotaReached(false);
 
-      const res = await analyzeResume(selectedResume.resume_id);
+      const res = await analyzeResume(selectedResume.resume_id, targetJd);
       if (res?.data?.analysis) {
         setResult(res.data.analysis);
+      }
+      if (res?.data?.resume) {
+        setSelectedResume(res.data.resume);
+        setResumes((prev) =>
+          prev.map((r) =>
+            r.resume_id === res.data.resume.resume_id ? res.data.resume : r
+          )
+        );
       }
     } catch (err: any) {
       const errCode = err?.response?.data?.error?.code || err?.response?.data?.code;

@@ -19,6 +19,7 @@ class AnalysisService:
         self,
         resume_id: str,
         user_id: str,
+        job_description: str | None = None,
     ):
         # Fetch resume
         resume = await self.repository.get_resume(
@@ -38,7 +39,8 @@ class AnalysisService:
 
         # Run ATS analysis
         analysis = self.ats.analyze(
-            resume["extracted_text"]
+            resume["extracted_text"],
+            job_description=job_description,
         )
 
         # Save analysis

@@ -14,12 +14,15 @@ export interface AnalysisResponse {
 }
 
 export async function analyzeResume(
-  resumeId: string
+  resumeId: string,
+  jobDescription?: string
 ) {
+  const payload = jobDescription ? { job_description: jobDescription } : {};
   const response =
     await api.post<ApiResponse<AnalysisResponse>>(
-      `/analysis/resume/${resumeId}`
+      `/analysis/resume/${resumeId}`,
+      payload
     );
 
   return response.data;
-}
+}

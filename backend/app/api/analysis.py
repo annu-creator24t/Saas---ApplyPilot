@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import (
     APIRouter,
     Depends,
@@ -5,6 +7,7 @@ from fastapi import (
 )
 
 from app.core.dependencies import get_current_user
+from app.schemas.ats import ResumeAnalysisRequest
 from app.schemas.common import APIResponse
 from app.services.analysis_service import AnalysisService
 
@@ -25,9 +28,12 @@ service = AnalysisService()
 )
 async def analyze_resume(
     resume_id: str,
+    request: Optional[ResumeAnalysisRequest] = None,
     current_user=Depends(get_current_user),
 ):
+    job_description = request.job_description if request else None
     return await service.analyze_resume(
         resume_id=resume_id,
         user_id=str(current_user["_id"]),
-    )
+        job_description=job_description,
+    )
