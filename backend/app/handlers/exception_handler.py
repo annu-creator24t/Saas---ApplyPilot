@@ -3,6 +3,7 @@ import traceback
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.logger import logger
 from app.handlers.exceptions import ApplyPilotException
@@ -31,6 +32,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             content={
                 "success": False,
                 "status_code": exc.status_code,
+                "message": exc.message,
                 "error": {
                     "code": exc.error_code,
                     "message": exc.message,
@@ -38,10 +40,11 @@ def register_exception_handlers(app: FastAPI) -> None:
             },
         )
 
+    @app.exception_handler(StarletteHTTPException)
     @app.exception_handler(HTTPException)
     async def http_exception_handler(
         request: Request,
-        exc: HTTPException,
+        exc: HTTPException | StarletteHTTPException,
     ) -> JSONResponse:
         logger.warning(
             "%s %s | HTTP_EXCEPTION | %s",
@@ -50,14 +53,27 @@ def register_exception_handlers(app: FastAPI) -> None:
             exc.detail,
         )
 
+        message = str(exc.detail) if exc.detail else "Request failed."
+
+        code_map = {
+            401: "AUTHENTICATION_ERROR",
+            403: "AUTHORIZATION_ERROR",
+            404: "NOT_FOUND",
+            422: "VALIDATION_ERROR",
+            429: "RATE_LIMIT_EXCEEDED",
+            503: "SERVICE_UNAVAILABLE",
+        }
+        error_code = code_map.get(exc.status_code, "HTTP_EXCEPTION")
+
         return JSONResponse(
             status_code=exc.status_code,
             content={
                 "success": False,
                 "status_code": exc.status_code,
+                "message": message,
                 "error": {
-                    "code": "HTTP_EXCEPTION",
-                    "message": exc.detail,
+                    "code": error_code,
+                    "message": message,
                 },
             },
         )
@@ -88,6 +104,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             content={
                 "success": False,
                 "status_code": 422,
+                "message": custom_message,
                 "error": {
                     "code": "VALIDATION_ERROR",
                     "message": custom_message,
@@ -108,17 +125,15 @@ def register_exception_handlers(app: FastAPI) -> None:
             str(exc),
         )
 
-        logger.debug(traceback.format_exc())
-
         return JSONResponse(
             status_code=500,
             content={
                 "success": False,
                 "status_code": 500,
+                "message": "An unexpected server error occurred. Please try again later.",
                 "error": {
                     "code": "INTERNAL_SERVER_ERROR",
-                    "message": f"An unexpected error occurred: {type(exc).__name__} - {str(exc)}",
-                    "traceback": traceback.format_exc(),
+                    "message": "An unexpected server error occurred. Please try again later.",
                 },
             },
         )

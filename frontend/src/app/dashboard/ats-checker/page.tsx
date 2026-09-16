@@ -9,6 +9,7 @@ import ResumeSelector from "@/components/resume/ResumeSelector";
 import JobDescriptionSelector from "@/components/job/JobDescriptionSelector";
 import { ATSAnalysis } from "@/types/analysis";
 import { exportAsDocx, exportAsTxt, exportAsPdf } from "@/utils/export";
+import { getApiErrorMessage } from "@/utils/errors";
 import {
   FileCheck2,
   Sparkles,
@@ -83,7 +84,7 @@ export default function StandaloneATSCheckerPage() {
       }
     } catch (err: any) {
       const errCode = err?.response?.data?.error?.code || err?.response?.data?.code;
-      const message = err?.response?.data?.error?.message || err?.response?.data?.message || "Failed to run ATS analysis.";
+      const message = getApiErrorMessage(err, "Unable to analyze your resume ATS score. Please try again.");
 
       if (errCode === "AI_USAGE_LIMIT_REACHED" || err?.response?.status === 403) {
         setQuotaReached(true);

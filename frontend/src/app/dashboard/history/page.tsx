@@ -1,40 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import api from "@/lib/axios";
 import { useAuthContext } from "@/context/AuthContext";
-import { History as HistoryIcon, FileText, Calendar, ArrowRight, Award } from "lucide-react";
+import { getApiErrorMessage } from "@/utils/errors";
+import { History as HistoryIcon, FileText, Calendar, ArrowRight, Award, AlertCircle, RefreshCw, Loader2 } from "lucide-react";
 
 export default function HistoryPage() {
   const { isAuthenticated, loading: authLoading } = useAuthContext();
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchHistory = useCallback(async () => {
     if (authLoading || !isAuthenticated) return;
 
-    const fetchHistory = async () => {
-      try {
-        const res = await api.get("/analysis-history");
-        const raw = res.data?.data;
-        if (raw && Array.isArray(raw.analyses)) {
-          setHistory(raw.analyses);
-        } else if (Array.isArray(raw)) {
-          setHistory(raw);
-        } else {
-          setHistory([]);
-        }
-      } catch (err: any) {
-        if (err?.response?.status !== 401) {
-          console.error("Failed to load history", err);
-        }
-      } finally {
-        setLoading(false);
+    try {
+      setLoading(true);
+      setErrorMsg(null);
+      const res = await api.get("/analysis-history");
+      const raw = res.data?.data;
+      if (raw && Array.isArray(raw.analyses)) {
+        setHistory(raw.analyses);
+      } else if (Array.isArray(raw)) {
+        setHistory(raw);
+      } else {
+        setHistory([]);
       }
-    };
-    fetchHistory();
+    } catch (err: any) {
+      if (err?.response?.status !== 401) {
+        console.error("Failed to load history", err);
+      }
+      setErrorMsg(getApiErrorMessage(err, "Unable to load analysis history. Please try again."));
+    } finally {
+      setLoading(false);
+    }
   }, [isAuthenticated, authLoading]);
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
 
   const getScoreBadge = (score: number) => {
     if (score >= 80) {
@@ -57,7 +63,22 @@ export default function HistoryPage() {
       </div>
 
       {loading ? (
-        <div className="py-20 text-center text-slate-500 dark:text-slate-400 text-xs">Loading analysis history...</div>
+        <div className="py-20 flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 text-xs">
+          <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+          <span>Loading analysis history...</span>
+        </div>
+      ) : errorMsg ? (
+        <div className="py-12 text-center rounded-2xl border border-rose-200 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20 p-8 space-y-4">
+          <AlertCircle className="mx-auto h-8 w-8 text-rose-500" />
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Unable to load history</h3>
+          <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">{errorMsg}</p>
+          <button
+            onClick={fetchHistory}
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-4 py-2 text-xs font-semibold hover:opacity-90 transition"
+          >
+            <RefreshCw className="h-3.5 w-3.5" /> Retry
+          </button>
+        </div>
       ) : history.length === 0 ? (
         <div className="py-16 text-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-8 shadow-sm">
           <FileText className="mx-auto h-10 w-10 text-slate-400 dark:text-slate-600" />

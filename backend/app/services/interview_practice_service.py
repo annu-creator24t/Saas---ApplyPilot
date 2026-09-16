@@ -6,18 +6,19 @@ from app.ai.response_parser import (
     parse_interview_questions,
     parse_interview_evaluation,
 )
+from app.core.logger import logger
+from app.handlers.exceptions import (
+    AIException,
+    AuthorizationException,
+    NotFoundException,
+    ValidationException,
+)
 from app.prompts.interview_questions_prompt import (
     build_interview_questions_prompt,
 )
 from app.prompts.interview_evaluation_prompt import (
     build_interview_evaluation_prompt,
 )
-
-from app.handlers.exceptions import (
-    AuthorizationException,
-    NotFoundException,
-)
-
 from app.repositories.interview_practice_repository import (
     InterviewPracticeRepository,
 )
@@ -25,7 +26,6 @@ from app.repositories.resume_repository import (
     ResumeRepository,
 )
 from app.schemas.common import APIResponse
-
 from app.schemas.interview_practice import (
     InterviewPracticeRequest,
     InterviewPracticeResponse,
@@ -47,6 +47,9 @@ class InterviewPracticeService:
         user: dict,
         request: InterviewPracticeRequest,
     ):
+        if not request.job_description or not request.job_description.strip():
+            raise ValidationException("Job description is required to start interview practice.")
+
         user_id = str(user["_id"])
         await self.subscription_service.check_ai_permission(user_id)
 
@@ -165,19 +168,34 @@ class InterviewPracticeService:
         session_id: str = None,
         question_index: int = None,
     ):
+        if not question or not question.strip():
+            raise ValidationException("Question cannot be empty.")
+
+        if not answer or not answer.strip():
+            raise ValidationException("Answer cannot be empty. Please provide an answer to evaluate.")
+
         if user_id:
             await self.subscription_service.check_ai_permission(user_id)
 
         prompt = build_interview_evaluation_prompt(
-            question,
-            answer,
+            question.strip(),
+            answer.strip(),
         )
 
-        response = generate(prompt)
+        try:
+            response = generate(prompt)
 
-        result = parse_interview_evaluation(
-            response
-        )
+            result = parse_interview_evaluation(
+                response
+            )
+        except (AIException, ValidationException):
+            raise
+        except Exception as exc:
+            logger.exception("Unexpected error during interview evaluation: %s", exc)
+            raise AIException(
+                "Unable to evaluate answer at this time. Please try again.",
+                error_code="EVALUATION_ERROR",
+            )
 
         # Update session persistence if session_id provided
         if session_id:

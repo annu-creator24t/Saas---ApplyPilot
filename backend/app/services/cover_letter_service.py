@@ -2,9 +2,12 @@ from datetime import datetime
 
 from app.ai.groq_client import generate
 from app.ai.prompts import build_cover_letter_prompt
+from app.core.logger import logger
 from app.handlers.exceptions import (
+    AIException,
     AuthorizationException,
     NotFoundException,
+    ValidationException,
 )
 from app.repositories.cover_letter_repository import CoverLetterRepository
 from app.repositories.resume_repository import ResumeRepository
@@ -28,6 +31,9 @@ class CoverLetterService:
         user_id: str,
         request: CoverLetterRequest,
     ):
+        if not request.job_description or not request.job_description.strip():
+            raise ValidationException("Job description is required to generate a cover letter.")
+
         # 1. Check AI usage permission
         await self.subscription_service.check_ai_permission(user_id)
 

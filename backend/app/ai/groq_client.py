@@ -114,9 +114,16 @@ def generate(prompt: str) -> str:
         raise
 
     except Exception as exc:
-        logger.exception("Unexpected Groq error.")
+        logger.exception("Unexpected Groq error: %s", exc)
+
+        # Check for timeout errors
+        if "timeout" in str(exc).lower() or "timed out" in str(exc).lower():
+            raise AIException(
+                message="AI request timed out. Please try again shortly.",
+                error_code="AI_TIMEOUT",
+            )
 
         raise AIException(
-            message=f"Unexpected AI service error: {str(exc)}",
-            error_code="AI_UNKNOWN_ERROR",
+            message="AI service is temporarily unavailable. Please try again shortly.",
+            error_code="AI_SERVICE_ERROR",
         )

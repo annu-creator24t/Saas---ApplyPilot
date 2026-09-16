@@ -25,12 +25,6 @@ async def get_db() -> Any:
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
 ) -> dict[str, Any]:
-
-    print("=" * 50)
-    print("TOKEN RECEIVED:")
-    print(token)
-    print("=" * 50)
-
     try:
         payload = verify_access_token(token)
     except JWTError:

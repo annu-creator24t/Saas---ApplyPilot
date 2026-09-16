@@ -7,6 +7,7 @@ import { useJobDescription } from "@/context/JobDescriptionContext";
 import { startInterviewPractice, evaluateAnswer } from "@/services/interview-practice.service";
 import ResumeSelector from "@/components/resume/ResumeSelector";
 import JobDescriptionSelector from "@/components/job/JobDescriptionSelector";
+import { getApiErrorMessage } from "@/utils/errors";
 import {
   Mic,
   Sparkles,
@@ -64,7 +65,7 @@ export default function InterviewPracticePage() {
       setSession(response.data);
     } catch (error: any) {
       const errCode = error?.response?.data?.error?.code || error?.response?.data?.code;
-      const message = error?.response?.data?.error?.message || error?.response?.data?.message || "Failed to start practice session.";
+      const message = getApiErrorMessage(error, "Failed to start interview practice session. Please try again.");
 
       if (errCode === "AI_USAGE_LIMIT_REACHED" || error?.response?.status === 403) {
         setQuotaReached(true);
@@ -100,7 +101,7 @@ export default function InterviewPracticePage() {
 
       setFeedback(response.data);
     } catch (error: any) {
-      setErrorMsg(error?.response?.data?.message || "Failed to analyze practice answer.");
+      setErrorMsg(getApiErrorMessage(error, "Failed to analyze practice answer. Please try again."));
     } finally {
       setSubmitting(false);
     }

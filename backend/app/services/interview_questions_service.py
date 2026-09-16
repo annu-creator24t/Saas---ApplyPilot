@@ -2,12 +2,15 @@ from datetime import datetime
 
 from app.ai.groq_client import generate
 from app.ai.response_parser import parse_interview_questions
-from app.prompts.interview_questions_prompt import (
-    build_interview_questions_prompt,
-)
+from app.core.logger import logger
 from app.handlers.exceptions import (
+    AIException,
     AuthorizationException,
     NotFoundException,
+    ValidationException,
+)
+from app.prompts.interview_questions_prompt import (
+    build_interview_questions_prompt,
 )
 from app.repositories.interview_questions_repository import (
     InterviewQuestionsRepository,
@@ -33,6 +36,9 @@ class InterviewQuestionsService:
         user: dict,
         request: InterviewQuestionsRequest,
     ):
+        if not request.job_description or not request.job_description.strip():
+            raise ValidationException("Job description is required to generate interview questions.")
+
         user_id = str(user["_id"])
         await self.subscription_service.check_ai_permission(user_id)
 

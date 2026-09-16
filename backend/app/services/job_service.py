@@ -2,30 +2,26 @@ import json
 
 from app.ai.groq_client import generate
 from app.ai.response_parser import _clean_json_response
-
+from app.core.logger import logger
 from app.handlers.exceptions import (
     AIException,
     AuthorizationException,
     NotFoundException,
+    ValidationException,
 )
-
 from app.prompts.job_match_prompt import (
     build_job_match_prompt,
 )
-
 from app.repositories.resume_repository import (
     ResumeRepository,
 )
-
 from app.schemas.application import (
     JobMatchRequest,
     JobMatchResponse,
 )
-
 from app.schemas.common import (
     APIResponse,
 )
-
 from app.services.subscription_service import (
     SubscriptionService,
 )
@@ -48,6 +44,8 @@ class JobService:
         user_id: str,
         request: JobMatchRequest,
     ) -> APIResponse:
+        if not request.job_description or not request.job_description.strip():
+            raise ValidationException("Job description is required for job match analysis.")
 
         resume = None
 
@@ -343,12 +341,8 @@ class JobService:
         # =====================================================
 
         except Exception as e:
-
+            logger.exception("Unexpected error during job match analysis: %s", e)
             raise AIException(
-                message=(
-                    f"Error analyzing job match: {str(e)}"
-                ),
-                error_code=(
-                    "JOB_MATCH_ERROR"
-                ),
+                message="Unable to analyze job match at this time. Please try again shortly.",
+                error_code="JOB_MATCH_ERROR",
             )

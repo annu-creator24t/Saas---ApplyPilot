@@ -14,6 +14,7 @@ from app.core.logger import logger
 from app.handlers.exceptions import (
     AuthorizationException,
     NotFoundException,
+    ValidationException,
 )
 from app.integrations.cloudinary import (
     delete_resume,
@@ -58,21 +59,28 @@ class ResumeService:
             extracted_text = extract_resume_text(
                 saved_file["path"]
             )
-        except Exception:
-            extracted_text = (
-                "Experienced Software Engineer with "
-                "proficiency in Python, JavaScript, React, "
-                "FastAPI, Node.js, SQL, and System Design."
+        except Exception as exc:
+            # Clean up saved file if extraction fails
+            try:
+                delete_file(saved_file["path"])
+            except Exception:
+                pass
+
+            if isinstance(exc, ValidationException):
+                raise exc
+
+            raise ValidationException(
+                "Unable to extract text from the resume. Please ensure the file is not corrupted or password-protected, and contains readable text."
             )
 
-        if (
-            not extracted_text
-            or not extracted_text.strip()
-        ):
-            extracted_text = (
-                "Experienced Software Engineer with "
-                "proficiency in Python, JavaScript, React, "
-                "FastAPI, Node.js, SQL, and System Design."
+        if not extracted_text or not extracted_text.strip():
+            try:
+                delete_file(saved_file["path"])
+            except Exception:
+                pass
+
+            raise ValidationException(
+                "No readable text could be found in the uploaded resume. Please upload a PDF or DOCX file with selectable text."
             )
 
         # =================================================

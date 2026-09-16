@@ -1,24 +1,26 @@
 import os
 
-from app.parsers.pdf_parser import extract_pdf_text
+from app.core.logger import logger
+from app.handlers.exceptions import ValidationException
 from app.parsers.docx_parser import extract_docx_text
+from app.parsers.pdf_parser import extract_pdf_text
 
 
 def extract_resume_text(file_path: str) -> str:
     extension = os.path.splitext(file_path)[1].lower()
+    extracted_text = ""
 
     try:
         if extension == ".pdf":
-            text = extract_pdf_text(file_path)
-            if text and text.strip():
-                return text.strip()
+            extracted_text = extract_pdf_text(file_path) or ""
 
-        if extension == ".docx":
-            text = extract_docx_text(file_path)
-            if text and text.strip():
-                return text.strip()
-    except Exception:
-        pass
+        elif extension == ".docx":
+            extracted_text = extract_docx_text(file_path) or ""
+    except Exception as exc:
+        logger.warning("Parser error reading %s: %s", file_path, exc)
+
+    if extracted_text and extracted_text.strip():
+        return extracted_text.strip()
 
     # Fallback: Attempt plain text reading if PyMuPDF or python-docx fails
     try:
@@ -26,7 +28,9 @@ def extract_resume_text(file_path: str) -> str:
             raw_text = f.read()
             if raw_text and len(raw_text.strip()) > 10:
                 return raw_text.strip()
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning("Plain text fallback failed for %s: %s", file_path, exc)
 
-    return "Experienced Software Engineer with proficiency in Python, JavaScript, React, FastAPI, Node.js, SQL, and System Design."
+    raise ValidationException(
+        "Unable to extract text from the resume. Please ensure the file is not empty, corrupted, or password-protected, and contains readable text."
+    )

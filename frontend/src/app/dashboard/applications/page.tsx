@@ -10,6 +10,7 @@ import {
   JobApplication,
   ApplicationStatus,
 } from "@/services/application.service";
+import { getApiErrorMessage } from "@/utils/errors";
 import {
   Briefcase,
   Plus,
@@ -22,6 +23,9 @@ import {
   MapPin,
   Calendar,
   DollarSign,
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 
 function getStatusBadge(status: ApplicationStatus) {
@@ -136,6 +140,9 @@ export default function ApplicationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingApp, setEditingApp] = useState<JobApplication | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -152,12 +159,14 @@ export default function ApplicationsPage() {
     if (authLoading || !isAuthenticated) return;
     try {
       setLoading(true);
+      setErrorMsg(null);
       const data = await getApplications(statusFilter === "ALL" ? undefined : statusFilter);
       setApplications(data);
     } catch (err: any) {
       if (err?.response?.status !== 401) {
         console.error("Failed to load applications", err);
       }
+      setErrorMsg(getApiErrorMessage(err, "Unable to load job applications. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -169,30 +178,44 @@ export default function ApplicationsPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.job_title || !formData.company_name) return;
+    if (!formData.job_title.trim() || !formData.company_name.trim()) {
+      setErrorMsg("Job title and Company name are required.");
+      return;
+    }
 
     try {
+      setSaving(true);
+      setErrorMsg(null);
+      setSuccessMsg(null);
+
       if (editingApp) {
         await updateApplication(editingApp.id, formData);
+        setSuccessMsg("Application updated successfully.");
       } else {
         await createApplication(formData);
+        setSuccessMsg("Application saved to tracker.");
       }
       setShowAddModal(false);
       setEditingApp(null);
       resetForm();
       fetchApps();
     } catch (err) {
-      console.error("Failed to save application", err);
+      setErrorMsg(getApiErrorMessage(err, "Failed to save application. Please try again."));
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleDelete = useCallback(async (id: string) => {
     if (!confirm("Are you sure you want to delete this job application?")) return;
     try {
+      setErrorMsg(null);
+      setSuccessMsg(null);
       await deleteApplication(id);
+      setSuccessMsg("Application deleted.");
       fetchApps();
     } catch (err) {
-      console.error("Failed to delete application", err);
+      setErrorMsg(getApiErrorMessage(err, "Failed to delete application. Please try again."));
     }
   }, [fetchApps]);
 
@@ -255,6 +278,20 @@ export default function ApplicationsPage() {
           <Plus className="h-4 w-4" /> Add Application
         </button>
       </div>
+
+      {errorMsg && (
+        <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 border border-rose-500/20 p-3.5 text-xs text-rose-600 dark:text-rose-400 font-medium">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
+      {successMsg && (
+        <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+          <CheckCircle2 className="h-4 w-4 shrink-0" />
+          <span>{successMsg}</span>
+        </div>
+      )}
 
       {/* Filters & Search */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">

@@ -13,6 +13,7 @@ import { Resume } from "@/types/resume";
 import { ATSAnalysis } from "@/types/analysis";
 import * as ResumeService from "@/services/resume.service";
 import { useAuthContext } from "@/context/AuthContext";
+import { getApiErrorMessage } from "@/utils/errors";
 
 interface ResumeContextType {
   resumes: Resume[];
@@ -88,7 +89,7 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
       if (err?.response?.status !== 401) {
         console.error("Failed to load user resumes:", err);
       }
-      setError(err?.response?.data?.message || "Failed to load resumes");
+      setError(getApiErrorMessage(err, "Unable to load resumes. Please try again."));
       return [];
     } finally {
       setLoading(false);
@@ -114,7 +115,7 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
         }
         return null;
       } catch (err: any) {
-        const msg = err?.response?.data?.message || "Failed to upload resume";
+        const msg = getApiErrorMessage(err, "Failed to upload resume. Please try again.");
         setError(msg);
         throw new Error(msg);
       } finally {
@@ -140,7 +141,7 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
         }
         return true;
       } catch (err: any) {
-        const msg = err?.response?.data?.message || "Failed to delete resume";
+        const msg = getApiErrorMessage(err, "Failed to delete resume.");
         setError(msg);
         return false;
       }

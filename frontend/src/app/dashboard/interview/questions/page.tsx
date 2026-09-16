@@ -9,6 +9,7 @@ import ResumeSelector from "@/components/resume/ResumeSelector";
 import JobDescriptionSelector from "@/components/job/JobDescriptionSelector";
 import CopyButton from "@/components/common/CopyButton";
 import { exportAsDocx, exportAsTxt, exportAsPdf } from "@/utils/export";
+import { getApiErrorMessage } from "@/utils/errors";
 import {
   HelpCircle,
   Sparkles,
@@ -32,6 +33,7 @@ export default function InterviewQuestionsPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [quotaReached, setQuotaReached] = useState(false);
 
+  // Sync active JD when selected from selector
   const handleJDChange = useCallback((jdText: string) => {
     setJobDescription(jdText);
   }, []);
@@ -61,7 +63,7 @@ export default function InterviewQuestionsPage() {
       setQuestionsData(response.data);
     } catch (error: any) {
       const errCode = error?.response?.data?.error?.code || error?.response?.data?.code;
-      const message = error?.response?.data?.error?.message || error?.response?.data?.message || "Failed to generate interview questions.";
+      const message = getApiErrorMessage(error, "Failed to generate interview questions. Please try again.");
 
       if (errCode === "AI_USAGE_LIMIT_REACHED" || error?.response?.status === 403) {
         setQuotaReached(true);

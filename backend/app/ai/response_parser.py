@@ -2,6 +2,7 @@ import json
 import re
 from typing import Any
 
+from app.core.logger import logger
 from app.handlers.exceptions import AIException
 from app.schemas.ats import ATSAnalysis
 
@@ -10,6 +11,9 @@ def _clean_json_response(response: str) -> str:
     """
     Remove Markdown code fences and reasoning tags from AI responses.
     """
+    if not response or not isinstance(response, str):
+        return ""
+
     response = response.strip()
 
     # Remove reasoning/thinking blocks if model generates them
@@ -34,17 +38,45 @@ def parse_response(response: str) -> ATSAnalysis:
     try:
         cleaned = _clean_json_response(response)
         data = json.loads(cleaned)
-        return ATSAnalysis(**data)
 
-    except json.JSONDecodeError:
+        raw_score = data.get("ats_score", 0)
+        try:
+            score = int(round(float(raw_score)))
+        except (ValueError, TypeError):
+            score = 0
+        score = max(0, min(100, score))
+
+        def _to_list(val: Any) -> list[str]:
+            if isinstance(val, list):
+                return [str(x) for x in val if x]
+            if isinstance(val, str) and val.strip():
+                return [val.strip()]
+            return []
+
+        analysis_dict = {
+            "ats_score": score,
+            "summary": str(data.get("summary", "")).strip() or "Resume analysis completed.",
+            "strengths": _to_list(data.get("strengths")),
+            "weaknesses": _to_list(data.get("weaknesses")),
+            "missing_skills": _to_list(data.get("missing_skills")),
+            "grammar": str(data.get("grammar", "")).strip() or "Grammar and tone are acceptable.",
+            "formatting": str(data.get("formatting", "")).strip() or "Standard formatting.",
+            "recommendations": _to_list(data.get("recommendations")),
+        }
+
+        return ATSAnalysis(**analysis_dict)
+
+    except json.JSONDecodeError as exc:
+        logger.warning("JSON decode failure in ATS response: %s", exc)
         raise AIException(
-            "Invalid JSON returned by AI.",
+            "Unable to parse AI ATS analysis. Please try again.",
             error_code="AI_INVALID_JSON",
         )
 
-    except Exception as e:
+    except Exception as exc:
+        logger.warning("Unexpected ATS parsing failure: %s", exc)
         raise AIException(
-            message=f"Failed to parse ATS analysis: {str(e)}",
+            message="Unable to process ATS analysis. Please try again.",
             error_code="AI_PARSE_ERROR",
         )
 
@@ -58,24 +90,38 @@ def parse_interview_questions(
     try:
         cleaned = _clean_json_response(response)
         data = json.loads(cleaned)
-        
+
         # Support both shorthand and alternative key naming
         tech = data.get("technical") or data.get("technical_questions") or []
         beh = data.get("behavioral") or data.get("behavioral_questions") or []
         hr = data.get("hr") or data.get("hr_questions") or []
         tips = data.get("tips") or data.get("interview_tips") or []
 
+        def _ensure_list(items: Any) -> list:
+            if isinstance(items, list):
+                return items
+            if isinstance(items, (dict, str)):
+                return [items]
+            return []
+
         return {
-            "technical": tech,
-            "behavioral": beh,
-            "hr": hr,
-            "tips": tips,
+            "technical": _ensure_list(tech),
+            "behavioral": _ensure_list(beh),
+            "hr": _ensure_list(hr),
+            "tips": _ensure_list(tips),
         }
 
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as exc:
+        logger.warning("JSON decode failure in interview questions: %s", exc)
         raise AIException(
-            "Invalid JSON returned by AI.",
+            "Unable to parse generated interview questions. Please try again.",
             error_code="AI_INVALID_JSON",
+        )
+    except Exception as exc:
+        logger.warning("Unexpected interview questions parse error: %s", exc)
+        raise AIException(
+            "Unable to process interview questions. Please try again.",
+            error_code="AI_PARSE_ERROR",
         )
 
 
@@ -96,7 +142,7 @@ def parse_interview_evaluation(response: str) -> dict:
         data = json.loads(cleaned)
 
         raw_score = data.get("score")
-        score = 8
+        score = 7
         if isinstance(raw_score, (int, float)):
             score = int(round(raw_score))
         elif isinstance(raw_score, str):
@@ -124,22 +170,25 @@ def parse_interview_evaluation(response: str) -> dict:
 
         return {
             "score": score,
-            "strengths": strengths,
-            "improvements": improvements,
-            "ideal_answer": ideal_answer,
+            "strengths": strengths if isinstance(strengths, list) else [],
+            "improvements": improvements if isinstance(improvements, list) else [],
+            "ideal_answer": str(ideal_answer),
         }
 
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as exc:
+        logger.warning("JSON decode failure in interview evaluation: %s", exc)
         raise AIException(
-            "Invalid JSON returned by AI evaluation.",
+            "Unable to parse AI interview evaluation. Please try again.",
             error_code="AI_INVALID_JSON",
         )
-    except Exception as e:
+    except Exception as exc:
+        logger.warning("Unexpected interview evaluation parse error: %s", exc)
         raise AIException(
-            f"Failed to parse interview evaluation: {str(e)}",
+            "Unable to process interview evaluation. Please try again.",
             error_code="AI_PARSE_ERROR",
         )
-    
+
+
 def parse_resume_improvement(
     response: str,
 ) -> dict[str, Any]:
@@ -148,10 +197,20 @@ def parse_resume_improvement(
     """
     try:
         cleaned = _clean_json_response(response)
-        return json.loads(cleaned)
+        data = json.loads(cleaned)
+        if not isinstance(data, dict):
+            raise AIException("Invalid response structure from AI.")
+        return data
 
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as exc:
+        logger.warning("JSON decode failure in resume improvement: %s", exc)
         raise AIException(
-            "Invalid JSON returned by AI.",
+            "Unable to parse resume improvement suggestions. Please try again.",
             error_code="AI_INVALID_JSON",
+        )
+    except Exception as exc:
+        logger.warning("Unexpected resume improvement parse error: %s", exc)
+        raise AIException(
+            "Unable to process resume improvements. Please try again.",
+            error_code="AI_PARSE_ERROR",
         )

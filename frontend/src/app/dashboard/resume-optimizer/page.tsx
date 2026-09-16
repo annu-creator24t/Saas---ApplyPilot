@@ -9,6 +9,7 @@ import ResumeSelector from "@/components/resume/ResumeSelector";
 import JobDescriptionSelector from "@/components/job/JobDescriptionSelector";
 import CopyButton from "@/components/common/CopyButton";
 import { exportAsDocx, exportAsTxt, exportAsPdf } from "@/utils/export";
+import { getApiErrorMessage } from "@/utils/errors";
 import {
   Sparkles,
   Target,
@@ -62,7 +63,7 @@ export default function ResumeOptimizerPage() {
       setMatchData(data);
     } catch (err: any) {
       const errCode = err?.response?.data?.error?.code || err?.response?.data?.code;
-      const message = err?.response?.data?.error?.message || err?.response?.data?.message || "Failed to analyze job match.";
+      const message = getApiErrorMessage(err, "Unable to analyze job match. Please try again.");
 
       if (errCode === "AI_USAGE_LIMIT_REACHED" || err?.response?.status === 403) {
         setQuotaReached(true);

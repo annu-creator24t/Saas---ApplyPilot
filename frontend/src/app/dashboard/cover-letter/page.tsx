@@ -9,6 +9,7 @@ import ResumeSelector from "@/components/resume/ResumeSelector";
 import JobDescriptionSelector from "@/components/job/JobDescriptionSelector";
 import CopyButton from "@/components/common/CopyButton";
 import { exportAsDocx, exportAsTxt, exportAsPdf } from "@/utils/export";
+import { getApiErrorMessage } from "@/utils/errors";
 import {
   FileText,
   Sparkles,
@@ -61,7 +62,7 @@ export default function CoverLetterPage() {
       setCoverLetter(response.data.cover_letter);
     } catch (error: any) {
       const errCode = error?.response?.data?.error?.code || error?.response?.data?.code;
-      const message = error?.response?.data?.error?.message || error?.response?.data?.message || "Failed to generate cover letter.";
+      const message = getApiErrorMessage(error, "Failed to generate cover letter. Please try again.");
 
       if (errCode === "AI_USAGE_LIMIT_REACHED" || error?.response?.status === 403) {
         setQuotaReached(true);

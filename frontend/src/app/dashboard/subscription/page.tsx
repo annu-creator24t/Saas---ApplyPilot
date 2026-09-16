@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getSubscriptionStatus, submitPayment, SubscriptionStatusData } from "@/services/subscription.service";
+import { getApiErrorMessage } from "@/utils/errors";
 import {
   CreditCard,
   Zap,
@@ -64,7 +65,7 @@ export default function SubscriptionPage() {
       setSubmittedMsg(res.message || "Payment submitted. Your subscription will be activated after verification.");
       fetchStatus();
     } catch (err: any) {
-      setErrorMsg(err?.response?.data?.message || "Failed to submit payment verification.");
+      setErrorMsg(getApiErrorMessage(err, "Failed to submit payment verification. Please try again."));
     } finally {
       setSubmitting(false);
     }
