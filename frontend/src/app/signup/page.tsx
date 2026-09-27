@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as AuthService from "@/services/auth.service";
 import { trackSignupCompleted, trackTrialStarted } from "@/lib/posthog";
+import { getApiErrorMessage } from "@/utils/errors";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import {
   User,
@@ -73,19 +74,8 @@ export default function SignupPage() {
         router.push("/login?registered=true");
       }, 2400);
     } catch (err: unknown) {
-      const errData = (
-        err as {
-          response?: {
-            data?: { error?: { message?: string }; message?: string };
-          };
-        }
-      )?.response?.data;
-
-      setError(
-        errData?.error?.message ||
-          errData?.message ||
-          "Unable to create account."
-      );
+      const message = getApiErrorMessage(err, "Unable to create account. Please try again.");
+      setError(message);
       setLoading(false);
     }
   };
