@@ -39,17 +39,17 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen flex-col lg:flex-row overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
-      {/* Mobile Sticky Header Bar */}
-      <header className="lg:hidden flex h-14 items-center justify-between px-3.5 sm:px-4 border-b border-slate-200 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-30 shrink-0">
+    <div className="flex h-screen w-full flex-col md:flex-row overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      {/* Mobile Sticky Header Bar (< 768px) */}
+      <header className="md:hidden flex h-14 w-full items-center justify-between px-3.5 sm:px-4 border-b border-slate-200 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-30 shrink-0">
         <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 transition"
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 transition cursor-pointer"
             aria-label="Open navigation menu"
           >
-            <Menu className="h-4 w-4" />
+            <Menu className="h-5 w-5" />
           </button>
 
           <Link href="/dashboard" className="flex items-center gap-2">
@@ -67,15 +67,15 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      {/* Sidebar (Desktop Persistent & Mobile Sliding Drawer) */}
+      {/* Sidebar (Desktop Persistent on >=768px & Mobile Overlay Drawer on <768px) */}
       <Sidebar
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto min-w-0">
-        <div className="mx-auto max-w-7xl p-3.5 sm:p-6 md:p-8 animate-slide-up">
+      <main className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden">
+        <div className="mx-auto w-full max-w-7xl p-3.5 sm:p-6 md:p-8 animate-slide-up">
           {children}
         </div>
       </main>

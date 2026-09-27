@@ -112,7 +112,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
               <button
                 type="button"
                 onClick={onClose}
-                className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                 aria-label="Close menu"
               >
                 <span className="text-lg font-bold leading-none">&times;</span>
@@ -252,18 +252,18 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* Desktop Persistent Sidebar */}
-      <div className="hidden lg:flex lg:h-screen lg:shrink-0">
+      {/* Desktop Persistent Sidebar (Screens >= 768px: md:flex) */}
+      <div className="hidden md:flex md:h-screen md:shrink-0">
         {sidebarContent}
       </div>
 
-      {/* Mobile Off-Canvas Drawer */}
+      {/* Mobile Off-Canvas Drawer (Screens < 768px: md:hidden) */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
+        <div className="fixed inset-0 z-50 md:hidden flex">
           {/* Backdrop Overlay */}
           <div
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-200"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-200 animate-fade-in"
           />
 
           {/* Sliding Drawer Container */}
