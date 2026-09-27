@@ -95,7 +95,7 @@ export default function SubscriptionPage() {
         <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-3.5 py-1 text-xs font-bold text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
           <Sparkles className="h-3.5 w-3.5" /> ApplyPilot Pricing & Billing
         </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           {isTrial ? "Your 10-Day Free Trial" : "Upgrade to ApplyPilot Pro"}
         </h1>
         <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
@@ -107,7 +107,7 @@ export default function SubscriptionPage() {
 
       {/* Trial Active Hero Banner */}
       {isTrial && (
-        <div className="rounded-2xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 p-5 md:p-6 shadow-sm">
+        <div className="rounded-2xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 p-4 sm:p-6 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-md">
@@ -141,7 +141,7 @@ export default function SubscriptionPage() {
 
       {/* Trial Expired Alert Banner */}
       {trialExpired && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 shadow-sm">
+        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 sm:p-5 shadow-sm">
           <div className="flex items-center gap-3 text-amber-800 dark:text-amber-200">
             <Clock className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
             <div>
@@ -155,13 +155,13 @@ export default function SubscriptionPage() {
       )}
 
       {/* Current Plan & Credits Summary Bar */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left divide-y sm:divide-y-0 sm:divide-x divide-slate-200 dark:divide-slate-800">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center sm:text-left divide-y sm:divide-y-0 sm:divide-x divide-slate-200 dark:divide-slate-800">
           <div className="sm:pr-4">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Current Plan</span>
             <div className="mt-1.5 flex items-center justify-center sm:justify-start gap-2">
               <span
-                className={`text-xl font-extrabold ${
+                className={`text-lg sm:text-xl font-extrabold ${
                   isPro
                     ? "text-emerald-600 dark:text-emerald-400"
                     : isTrial
@@ -191,7 +191,7 @@ export default function SubscriptionPage() {
                   isPro ? "text-emerald-500" : isTrial ? "text-cyan-500" : "text-indigo-500"
                 }`}
               />
-              <span className="text-xl font-extrabold text-slate-900 dark:text-white">
+              <span className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
                 {isPro || isTrial ? "Unlimited AI" : `${creditsRemaining} / 3 remaining`}
               </span>
             </div>
@@ -223,23 +223,23 @@ export default function SubscriptionPage() {
       </div>
 
       {/* Main Pricing & Payment Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
         {/* Plan Card */}
-        <div className="rounded-3xl border-2 border-indigo-500/40 bg-gradient-to-b from-white via-slate-50 to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/40 p-8 shadow-xl relative overflow-hidden">
+        <div className="rounded-3xl border-2 border-indigo-500/40 bg-gradient-to-b from-white via-slate-50 to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/40 p-5 sm:p-8 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 bg-gradient-to-l from-indigo-600 to-blue-600 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl shadow-md">
             Most Popular
           </div>
 
           <div className="space-y-4">
             <div>
-              <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white">ApplyPilot Pro</h3>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">ApplyPilot Pro</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 For career seekers who want maximum advantage in job applications.
               </p>
             </div>
 
             <div className="flex items-baseline gap-1.5 pt-2">
-              <span className="text-4xl font-black text-slate-900 dark:text-white">₹99</span>
+              <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">₹99</span>
               <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">/ month</span>
             </div>
 
@@ -273,9 +273,9 @@ export default function SubscriptionPage() {
         </div>
 
         {/* Payment QR & UPI Section */}
-        <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-8 shadow-sm space-y-6">
+        <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 sm:p-8 shadow-sm space-y-6">
           <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <QrCode className="h-5 w-5 text-indigo-500" /> ApplyPilot Instant UPI Checkout
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -284,24 +284,24 @@ export default function SubscriptionPage() {
           </div>
 
           {/* Professional QR & Merchant Details Box */}
-          <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800/80 text-center space-y-5">
+          <div className="flex flex-col items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800/80 text-center space-y-4 sm:space-y-5">
             {/* Corporate Branded QR Code Box */}
-            <div className="p-5 bg-white rounded-2xl border-2 border-indigo-500/30 shadow-lg flex flex-col items-center transition duration-200 hover:border-indigo-500">
+            <div className="p-4 sm:p-5 bg-white rounded-2xl border-2 border-indigo-500/30 shadow-lg flex flex-col items-center transition duration-200 hover:border-indigo-500 max-w-full">
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 rounded-full text-[11px] font-extrabold shadow flex items-center gap-1.5 mb-3">
                 <Sparkles className="h-3.5 w-3.5" /> ApplyPilot Official UPI QR
               </div>
-              <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-inner">
+              <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-inner max-w-full">
                 <Image
                   src="/clean-qr.png"
                   alt="ApplyPilot Official UPI QR Code"
                   width={192}
                   height={192}
-                  className="w-48 h-48 rounded-lg object-contain"
+                  className="w-40 h-40 sm:w-48 sm:h-48 rounded-lg object-contain mx-auto"
                 />
               </div>
               <div className="mt-4 flex flex-col items-center gap-2">
-                <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-3.5 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
-                  <ShieldCheck className="h-3.5 w-3.5" /> Scan with GPay / PhonePe / Paytm / BHIM
+                <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-800 text-center">
+                  <ShieldCheck className="h-3.5 w-3.5 shrink-0" /> Scan with GPay / PhonePe / Paytm / BHIM
                 </div>
                 <a
                   href="upi://pay?pa=7565987815@ptsbi&pn=ApplyPilot%20AI%20Services&am=99&cu=INR&tn=ApplyPilot%20Pro%20Subscription"
@@ -326,12 +326,12 @@ export default function SubscriptionPage() {
               {/* UPI VPA Display & Copy */}
               <div className="space-y-1 text-left pt-1">
                 <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">UPI VPA ID</span>
-                <div className="flex items-center justify-between rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 shadow-inner">
-                  <span>7565987815@ptsbi</span>
+                <div className="flex items-center justify-between rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 sm:p-3 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 shadow-inner gap-2 overflow-hidden">
+                  <span className="truncate">7565987815@ptsbi</span>
                   <button
                     onClick={handleCopyUpi}
                     type="button"
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1"
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1 shrink-0"
                     title="Copy UPI ID"
                   >
                     {copied ? (
@@ -350,7 +350,7 @@ export default function SubscriptionPage() {
               </div>
 
               {/* UPI Apps Row */}
-              <div className="pt-2 flex items-center justify-center gap-2 text-[10px] font-bold text-slate-500 dark:text-slate-400">
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[10px] font-bold text-slate-500 dark:text-slate-400">
                 <span className="bg-slate-200/60 dark:bg-slate-800/80 px-2 py-0.5 rounded-md">Google Pay</span>
                 <span>•</span>
                 <span className="bg-slate-200/60 dark:bg-slate-800/80 px-2 py-0.5 rounded-md">PhonePe</span>

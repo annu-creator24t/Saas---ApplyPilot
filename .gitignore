@@ -1,61 +1,81 @@
-# Environment variables & secrets
+# ==============================================================================
+# Environment Variables & Secrets
+# ==============================================================================
 .env
+.env.*
 .env.local
 .env.*.local
 *.env
+**/.env
+**/.env.*
+**/*.env
 
-# Dependencies
+# Allow tracked example env files
+!.env.example
+!*.env.example
+!**/.env.example
+!**/*.env.example
+
+# ==============================================================================
+# Dependencies & Virtual Environments
+# ==============================================================================
 node_modules/
+**/node_modules/
 backend/venv/
 venv/
 env/
 .venv/
+**/venv/
+**/.venv/
 
-# Python cache & artifacts
+# ==============================================================================
+# Python Cache & Build Artifacts
+# ==============================================================================
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 *.so
 .pytest_cache/
+**/.pytest_cache/
 .coverage
 htmlcov/
 dist/
 build/
 *.egg-info/
 
-# Next.js / Frontend builds
+# ==============================================================================
+# Frontend & Next.js Builds
+# ==============================================================================
 frontend/.next/
 frontend/out/
 frontend/build/
 .next/
 out/
+.vercel/
 
-# Chrome Extension build output
+# ==============================================================================
+# Chrome Extension Build Output
+# ==============================================================================
 extension/dist/
+extension/*.zip
 
-# Uploaded user files & logs
+# ==============================================================================
+# Uploaded User Files & Logs
+# ==============================================================================
 backend/uploads/resumes/*
 !backend/uploads/resumes/.gitkeep
 backend/logs/*
 !backend/logs/.gitkeep
 *.log
+backend/logs/
 
-# IDE & OS files
+# ==============================================================================
+# IDE & Operating System Files
+# ==============================================================================
 .DS_Store
 Thumbs.db
 *.png
 !extension/public/*.png
 .vscode/
 .idea/
-
-# Backend environment
-backend/.env
-
-# Backend runtime logs
-backend/logs/
-
-# Local Chrome Web Store release packages
-extension/*.zip
-
-# Chrome Web Store release packages
-extension/*.zip

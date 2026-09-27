@@ -136,7 +136,7 @@ export default function InterviewPracticePage() {
         <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-3.5 py-1 text-xs font-bold text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 mb-2">
           <Mic className="h-3.5 w-3.5" /> AI Mock Interview Practice
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Interview Simulator</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Interview Simulator</h1>
         <p className="text-xs text-slate-600 dark:text-slate-400">
           Simulate a real-time AI interview session tailored to your active resume and target role. Type your response for instant feedback and scoring.
         </p>
@@ -157,7 +157,7 @@ export default function InterviewPracticePage() {
       </div>
 
       {/* Action Button Card */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm space-y-3">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-5 shadow-sm space-y-3">
         <button
           type="button"
           onClick={handleStartPractice}
@@ -178,7 +178,7 @@ export default function InterviewPracticePage() {
 
       {/* Error & Quota Alert */}
       {errorMsg && (
-        <div className={`rounded-2xl p-5 border shadow-sm ${
+        <div className={`rounded-2xl p-4 sm:p-5 border shadow-sm ${
           quotaReached
             ? "bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30 text-amber-900 dark:text-amber-200"
             : "bg-rose-50 dark:bg-rose-500/10 border-rose-300 dark:border-rose-500/30 text-rose-900 dark:text-rose-200"
@@ -210,8 +210,8 @@ export default function InterviewPracticePage() {
       {session && questionsList.length > 0 && (
         currentIndex < questionsList.length ? (
           <div className="space-y-6 animate-slide-up">
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
                   Interviewer Prompt {currentIndex + 1} of {questionsList.length}
                 </span>
@@ -230,7 +230,7 @@ export default function InterviewPracticePage() {
                   </span>
                 </div>
               </div>
-              <h2 className="text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+              <h2 className="text-sm sm:text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug">
                 &quot;{currentQuestionText}&quot;
               </h2>
 
@@ -240,14 +240,14 @@ export default function InterviewPracticePage() {
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   placeholder="Type your response here..."
-                  className="w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:border-cyan-500 focus:outline-none transition"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3.5 sm:p-4 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:border-cyan-500 focus:outline-none transition"
                 />
 
                 <div className="flex justify-end">
                   <button
                     type="submit"
                     disabled={submitting || !userAnswer.trim()}
-                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-500 disabled:opacity-50 transition"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-500 disabled:opacity-50 transition"
                   >
                     {submitting ? (
                       <>
@@ -265,12 +265,12 @@ export default function InterviewPracticePage() {
 
             {/* Feedback Output */}
             {feedback && (
-              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-5 animate-slide-up">
-                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5 animate-slide-up">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 gap-2">
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Award className="h-4 w-4 text-indigo-500" /> AI Feedback & Evaluation
                   </h3>
-                  <span className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-3.5 py-1 rounded-full border border-indigo-500/20">
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-3.5 py-1 rounded-full border border-indigo-500/20 w-fit">
                     Score: {displayScore(feedback.score ?? feedback.overall_score)}
                   </span>
                 </div>
@@ -278,7 +278,7 @@ export default function InterviewPracticePage() {
                 <div className="space-y-4 text-xs">
                   {/* Strengths */}
                   {(feedback.strengths || typeof feedback.feedback === "string") && (
-                    <div className="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800/60 space-y-2">
+                    <div className="bg-emerald-50 dark:bg-emerald-950/30 p-3.5 sm:p-4 rounded-xl border border-emerald-200 dark:border-emerald-800/60 space-y-2">
                       <span className="font-bold text-emerald-800 dark:text-emerald-300 block">
                         ✓ Key Strengths & Evaluation
                       </span>
@@ -298,7 +298,7 @@ export default function InterviewPracticePage() {
 
                   {/* Improvements */}
                   {feedback.improvements && Array.isArray(feedback.improvements) && feedback.improvements.length > 0 && (
-                    <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-xl border border-amber-200 dark:border-amber-800/60 space-y-2">
+                    <div className="bg-amber-50 dark:bg-amber-950/30 p-3.5 sm:p-4 rounded-xl border border-amber-200 dark:border-amber-800/60 space-y-2">
                       <span className="font-bold text-amber-800 dark:text-amber-300 block">
                         ⚠ Recommended Improvements
                       </span>
@@ -312,7 +312,7 @@ export default function InterviewPracticePage() {
 
                   {/* Ideal Answer */}
                   {(feedback.ideal_answer || feedback.improved_answer) && (
-                    <div className="bg-cyan-50 dark:bg-cyan-950/30 p-4 rounded-xl border border-cyan-200 dark:border-cyan-800/60 space-y-1.5 leading-relaxed text-slate-800 dark:text-slate-200">
+                    <div className="bg-cyan-50 dark:bg-cyan-950/30 p-3.5 sm:p-4 rounded-xl border border-cyan-200 dark:border-cyan-800/60 space-y-1.5 leading-relaxed text-slate-800 dark:text-slate-200">
                       <span className="font-bold text-cyan-700 dark:text-cyan-300 block">
                         💡 Suggested Ideal Response:
                       </span>
@@ -325,7 +325,7 @@ export default function InterviewPracticePage() {
                   <button
                     type="button"
                     onClick={handleNextQuestion}
-                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-500 transition"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-500 transition"
                   >
                     <span>Next Question</span>
                     <CheckCircle2 className="h-4 w-4" />
@@ -335,11 +335,11 @@ export default function InterviewPracticePage() {
             )}
           </div>
         ) : (
-          <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/30 p-8 text-center space-y-4">
+          <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/30 p-6 sm:p-8 text-center space-y-4">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               <CheckCircle2 className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
               Mock Interview Session Completed!
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
@@ -348,7 +348,7 @@ export default function InterviewPracticePage() {
             <button
               type="button"
               onClick={handleStartPractice}
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-500 transition"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-500 transition"
             >
               <Sparkles className="h-4 w-4" /> Start New Practice Session
             </button>

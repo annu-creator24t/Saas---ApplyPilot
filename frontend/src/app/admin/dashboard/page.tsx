@@ -113,7 +113,7 @@ export default function AdminDashboardPage() {
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-2">
             <Crown className="h-3.5 w-3.5 text-amber-500" /> ApplyPilot System Owner Dashboard
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             User Statistics & Platform Metrics
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -124,7 +124,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchStats}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-sm"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-sm"
           >
             <RefreshCw className="h-3.5 w-3.5" /> Refresh Metrics
           </button>
@@ -132,72 +132,72 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* 5 High-Impact Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-5">
         {/* Total Users Card */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-5 shadow-sm space-y-2">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-4 sm:p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Users</span>
             <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
               <Users className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-3xl font-black text-slate-900 dark:text-white">
+          <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
             {stats?.total_registered_users || 0}
           </p>
           <p className="text-[10px] text-slate-500 dark:text-slate-400">Registered platform accounts</p>
         </div>
 
         {/* Active AI Users Card */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-5 shadow-sm space-y-2">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-4 sm:p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Active AI Users</span>
             <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
               <Zap className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-3xl font-black text-indigo-600 dark:text-indigo-400">
+          <p className="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400">
             {stats?.total_active_ai_users || 0}
           </p>
           <p className="text-[10px] text-slate-500 dark:text-slate-400">Users using AI features</p>
         </div>
 
         {/* Total AI Generations Card */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-5 shadow-sm space-y-2">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-4 sm:p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">AI Generations</span>
             <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
               <Sparkles className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-3xl font-black text-cyan-600 dark:text-cyan-400">
+          <p className="text-2xl sm:text-3xl font-black text-cyan-600 dark:text-cyan-400">
             {stats?.total_ai_generations || 0}
           </p>
           <p className="text-[10px] text-slate-500 dark:text-slate-400">Successful AI runs</p>
         </div>
 
         {/* Free Users Card */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-5 shadow-sm space-y-2">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-4 sm:p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Free Users</span>
             <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
               <UserCheck className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-3xl font-black text-slate-700 dark:text-slate-300">
+          <p className="text-2xl sm:text-3xl font-black text-slate-700 dark:text-slate-300">
             {stats?.free_users || 0}
           </p>
           <p className="text-[10px] text-slate-500 dark:text-slate-400">Standard freemium tier</p>
         </div>
 
         {/* Premium Users Card */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10 p-5 shadow-sm space-y-2 border-emerald-500/30">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10 p-4 sm:p-5 shadow-sm space-y-2 border-emerald-500/30">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Premium Pro</span>
             <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
               <ShieldCheck className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">
+          <p className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">
             {stats?.premium_users || 0}
           </p>
           <p className="text-[10px] text-slate-500 dark:text-slate-400">Active Pro subscribers</p>
@@ -205,7 +205,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Admin Quick Action Bar */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 shadow-sm">
         <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-3">
           <UserPlus className="h-4 w-4 text-indigo-500" /> Admin Role Management Tool
         </h3>
@@ -231,10 +231,10 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Registered Users Table */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-sm overflow-hidden space-y-4 p-6">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-sm overflow-hidden space-y-4 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Users className="h-4 w-4 text-indigo-500" /> Registered User Accounts
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -255,7 +255,7 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="overflow-x-auto border border-slate-200 dark:border-slate-800/80 rounded-xl">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[540px] text-left text-xs">
             <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800 uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="px-4 py-3">User</th>
@@ -317,13 +317,13 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Recent Payments Log */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-sm p-6 space-y-4">
-        <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-sm p-4 sm:p-6 space-y-4">
+        <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <CreditCard className="h-4 w-4 text-emerald-500" /> Recent Subscription Payments Log
         </h3>
 
         <div className="overflow-x-auto border border-slate-200 dark:border-slate-800/80 rounded-xl">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[540px] text-left text-xs">
             <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800 uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="px-4 py-3">User Email</th>

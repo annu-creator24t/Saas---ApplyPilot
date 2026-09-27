@@ -262,7 +262,7 @@ export default function ApplicationsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Application Tracker</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Application Tracker</h1>
           <p className="text-xs text-slate-600 dark:text-slate-400">
             Manage and track all your active job opportunities in one place.
           </p>
@@ -273,7 +273,7 @@ export default function ApplicationsPage() {
             setEditingApp(null);
             setShowAddModal(true);
           }}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:opacity-90 transition"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:opacity-90 transition"
         >
           <Plus className="h-4 w-4" /> Add Application
         </button>
@@ -294,14 +294,14 @@ export default function ApplicationsPage() {
       )}
 
       {/* Filters & Search */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-slate-900/60 p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
         {/* Status Tabs */}
         <div className="flex flex-wrap gap-1.5">
           {["ALL", "APPLIED", "INTERVIEWING", "OFFER", "REJECTED", "BOOKMARKED"].map((st) => (
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-bold transition ${
+              className={`rounded-xl px-2.5 sm:px-3 py-1.5 text-xs font-bold transition ${
                 statusFilter === st
                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm"
                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
@@ -313,7 +313,7 @@ export default function ApplicationsPage() {
         </div>
 
         {/* Search Input */}
-        <div className="relative min-w-[240px]">
+        <div className="relative w-full sm:w-auto sm:min-w-[220px]">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
           <input
             type="text"
@@ -349,10 +349,10 @@ export default function ApplicationsPage() {
 
       {/* Add / Edit Application Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="w-full max-w-lg rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl space-y-4 animate-slide-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3.5 sm:p-4 animate-fade-in overflow-y-auto">
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-6 shadow-2xl space-y-4 animate-slide-up my-auto">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                 {editingApp ? "Edit Application" : "Track New Application"}
               </h2>
               <button
@@ -363,8 +363,8 @@ export default function ApplicationsPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSave} className="space-y-3.5 sm:space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Job Title *</label>
                   <input
@@ -389,7 +389,7 @@ export default function ApplicationsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Status</label>
                   <select
@@ -451,17 +451,17 @@ export default function ApplicationsPage() {
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-2 font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="w-full sm:w-auto rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-2 font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 font-bold text-white shadow-md hover:opacity-90"
+                  className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 font-bold text-white shadow-md hover:opacity-90 transition"
                 >
                   Save Application
                 </button>

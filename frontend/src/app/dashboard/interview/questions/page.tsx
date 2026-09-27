@@ -123,7 +123,7 @@ export default function InterviewQuestionsPage() {
         <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-3.5 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-2">
           <HelpCircle className="h-3.5 w-3.5" /> AI Interview Question Generator
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Interview Question Prep</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Interview Question Prep</h1>
         <p className="text-xs text-slate-600 dark:text-slate-400">
           Generate role-specific technical, behavioral, and HR interview questions based on your master resume and target job description.
         </p>
@@ -144,7 +144,7 @@ export default function InterviewQuestionsPage() {
       </div>
 
       {/* Action Button Card */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm space-y-3">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-5 shadow-sm space-y-3">
         <button
           type="button"
           onClick={handleGenerate}
@@ -218,17 +218,17 @@ export default function InterviewQuestionsPage() {
           return (
             <div className="space-y-6 animate-slide-up">
               {/* Header & Export Bar */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 bg-white dark:bg-slate-900/60 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Interview Question Set Ready
                 </h2>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   <CopyButton text={formatQuestionsText()} />
                   <button
                     onClick={handleExportDocx}
                     type="button"
-                    className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
                   >
                     <FileSpreadsheet className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Word (.doc)</span>
@@ -236,7 +236,7 @@ export default function InterviewQuestionsPage() {
                   <button
                     onClick={handleExportPdf}
                     type="button"
-                    className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
                   >
                     <Printer className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
                     <span>PDF</span>
@@ -244,7 +244,7 @@ export default function InterviewQuestionsPage() {
                   <button
                     onClick={handleExportTxt}
                     type="button"
-                    className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
                   >
                     <Download className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                     <span>TXT</span>
@@ -254,7 +254,7 @@ export default function InterviewQuestionsPage() {
 
               {/* Technical Questions */}
               {technicalList.length > 0 && (
-                <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-3">
+                <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 shadow-sm space-y-3">
                   <h3 className="text-sm font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2">
                     <FileText className="h-4 w-4" /> Technical & Skill Questions ({technicalList.length})
                   </h3>

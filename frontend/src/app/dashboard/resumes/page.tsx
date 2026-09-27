@@ -83,13 +83,13 @@ export default function ResumesPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Resume Management Hub</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Resume Management Hub</h1>
           <p className="text-xs text-slate-600 dark:text-slate-400">
             Upload, manage, download, and select master resumes for AI ATS scoring and job matching.
           </p>
         </div>
 
-        <label className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:opacity-90 cursor-pointer transition">
+        <label className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:opacity-90 cursor-pointer transition">
           {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
           <span>{uploading ? "Uploading..." : "Upload New Resume"}</span>
           <input
@@ -177,7 +177,7 @@ export default function ResumesPage() {
                 </div>
 
                 <div className="mt-5 space-y-3 border-t border-slate-200 dark:border-slate-800/80 pt-3">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                     {/* Make Active Button */}
                     {!isSelected ? (
                       <button

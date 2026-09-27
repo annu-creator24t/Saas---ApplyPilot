@@ -59,13 +59,13 @@ export default function ProfilePage() {
         <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-2">
           <User className="h-3.5 w-3.5" /> Account Settings
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">User Account & Profile</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">User Account & Profile</h1>
         <p className="text-xs text-slate-600 dark:text-slate-400">Manage your personal information, subscription plan, and security details.</p>
       </div>
 
       {msg && (
         <div
-          className={`flex items-center gap-2 rounded-xl p-4 text-xs font-medium border ${
+          className={`flex items-center gap-2 rounded-xl p-3.5 sm:p-4 text-xs font-medium border ${
             msg.type === "success"
               ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
               : "bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400"
@@ -77,14 +77,14 @@ export default function ProfilePage() {
       )}
 
       {/* Subscription Quick Status */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
             <Zap className="h-5 w-5" />
           </div>
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Subscription</span>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+            <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
               {isPro
                 ? "ApplyPilot Pro Plan (₹99/mo) · Active"
                 : isTrial
@@ -96,14 +96,14 @@ export default function ProfilePage() {
 
         <Link
           href="/dashboard/subscription"
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:opacity-90 transition shrink-0"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:opacity-90 transition shrink-0"
         >
           <CreditCard className="h-4 w-4" /> Manage Subscription
         </Link>
       </div>
 
       {/* Profile Form */}
-      <form onSubmit={handleUpdateProfile} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm">
+      <form onSubmit={handleUpdateProfile} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 space-y-4 shadow-sm">
         <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <User className="h-4 w-4 text-blue-600 dark:text-indigo-400" /> Personal Information
         </h2>
@@ -136,7 +136,7 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 text-xs font-bold text-white shadow-md hover:opacity-90 transition"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 text-xs font-bold text-white shadow-md hover:opacity-90 transition"
           >
             {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Save Profile
@@ -145,7 +145,7 @@ export default function ProfilePage() {
       </form>
 
       {/* Security / Password Form */}
-      <form onSubmit={handleChangePassword} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm">
+      <form onSubmit={handleChangePassword} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 space-y-4 shadow-sm">
         <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Key className="h-4 w-4 text-blue-600 dark:text-indigo-400" /> Security & Password
         </h2>
@@ -178,7 +178,7 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={saving || !currentPassword || !newPassword}
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
           >
             {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Update Password

@@ -140,13 +140,13 @@ function ResumeSelectorComponent({
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {selectedResume && (
             <button
               onClick={handleDownload}
               disabled={downloading}
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               title="Download original uploaded file"
             >
               {downloading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5 text-blue-600 dark:text-indigo-400" />}
@@ -157,7 +157,7 @@ function ResumeSelectorComponent({
           <button
             onClick={() => setIsChanging(!isChanging)}
             type="button"
-            className="inline-flex items-center gap-1 rounded-xl bg-indigo-500/10 px-3 py-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition"
+            className="inline-flex items-center gap-1 rounded-xl bg-indigo-500/10 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition"
           >
             <Layers className="h-3.5 w-3.5" />
             <span>{isChanging ? "Done" : "Change Resume"}</span>
@@ -168,7 +168,7 @@ function ResumeSelectorComponent({
 
       {/* Selected Card */}
       {selectedResume && !isChanging && (
-        <div className="flex items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-950 p-4 border border-slate-200 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-xl bg-slate-50 dark:bg-slate-950 p-3.5 sm:p-4 border border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3.5 overflow-hidden">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-sm">
               <FileText className="h-5 w-5" />

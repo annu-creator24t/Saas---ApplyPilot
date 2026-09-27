@@ -48,17 +48,17 @@ function LoginFormContent() {
   };
 
   return (
-    <div className="relative w-full max-w-md bg-white dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl space-y-6">
-      <div className="text-center space-y-2">
+    <div className="relative w-full max-w-md bg-white dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl space-y-5 sm:space-y-6">
+      <div className="text-center space-y-1.5 sm:space-y-2">
         <Link href="/" className="inline-flex items-center gap-2 mb-1">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-md">
-            <Rocket className="h-5 w-5" />
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-md">
+            <Rocket className="h-4 w-4 sm:h-5 sm:w-5" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <span className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
             Apply<span className="text-cyan-600 dark:text-cyan-400">Pilot</span>
           </span>
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Welcome Back</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Welcome Back</h1>
         <p className="text-xs text-slate-500 dark:text-slate-400">Sign in to manage your AI job applications</p>
       </div>
 
@@ -162,14 +162,14 @@ function LoginFormContent() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 px-4 py-12 transition-colors duration-200">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 px-3.5 sm:px-4 py-8 sm:py-12 transition-colors duration-200 relative">
       {/* Top right theme toggle */}
-      <div className="absolute top-6 right-6">
+      <div className="absolute top-3.5 right-3.5 sm:top-6 sm:right-6">
         <ThemeToggle />
       </div>
 
       <Suspense fallback={
-        <div className="relative w-full max-w-md bg-white dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl flex items-center justify-center py-12">
+        <div className="relative w-full max-w-md bg-white dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl flex items-center justify-center py-12">
           <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
         </div>
       }>

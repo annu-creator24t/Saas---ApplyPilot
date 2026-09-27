@@ -20,14 +20,14 @@ class Settings(BaseSettings):
     # ==========================
     # Database
     # ==========================
-    MONGODB_URI: str = "mongodb+srv://applypilot:monika%402005t@cluster0.gksahli.mongodb.net/applypilot_ai?retryWrites=true&w=majority&appName=Cluster0"
+    MONGODB_URI: str = ""
     DATABASE_NAME: str = "applypilot_ai"
 
     # ==========================
     # JWT
     # ==========================
-    JWT_SECRET_KEY: str = "8347c19b2912eef77d5f1369eefd3b32381ed7882152df15f6f525f3a20f016a"
-    JWT_REFRESH_SECRET_KEY: str = "6d27aeb9ab3ad46f95a87482045efa2f915a1419476127cbb8385f7855389953"
+    JWT_SECRET_KEY: str = ""
+    JWT_REFRESH_SECRET_KEY: str = ""
     JWT_ALGORITHM: str = "HS256"
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
@@ -36,13 +36,13 @@ class Settings(BaseSettings):
     # ==========================
     # Groq AI
     # ==========================
-    GROQ_API_KEY: str = "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"
+    GROQ_API_KEY: str = ""
     GROQ_MODEL: str = "openai/gpt-oss-120b"
 
     # ==========================
     # Gemini AI
     # ==========================
-    GEMINI_API_KEY: str = "AQ.Ab8RN6LZQfUrx0afY6U1hl_zGg-8zlJGA4dAhh-p8UuTpT1AQw"
+    GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.5-flash"
 
     # ==========================
@@ -54,9 +54,9 @@ class Settings(BaseSettings):
     # ==========================
     # Cloudinary
     # ==========================
-    CLOUDINARY_CLOUD_NAME: str = "qatocovx"
-    CLOUDINARY_API_KEY: str = "356476672324894"
-    CLOUDINARY_API_SECRET: str = "F06-ohUA4PhHXwyw7bic_6DNj0E"
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
 
     # ==========================
     # Frontend
@@ -76,29 +76,26 @@ class Settings(BaseSettings):
     UPLOAD_DIRECTORY: Path = Path("uploads/resumes")
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "backend/.env"),
+        env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
     )
 
     @model_validator(mode="after")
     def populate_defaults(self):
-        if not self.DATABASE_NAME:
+        if not self.DATABASE_NAME and self.MONGODB_URI:
             # Attempt to extract db name from MONGODB_URI if available
             match = re.search(r"/([^/?]+)(\?|$)", self.MONGODB_URI)
             if match and match.group(1):
                 self.DATABASE_NAME = match.group(1)
             else:
                 self.DATABASE_NAME = "applypilot_ai"
+        elif not self.DATABASE_NAME:
+            self.DATABASE_NAME = "applypilot_ai"
 
-        if not self.JWT_REFRESH_SECRET_KEY:
-            if self.JWT_SECRET_KEY:
-                self.JWT_REFRESH_SECRET_KEY = self.JWT_SECRET_KEY + "_refresh"
-            else:
-                self.JWT_REFRESH_SECRET_KEY = "6d27aeb9ab3ad46f95a87482045efa2f915a1419476127cbb8385f7855389953"
-
-        if not self.JWT_SECRET_KEY:
-            self.JWT_SECRET_KEY = "8347c19b2912eef77d5f1369eefd3b32381ed7882152df15f6f525f3a20f016a"
+        if not self.JWT_REFRESH_SECRET_KEY and self.JWT_SECRET_KEY:
+            self.JWT_REFRESH_SECRET_KEY = self.JWT_SECRET_KEY + "_refresh"
 
         return self
 

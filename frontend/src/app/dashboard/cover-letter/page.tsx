@@ -99,7 +99,7 @@ export default function CoverLetterPage() {
         <div className="inline-flex items-center gap-2 rounded-full bg-purple-500/10 px-3.5 py-1 text-xs font-bold text-purple-600 dark:text-purple-400 border border-purple-500/20 mb-2">
           <Sparkles className="h-3.5 w-3.5" /> AI Cover Letter Generator
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">AI Cover Letter Generator</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">AI Cover Letter Generator</h1>
         <p className="text-xs text-slate-600 dark:text-slate-400">Generate a tailored, high-converting cover letter using your active master resume and target job description.</p>
       </div>
 
@@ -118,7 +118,7 @@ export default function CoverLetterPage() {
       </div>
 
       {/* Action Button Card */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm space-y-3">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-5 shadow-sm space-y-3">
         <button
           type="button"
           onClick={handleGenerate}
@@ -138,7 +138,7 @@ export default function CoverLetterPage() {
       </div>
 
       {errorMsg && (
-        <div className={`rounded-2xl p-5 border shadow-sm ${
+        <div className={`rounded-2xl p-4 sm:p-5 border shadow-sm ${
           quotaReached
             ? "bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30 text-amber-900 dark:text-amber-200"
             : "bg-rose-50 dark:bg-rose-500/10 border-rose-300 dark:border-rose-500/30 text-rose-900 dark:text-rose-200"
@@ -167,19 +167,19 @@ export default function CoverLetterPage() {
       )}
 
       {/* Generated Output & Download Section */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm animate-slide-up">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-6 space-y-4 shadow-sm animate-slide-up">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 gap-3">
           <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <FileCode className="h-4 w-4 text-purple-500" /> Generated Cover Letter
           </h2>
 
           {coverLetter && (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <CopyButton text={coverLetter} />
               <button
                 onClick={handleExportDocx}
                 type="button"
-                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               >
                 <FileSpreadsheet className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                 <span>Word (.doc)</span>
@@ -187,7 +187,7 @@ export default function CoverLetterPage() {
               <button
                 onClick={handleExportPdf}
                 type="button"
-                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               >
                 <Printer className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
                 <span>PDF</span>
@@ -195,7 +195,7 @@ export default function CoverLetterPage() {
               <button
                 onClick={handleExportTxt}
                 type="button"
-                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               >
                 <Download className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>TXT</span>
@@ -204,7 +204,7 @@ export default function CoverLetterPage() {
           )}
         </div>
 
-        <div className="min-h-[250px] rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-300 whitespace-pre-wrap">
+        <div className="min-h-[250px] rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3.5 sm:p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-300 whitespace-pre-wrap">
           {coverLetter ? (
             coverLetter
           ) : (

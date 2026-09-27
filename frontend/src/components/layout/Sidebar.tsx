@@ -22,7 +22,12 @@ import {
   BarChart3,
 } from "lucide-react";
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthContext();
@@ -42,8 +47,16 @@ export default function Sidebar() {
     fetchSub();
   }, [pathname]);
 
+  // Close mobile drawer on route change
+  useEffect(() => {
+    if (isOpen && onClose) {
+      onClose();
+    }
+  }, [pathname]);
+
   const handleLogout = () => {
     logout();
+    if (onClose) onClose();
     router.push("/login");
   };
 
@@ -70,33 +83,50 @@ export default function Sidebar() {
   const rawRemaining = subData ? subData.free_credits_remaining : Math.max(0, 3 - ((user as any)?.free_usage_count || 0));
   const freeCreditsNum = typeof rawRemaining === "number" ? rawRemaining : 0;
 
-  return (
-    <aside className="flex h-screen w-72 flex-col border-r border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 shadow-xl transition-colors duration-200">
+  const sidebarContent = (
+    <aside className="flex h-full w-72 max-w-[85vw] flex-col border-r border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 shadow-xl transition-colors duration-200">
       {/* Brand Header */}
-      <div className="border-b border-slate-200 dark:border-slate-800/80 p-5">
+      <div className="border-b border-slate-200 dark:border-slate-800/80 p-4 sm:p-5">
         <div className="flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-3 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 shadow-md shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-200">
-              <Rocket className="h-5 w-5 text-white" />
+          <Link
+            href="/dashboard"
+            onClick={() => onClose && onClose()}
+            className="flex items-center gap-3 group"
+          >
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 shadow-md shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-200">
+              <Rocket className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white">
                 ApplyPilot
               </h1>
-              <p className="text-[11px] font-medium text-cyan-600 dark:text-indigo-400">
+              <p className="text-[10px] sm:text-[11px] font-medium text-cyan-600 dark:text-indigo-400">
                 AI Career Copilot
               </p>
             </div>
           </Link>
 
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                aria-label="Close menu"
+              >
+                <span className="text-lg font-bold leading-none">&times;</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* AI Usage Credit / Free Trial Banner */}
-        <div className="mt-4">
+        <div className="mt-3 sm:mt-4">
           <Link
             href="/dashboard/subscription"
-            className={`block rounded-xl border p-3 transition-all ${
+            onClick={() => onClose && onClose()}
+            className={`block rounded-xl border p-2.5 sm:p-3 transition-all ${
               isPro
                 ? "bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border-emerald-500/30 hover:border-emerald-500/50"
                 : isTrial
@@ -140,18 +170,18 @@ export default function Sidebar() {
               </span>
             </div>
 
-            <div className="mt-2 flex items-center justify-between text-[11px]">
+            <div className="mt-1.5 sm:mt-2 flex items-center justify-between text-[10px] sm:text-[11px]">
               <span className="text-slate-500 dark:text-slate-400 truncate">
                 {isPro
-                  ? "Unlimited AI access enabled"
+                  ? "Unlimited AI enabled"
                   : isTrial
-                  ? `Full Pro access (${trialDaysRemaining} days remaining)`
+                  ? `Pro access (${trialDaysRemaining}d left)`
                   : freeCreditsNum > 0
-                  ? `${freeCreditsNum} free AI generations left`
-                  : "Limit reached (0/3 remaining)"}
+                  ? `${freeCreditsNum} free AI left`
+                  : "Limit reached (0/3)"}
               </span>
               <span className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline shrink-0 ml-1">
-                {isPro ? "Pro Status" : isTrial ? "Details →" : "Upgrade →"}
+                {isPro ? "Status" : isTrial ? "Details →" : "Upgrade →"}
               </span>
             </div>
           </Link>
@@ -159,8 +189,8 @@ export default function Sidebar() {
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
-        <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+      <nav className="flex-1 space-y-1 p-2.5 sm:p-3 overflow-y-auto">
+        <div className="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
           Main Navigation
         </div>
         {navItems.map((item) => {
@@ -174,7 +204,8 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition-all duration-200 ${
+              onClick={() => onClose && onClose()}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all duration-200 ${
                 isActive
                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-600/25 font-bold"
                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 hover:translate-x-1"
@@ -192,10 +223,10 @@ export default function Sidebar() {
       </nav>
 
       {/* User Footer Profile & Logout */}
-      <div className="border-t border-slate-200 dark:border-slate-800/80 p-3 bg-slate-50 dark:bg-slate-950">
-        <div className="flex items-center justify-between rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2.5">
-          <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-xs border border-indigo-500/20">
+      <div className="border-t border-slate-200 dark:border-slate-800/80 p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-950">
+        <div className="flex items-center justify-between rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 sm:p-2.5">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <div className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-xs border border-indigo-500/20">
               {user?.full_name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="truncate">
@@ -210,12 +241,37 @@ export default function Sidebar() {
           <button
             onClick={handleLogout}
             title="Log out"
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-500/10 hover:text-rose-500 transition-colors"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-500/10 hover:text-rose-500 transition-colors shrink-0"
           >
             <LogOut className="h-4 w-4" />
           </button>
         </div>
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Desktop Persistent Sidebar */}
+      <div className="hidden lg:flex lg:h-screen lg:shrink-0">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile Off-Canvas Drawer */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop Overlay */}
+          <div
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-200"
+          />
+
+          {/* Sliding Drawer Container */}
+          <div className="relative z-50 flex h-full max-w-[85vw] animate-slide-right">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
